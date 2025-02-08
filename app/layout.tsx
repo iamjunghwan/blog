@@ -24,7 +24,7 @@ export async function generateMetadata({
       siteName: "Example Blog",
       images: [
         {
-          url: "https://yceffort.kr/opengraph-image?7f9a4b94e109db7b",
+          url: "",
           width: 800,
           height: 600,
           alt: "Blog Post Image",

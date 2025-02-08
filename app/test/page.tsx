@@ -129,7 +129,7 @@ export default function Home() {
           },
           //  valid_elements: "*[*]",
           extended_valid_elements:
-            "span[class|style],div[id|class|style],a[href|target],code[class|style],table , p[class|style]",
+            "span[class|style],div[id|class|style],a[href|target],code[class|style],pre[class],table,p[class|style]",
           images_file_types: "jpg,svg,webp,mp4",
           block_unsupported_drop: true,
           tinydrive_token_provider: "/jwt",
