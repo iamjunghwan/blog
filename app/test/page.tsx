@@ -134,13 +134,27 @@ export default function Home() {
           block_unsupported_drop: true,
           tinydrive_token_provider: "/jwt",
           setup: (editor) => {
-            editor.ui.registry.addButton("custom", {
-              text: "Custom browse",
-              onAction: () => {
-                editor.plugins.tinydrive.browse({}).then(() => {
-                  console.log("Tiny Drive dialog closed.");
-                });
-              },
+            // editor.ui.registry.addButton("custom", {
+            //   text: "Custom browse",
+            //   onAction: () => {
+            //     editor.plugins.tinydrive.browse({}).then(() => {
+            //       console.log("Tiny Drive dialog closed.");
+            //     });
+            //   },
+            // });
+
+            editor.on("Init", function () {
+              // 에디터 DOM 요소에 tabIndex 설정
+              const editorContainer = editor.getContainer();
+              console.log("editorContainer : ", editorContainer);
+              //editorContainer.setAttribute('tabindex', '0');  // 원하는 tabIndex 값 설정
+            });
+            editor.on("NodeChange", function (e) {
+              const node = e.element;
+              // h2 요소가 새로 삽입되었을 때 id를 추가
+              if (node.tagName.toLowerCase() === "h2" && !node.id) {
+                node.id = "h2-" + node.innerHTML; // 고유한 id 값 생성
+              }
             });
           },
         }}
