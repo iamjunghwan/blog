@@ -1,19 +1,7 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Headers from "../components/Header";
 import { ThemeProvider } from "next-themes";
-// https://github.com/pacocoursey/next-themes
 
-// const geistSans = Geist({
-//   variable: "--font-geist-sans",
-//   subsets: ["latin"],
-// });
-
-// const geistMono = Geist_Mono({
-//   variable: "--font-geist-mono",
-//   subsets: ["latin"],
-// });
 export async function generateMetadata({
   params,
 }: {
