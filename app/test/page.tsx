@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import { EditorNodeChangeEvent } from "@tinymce/tinymce-react";
 
 const Editor = dynamic(
   () => import("@tinymce/tinymce-react").then((mod) => mod.Editor),
@@ -34,6 +35,13 @@ export default function Home() {
       link.href =
         "https://cdn.tiny.cloud/1/9dtzx464fe2jqcmdr9ofs0bb0llu07smvpgbs4qm5oaviohb/tinymce/7.6.1-131/skins/ui/oxide/content.min.css"; // TinyMCE 스타일을 추가
       document.head.appendChild(link);
+    }
+  };
+
+  const editorNodeChange = (e: EditorNodeChangeEvent) => {
+    const node = e.element;
+    if (node.tagName.toLowerCase() === "h2" && !node.id) {
+      node.id = "h2-" + node.innerHTML;
     }
   };
 
@@ -149,13 +157,7 @@ export default function Home() {
               console.log("editorContainer : ", editorContainer);
               //editorContainer.setAttribute('tabindex', '0');  // 원하는 tabIndex 값 설정
             });
-            editor.on("NodeChange", function (e) {
-              const node = e.element;
-              // h2 요소가 새로 삽입되었을 때 id를 추가
-              if (node.tagName.toLowerCase() === "h2" && !node.id) {
-                node.id = "h2-" + node.innerHTML; // 고유한 id 값 생성
-              }
-            });
+            editor.on("NodeChange", editorNodeChange);
           },
         }}
       />
