@@ -31,21 +31,22 @@ export default function Header() {
         display: "flex",
       }}
     >
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <img
-          src="/image4.png"
-          style={{
-            width: "40px",
-            height: "40px",
-            borderRadius: "100%",
-            marginRight: ".5rem",
-          }}
-        />
-        <div style={{ display: "flex" }}>
-          <span style={{ fontStyle: "italic" }}> {"IamAn"}</span>
+      <a href="/">
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <img
+            src="/image4.png"
+            style={{
+              width: "40px",
+              height: "40px",
+              borderRadius: "100%",
+              marginRight: ".5rem",
+            }}
+          />
+          <div style={{ display: "flex" }}>
+            <span style={{ fontStyle: "italic" }}> {"IamAn"}</span>
+          </div>
         </div>
-      </div>
-
+      </a>
       <div
         style={{
           display: "flex",
