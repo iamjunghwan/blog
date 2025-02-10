@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import { EditorNodeChangeEvent } from "@tinymce/tinymce-react";
 
 const Editor = dynamic(
   () => import("@tinymce/tinymce-react").then((mod) => mod.Editor),
@@ -22,7 +21,7 @@ export default function Home() {
     }
   }, [editorRef.current]);
 
-  const handleClick = () => {
+  const handleClick = (): void => {
     if (editorRef.current) {
       setData(editorRef.current.getContent({ format: "raw" }));
 
@@ -38,7 +37,7 @@ export default function Home() {
     }
   };
 
-  const editorNodeChange = (e: EditorNodeChangeEvent) => {
+  const editorNodeChange = (e: { element: HTMLElement }): void => {
     const node = e.element;
     if (node.tagName.toLowerCase() === "h2" && !node.id) {
       node.id = "h2-" + node.innerHTML;
