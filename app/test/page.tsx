@@ -57,7 +57,7 @@ export default function Home() {
         initialValue=""
         init={{
           height: 300,
-          menubar: "file edit view insert format",
+          //menubar: "file edit view insert format",
           plugins: [
             "advlist",
             "autolink",
@@ -88,56 +88,53 @@ export default function Home() {
             "removeformat | help",
           content_style:
             "body { font-family:Helvetica,Arial,sans-serif; font-size:8px;text-align: center; }",
-          video_template_callback: (data) =>
-            `<video width="${data.width}" height="${data.height}"${
-              data.poster ? ` poster="${data.poster}"` : ""
-            } controls="controls">\n` +
-            `<source src="${data.source}"${
-              data.sourcemime ? ` type="${data.sourcemime}"` : ""
-            } />\n` +
-            (data.altsource
-              ? `<source src="${data.altsource}"${
-                  data.altsourcemime ? ` type="${data.altsourcemime}"` : ""
-                } />\n`
-              : "") +
-            "</video>",
+          video_template_callback: (data) => {
+            console.log("video_template_callback : ", data);
+            return `<video width="${data.width}" height="${data.height}" controls>
+            <source src="${data.source}" type="video/mp4" />
+          </video>`;
+            // `<video width="${data.width}" height="${data.height}"${
+            //   data.poster ? ` poster="${data.poster}"` : ""
+            // } controls="controls">\n` +
+            //   `<source src="${data.source}"${
+            //     data.sourcemime ? ` type="${data.sourcemime}"` : ""
+            //   } />\n` +
+            //   (data.altsource
+            //     ? `<source src="${data.altsource}"${
+            //         data.altsourcemime ? ` type="${data.altsourcemime}"` : ""
+            //       } />\n`
+            //     : "") +
+            //   "</video>";
+          },
           font_size_input_default_unit: "8pt",
           image_title: true,
           automatic_uploads: true,
-          file_picker_callback: (cb, value, meta) => {
-            const input = document.createElement("input");
+          file_picker_types: "image media",
+          file_picker_callback: (callback, value, meta) => {
+            // 미디어 파일을 선택할 때의 커스텀 파일 선택 로직
+            var input = document.createElement("input");
             input.setAttribute("type", "file");
-            input.setAttribute("accept", "image/*");
-
-            input.addEventListener("change", (e) => {
-              console.log("변경");
-              const file = e.target.files[0];
-
-              const reader = new FileReader();
-              reader.addEventListener("load", () => {
-                /*
-                  Note: Now we need to register the blob in TinyMCEs image blob
-                  registry. In the next release this part hopefully won't be
-                  necessary, as we are looking to handle it internally.
-                */
-                const id = "blobid";
-
-                const blobCache = tinymce.activeEditor.editorUpload.blobCache;
-                const base64 = reader.result.split(",")[1];
-                const blobInfo = blobCache.create(id, file, base64);
-                blobCache.add(blobInfo);
-
-                /* call the callback and populate the Title field with the file name */
-                cb(blobInfo.blobUri(), { title: file.name });
-              });
-              reader.readAsDataURL(file);
-            });
-
+            input.setAttribute("accept", "video/mp4"); // mp4만 선택하도록 제한
             input.click();
+
+            input.onchange = function () {
+              var file = input.files[0]; // 사용자가 선택한 파일
+              var reader = new FileReader();
+
+              reader.onload = function (e) {
+                // e.target.result는 Base64 URL입니다
+                const videoUrl = e.target.result; // Base64로 읽어진 비디오 데이터
+                console.log("videoUrl : ", videoUrl);
+                // 선택한 비디오를 에디터에 삽입
+                callback(videoUrl, { alt: file.name });
+              };
+
+              reader.readAsDataURL(file); // 파일을 Base64로 읽기
+            };
           },
           //  valid_elements: "*[*]",
           extended_valid_elements:
-            "span[class|style],div[id|class|style],a[href|target],code[class|style],pre[class],table,p[class|style]",
+            "span[class|style],div[id|class|style],a[href|target],code[class|style],pre[class],table[class|style],p[class|style]",
           images_file_types: "jpg,svg,webp,mp4",
           block_unsupported_drop: true,
           tinydrive_token_provider: "/jwt",
