@@ -1,5 +1,6 @@
 import "./globals.css";
 import Headers from "../components/Header";
+import Footer from "../components/Footer";
 import { ThemeProvider } from "next-themes";
 
 export async function generateMetadata({
@@ -57,17 +58,18 @@ export default function RootLayout({
               paddingRight: "1.5rem",
               maxWidth: "50rem",
             }}
-            id="test"
           >
             <div
               style={{
                 justifyContent: "space-between",
                 flexDirection: "column",
                 display: "flex",
+                height: "100vh",
               }}
             >
               <Headers />
               {children}
+              <Footer />
             </div>
           </div>
         </ThemeProvider>

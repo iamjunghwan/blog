@@ -47,6 +47,7 @@ export default function Home() {
   return (
     <>
       <div
+        style={{ height: "100vh" }}
         // style={{ ...parseStyle(editorStyle) }}
         dangerouslySetInnerHTML={{ __html: data }}
       ></div>
