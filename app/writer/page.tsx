@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import dynamic from "next/dynamic";
 
 const Editor = dynamic(
@@ -10,16 +10,10 @@ const Editor = dynamic(
   }
 );
 
-export default function Home() {
+export default function Page() {
   const editorRef = useRef<any>(null);
 
   const [data, setData] = useState("");
-
-  useEffect(() => {
-    if (editorRef.current) {
-      console.log("ref 변경 : ", editorRef.current.getContent());
-    }
-  }, [editorRef.current]);
 
   const handleClick = (): void => {
     if (editorRef.current) {
@@ -37,17 +31,17 @@ export default function Home() {
     }
   };
 
-  const editorNodeChange = (e: { element: HTMLElement }): void => {
+  const editorNodeChange = (e: any) => {
     const node = e.element;
     if (node.tagName.toLowerCase() === "h2" && !node.id) {
       node.id = "h2-" + node.innerHTML;
+      //node.classList.add("clickable");
     }
   };
 
   return (
     <>
       <div
-        style={{ height: "100vh" }}
         // style={{ ...parseStyle(editorStyle) }}
         dangerouslySetInnerHTML={{ __html: data }}
       ></div>

@@ -50,23 +50,8 @@ export default function RootLayout({
           storageKey="blog-Theme"
           attribute="class"
         >
-          <div
-            style={{
-              marginLeft: "auto",
-              marginRight: "auto",
-              paddingLeft: "1.5rem",
-              paddingRight: "1.5rem",
-              maxWidth: "50rem",
-            }}
-          >
-            <div
-              style={{
-                justifyContent: "space-between",
-                flexDirection: "column",
-                display: "flex",
-                height: "100vh",
-              }}
-            >
+          <div className="layoutOuter">
+            <div className="layoutInner">
               <Headers />
               {children}
               <Footer />

@@ -28,6 +28,14 @@ export default function Detail(props: any) {
         h2.addEventListener("click", () => scrollToRef(h2.id));
       });
     }
+    return () => {
+      if (refHtml.current) {
+        const h2Elements = refHtml.current.querySelectorAll("h2");
+        h2Elements.forEach((h2) => {
+          h2.removeEventListener("click", () => scrollToRef(h2.id));
+        });
+      }
+    };
   }, [fakeData]);
 
   useEffect(() => {
