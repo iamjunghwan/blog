@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, use, useEffect, useState, useRef } from "react";
+import dompurify from "dompurify";
 
 interface Params {
   id: string;
@@ -10,6 +11,8 @@ interface Params {
 export default function Detail(props: any) {
   const [fakeData, setFakeData] = useState<string>("");
   const refHtml = useRef<HTMLDivElement>(null);
+
+  const sanitizer = dompurify.sanitize;
 
   const scrollToRef = (id: string) => {
     const ref = document.getElementById(id);
@@ -47,7 +50,10 @@ export default function Detail(props: any) {
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <div ref={refHtml} dangerouslySetInnerHTML={{ __html: fakeData }}></div>
+      <div
+        ref={refHtml}
+        dangerouslySetInnerHTML={{ __html: sanitizer(fakeData) }}
+      ></div>
     </Suspense>
   );
 }
