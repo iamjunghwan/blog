@@ -3,11 +3,6 @@
 import { Suspense, use, useEffect, useState, useRef } from "react";
 import dompurify from "dompurify";
 
-interface Params {
-  id: string;
-  title: string;
-}
-
 export default function Detail(props: any) {
   const [fakeData, setFakeData] = useState<string>("");
   const refHtml = useRef<HTMLDivElement>(null);
