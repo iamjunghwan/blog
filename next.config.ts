@@ -9,6 +9,11 @@ const nextConfig: NextConfig = {
     });
     return config;
   },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "20mb", // 원하는 크기로 설정 (예: 5MB)
+    },
+  },
 };
 
 export default nextConfig;

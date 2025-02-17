@@ -3,6 +3,10 @@
 import { Suspense, use, useEffect, useState, useRef } from "react";
 import dompurify from "dompurify";
 
+// function sanitizer(content: string) {
+//   return DOMPurify.sanitize(content); // DOMPurify로 HTML을 안전하게 정리
+// }
+
 export default function Detail(props: any) {
   const [fakeData, setFakeData] = useState<string>("");
   const refHtml = useRef<HTMLDivElement>(null);
@@ -45,10 +49,7 @@ export default function Detail(props: any) {
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <div
-        ref={refHtml}
-        dangerouslySetInnerHTML={{ __html: sanitizer(fakeData) }}
-      ></div>
+      <div ref={refHtml} dangerouslySetInnerHTML={{ __html: fakeData }}></div>
     </Suspense>
   );
 }

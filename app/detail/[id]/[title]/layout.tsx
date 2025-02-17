@@ -4,7 +4,7 @@ export async function generateMetadata({
   params: { slug: string };
 }) {
   //글 제목, 내용, 이미지 경로,
-  console.log("잉????");
+
   const post = {
     title: "안정환 detail",
     description: "안정환 블로그 detail",

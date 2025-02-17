@@ -33,9 +33,17 @@ export default function Page() {
 
   const editorNodeChange = (e: any) => {
     const node = e.element;
+
     if (node.tagName.toLowerCase() === "h2" && !node.id) {
       node.id = "h2-" + node.innerHTML;
       //node.classList.add("clickable");
+    }
+
+    if (node.tagName.toLowerCase() === "img") {
+      console.log(node.src);
+      // blob:http://localhost:3000/fb6e5d66-c9aa-4de8-8e6d-5cb21223d74b
+      // node.src =
+      //node.src = "http://localhost:3000/fb6e5d66-c9aa-4de8-8e6d-5cb21223d74b";
     }
   };
 
@@ -103,35 +111,114 @@ export default function Page() {
           font_size_input_default_unit: "8pt",
           image_title: true,
           automatic_uploads: true,
-          file_picker_types: "image media",
+          file_picker_types: "file image media",
+          images_upload_url: "/api/upload", // 이미지 업로드 API URL
+          images_upload_handler: async (
+            blobInfo: any,
+            success: any,
+            failure: any
+          ) => {
+            const formData = new FormData();
+            formData.append("file", blobInfo.blob()); // 파일 데이터 전송
+            console.log(blobInfo.blob());
+            await fetch("/api/upload", {
+              method: "POST",
+              body: formData,
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                console.log("ㅋㅋㅋㅋㅋ ", data);
+                if (data.filepath) {
+                  // const imageUrl = data.filepath.replace(
+                  //   "/Users/iaman/iaman-dev",
+                  //   ""
+                  // ); // public 폴더를 제외한 경로
+                  // const imageUrlWithBase = `${imageUrl}`; // 클라이언트에서 접근 가능한 URL 형태로 변환
+                  // console.log("파일 경로 : ", imageUrlWithBase);
+
+                  const tt = data.filepath.replace(
+                    "/Users/iaman/iaman-dev/public",
+                    ""
+                  );
+                  //alert(tt);
+                  const _imageUrl = `/uploads${tt}}`; // public을 제외한 상대 경로
+
+                  //alert(tt);
+                  const fileUrl = `http://localhost:3000/uploads/${data.filepath.replace(
+                    "/Users/iaman/iaman-dev/public",
+                    ""
+                  )}`;
+
+                  success({
+                    location: fileUrl,
+                    title: "Image Title", // 선택 사항
+                    alt: "Image Description", // 선택 사항
+                    width: 600, // 선택 사항
+                    height: 400, // 선택 사항
+                  });
+
+                  //success(tt); // 성공적으로 업로드된 파일의 URL을 에디터에 삽입
+                } else {
+                  console.log("실패 : ", data.filepath);
+                  failure("Failed to upload image.");
+                }
+              })
+              .catch((err) => {
+                console.log("캐치 : ");
+                failure("Failed to upload image.");
+              });
+          },
           file_picker_callback: (callback, value, meta) => {
-            // 미디어 파일을 선택할 때의 커스텀 파일 선택 로직
-            var input = document.createElement("input");
+            const input = document.createElement("input");
             input.setAttribute("type", "file");
-            input.setAttribute("accept", "video/mp4"); // mp4만 선택하도록 제한
+            input.setAttribute(
+              "accept",
+              meta.filetype === "image" ? "image/*" : "video/mp4"
+            );
             input.click();
 
-            input.onchange = function () {
-              var file = input.files[0]; // 사용자가 선택한 파일
-              var reader = new FileReader();
+            input.onchange = async function () {
+              const file = input.files[0];
 
-              reader.onload = function (e) {
-                // e.target.result는 Base64 URL입니다
-                const videoUrl = e.target.result; // Base64로 읽어진 비디오 데이터
-                console.log("videoUrl : ", videoUrl);
-                // 선택한 비디오를 에디터에 삽입
-                callback(videoUrl, { alt: file.name });
-              };
+              // FormData로 파일을 서버로 전송하여 업로드
+              const formData = new FormData();
+              formData.append("file", file);
 
-              reader.readAsDataURL(file); // 파일을 Base64로 읽기
+              try {
+                // 서버로 파일을 업로드 (예: '/api/upload')
+                const response = await fetch("/api/upload", {
+                  method: "POST",
+                  body: formData,
+                });
+
+                const data = await response.json();
+
+                // 업로드 후 서버에서 반환된 파일 경로
+                if (data.filepath) {
+                  const fileUrl = `/uploads/${data.filepath.replace(
+                    "/Users/iaman/iaman-dev/public/uploads/",
+                    ""
+                  )}`;
+                  // 이미지 삽입 (meta.filetype이 "image"인 경우)
+                  if (meta.filetype === "image") {
+                    callback(fileUrl, { alt: file.name }); // alt는 선택 사항
+                  } else if (meta.filetype === "media") {
+                    callback(fileUrl, { alt: file.name }); // 비디오 URL 삽입
+                  }
+                } else {
+                  console.error("파일 업로드 실패");
+                }
+              } catch (err) {
+                console.error("파일 업로드 중 에러 발생:", err);
+              }
             };
           },
           //  valid_elements: "*[*]",
           extended_valid_elements:
-            "span[class|style],div[id|class|style],a[href|target],code[class|style],pre[class],table[class|style],p[class|style]",
+            "span[class|style],div[id|class|style],a[href|target],code[class|style],pre[class],table[class|style],p[class|style],img[src|style]",
           images_file_types: "jpg,svg,webp,mp4",
           block_unsupported_drop: true,
-          tinydrive_token_provider: "/jwt",
+          //tinydrive_token_provider: "/localhost:3000/uploads",
           setup: (editor) => {
             // editor.ui.registry.addButton("custom", {
             //   text: "Custom browse",
