@@ -15,7 +15,7 @@ export default function Page() {
 
   const [data, setData] = useState("");
 
-  const handleClick = (): void => {
+  const handleClick = async (): void => {
     if (editorRef.current) {
       setData(editorRef.current.getContent({ format: "raw" }));
 
@@ -28,6 +28,68 @@ export default function Page() {
       link.href =
         "https://cdn.tiny.cloud/1/9dtzx464fe2jqcmdr9ofs0bb0llu07smvpgbs4qm5oaviohb/tinymce/7.6.1-131/skins/ui/oxide/content.min.css"; // TinyMCE 스타일을 추가
       document.head.appendChild(link);
+
+      console.log(
+        "현재 값 : ",
+        editorRef.current.getContent({ format: "raw" })
+      );
+      // const response = await fetch("/api/save", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: editorRef.current.getContent({ format: "raw" }),
+
+      //   // JSON.stringify({
+      //   //   content: editorRef.current.getContent({ format: "raw" }),
+      //   // }),
+      // });
+
+      // const result = await response.json();
+
+      const response = await fetch(
+        "https://api.memexdata.io/memex/external/projects/0e9c148b/models/blog/contents",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Token":
+              "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJSRUJFTDkiLCJpYXQiOjE3Mzk3NzcxMzUsImV4cCI6MjA1NTEzNzEzNSwiSUQiOiIwZTljMTQ4YiIsIkRPTUFJTiI6WyIqIl0sIlRZUEUiOiJFWFRFUk5BTCJ9.i-PuX7QzNpJiqncP06Tc5FyDbFpAg11D-W5csSTdRkg",
+            "X-Forwarded-Host": "localhost:3000",
+          },
+          body: JSON.stringify({
+            publish: false,
+            data: {
+              title: {
+                KO: "test1",
+              },
+              desc: {
+                KO: "string text",
+              },
+              content: editorRef.current.getContent({ format: "raw" }),
+              date: "2022-01-01T00:00:00",
+              author: {
+                KO: "string text",
+              },
+
+              keywords: {
+                KO: "string text",
+              },
+            },
+          }),
+          // body: JSON.stringify({
+          //   content: editorRef.current.getContent({ format: "raw" }),
+          // }),
+        }
+      );
+
+      const data = await response.json();
+      console.log(data);
+      if (data.ok) {
+        alert("저장 성공!!!");
+      } else {
+        alert("실패 ");
+      }
     }
   };
 

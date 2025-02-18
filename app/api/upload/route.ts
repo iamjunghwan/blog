@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import formidable, { IncomingForm } from "formidable";
+import formidable from "formidable";
 import path from "path";
 import fs from "fs";
 import { Readable } from "stream";
@@ -44,13 +44,6 @@ export async function POST(req: NextRequest) {
     console.log("fields:", fields);
     console.log("files:", files);
 
-    const uploadedFile = files.image?.[0];
-    const imageUrl = uploadedFile
-      ? `/uploads/${uploadedFile.newFilename}`
-      : null;
-    console.log("imageUrl:", files.file[0].filepath);
-
-    //location: files.file[0].filepath
     return new Response(JSON.stringify({ filepath: files.file[0].filepath }), {
       status: 200,
       headers: { "Content-Type": "application/json" },

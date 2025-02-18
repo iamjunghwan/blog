@@ -22,42 +22,23 @@ export default function Header() {
   };
 
   return (
-    <header
-      style={{
-        paddingTop: "2.5rem",
-        paddingBottom: "2.5rem",
-        justifyContent: "space-between",
-        alignItems: "center",
-        display: "flex",
-      }}
-    >
+    <header className="header">
       <a href="/">
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <img
-            src="/image4.png"
-            style={{
-              width: "40px",
-              height: "40px",
-              borderRadius: "100%",
-              marginRight: ".5rem",
-            }}
-          />
-          <div style={{ display: "flex" }}>
+        <div className="headerAlign">
+          <img src="/image4.png" className="leftHeaderInImgArea" />
+
+          <div className="leftHeaderInTextArea">
             <span style={{ fontStyle: "italic" }}> {"IamAn"}</span>
           </div>
         </div>
       </a>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <a style={{ padding: "1rem" }}>{"Posts"}</a>
-          <a style={{ padding: "1rem" }}>{"About"}</a>
-          <a style={{ padding: "1rem" }}>
+      <div className="rightHeaderInTextArea">
+        <div className="headerAlign">
+          <a className="padding" href="/post">
+            {"Posts"}
+          </a>
+          <a className="padding">{"About"}</a>
+          <a className="padding">
             <button onClick={toggleTheme}>
               {theme === "light" ? <LightMode /> : <DarkMode />}
             </button>

@@ -51,6 +51,52 @@ body {
   font-family: "Arial", sans-serif;
 } */
 
+*,
+:after,
+:before {
+  box-sizing: border-box;
+  border: 0 solid #e5e7eb;
+}
+
+.header {
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+}
+
+.padding {
+  padding: 1rem;
+}
+
+.headerAlign {
+  display: flex;
+  align-items: center;
+}
+
+.rightHeaderInTextArea {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.leftHeaderInImgArea {
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+  margin-right: 0.5rem;
+}
+
+.leftHeaderInTextArea {
+  display: flex;
+}
+@media (max-width: 400px) {
+  .leftHeaderInTextArea {
+    display: none;
+  }
+}
+
 h2:hover {
   text-decoration: underline;
   cursor: pointer;

@@ -6,14 +6,14 @@ export async function generateMetadata({
   //글 제목, 내용, 이미지 경로,
 
   const post = {
-    title: "안정환 detail",
-    description: "안정환 블로그 detail",
+    title: "Posts",
+    description: "안정환 블로그 Posts",
     imageUrl: "localhost:3000/image4.png",
   };
 
   return {
     title: post.title,
-    description: "An insightful blog post about modern web development.",
+    description: "post 영역",
     openGraph: {
       title: post.title,
       description: "An insightful blog post about modern web development.",
@@ -37,5 +37,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return <div>{children}</div>;
+  return (
+    <div style={{ border: "1px solid white", paddingLeft: "1rem" }}>
+      {children}
+    </div>
+  );
 }
