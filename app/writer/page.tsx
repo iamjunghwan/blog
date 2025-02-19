@@ -12,11 +12,11 @@ const Editor = dynamic(
 
 export default function Page() {
   const editorRef = useRef<any>(null);
-
+  const titleRef = useRef<HTMLInputElement>(null);
   const [data, setData] = useState("");
 
   const handleClick = async (): void => {
-    if (editorRef.current) {
+    if (editorRef.current && titleRef.current) {
       setData(editorRef.current.getContent({ format: "raw" }));
 
       window.localStorage.setItem(
@@ -31,7 +31,8 @@ export default function Page() {
 
       console.log(
         "현재 값 : ",
-        editorRef.current.getContent({ format: "raw" })
+        editorRef.current.getContent({ format: "raw" }),
+        titleRef.current.value
       );
       // const response = await fetch("/api/save", {
       //   method: "POST",
@@ -61,7 +62,7 @@ export default function Page() {
             publish: false,
             data: {
               title: {
-                KO: "test1",
+                KO: titleRef.current.value,
               },
               desc: {
                 KO: "string text",
@@ -111,16 +112,19 @@ export default function Page() {
 
   return (
     <>
-      <div
-        // style={{ ...parseStyle(editorStyle) }}
-        dangerouslySetInnerHTML={{ __html: data }}
-      ></div>
+      <label>제목</label>
+      <input
+        type="text"
+        id="title"
+        style={{ border: "1px solid black" }}
+        ref={titleRef}
+      />
       <Editor
         apiKey="9dtzx464fe2jqcmdr9ofs0bb0llu07smvpgbs4qm5oaviohb"
         onInit={(_evt, editor) => (editorRef.current = editor)}
         initialValue=""
         init={{
-          height: 300,
+          height: 600,
           //menubar: "file edit view insert format",
           plugins: [
             "advlist",
@@ -302,6 +306,10 @@ export default function Page() {
         }}
       />
       <button onClick={handleClick}>글쓰기</button>
+      <div
+        // style={{ ...parseStyle(editorStyle) }}
+        dangerouslySetInnerHTML={{ __html: data }}
+      ></div>
     </>
   );
 }

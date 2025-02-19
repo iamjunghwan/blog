@@ -25,7 +25,7 @@ export default function Header() {
     <header className="header">
       <a href="/">
         <div className="headerAlign">
-          <img src="/image4.png" className="leftHeaderInImgArea" />
+          <img src="/image4.png" alt="" className="leftHeaderInImgArea" />
 
           <div className="leftHeaderInTextArea">
             <span style={{ fontStyle: "italic" }}> {"IamAn"}</span>
@@ -37,7 +37,9 @@ export default function Header() {
           <a className="padding" href="/post">
             {"Posts"}
           </a>
-          <a className="padding">{"About"}</a>
+          <a className="padding" href="/about">
+            {"About"}
+          </a>
           <a className="padding">
             <button onClick={toggleTheme}>
               {theme === "light" ? <LightMode /> : <DarkMode />}

@@ -4,8 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
 
 export default function Page() {
-  const editorRef = useRef<any>(null);
-
   const [postData, setPostData] = useState();
 
   const getData = async () => {
@@ -22,7 +20,7 @@ export default function Page() {
         },
 
         body: JSON.stringify({
-          size: 10,
+          size: 20,
           page: 0,
           direction: "DESC",
         }),
@@ -31,7 +29,6 @@ export default function Page() {
 
     const getdata = await response.json();
     setPostData(getdata.list);
-    console.log("response : ", getdata.list);
   };
 
   useEffect(() => {
@@ -74,12 +71,12 @@ export default function Page() {
                   <dl>
                     <dd style={{ color: "gray" }}>
                       <time dateTime="">
-                        {dayjs(item.data.date).format("YYYY-MM-DD")}
+                        {dayjs(item.createdAt).format("YYYY-MM-DD")}
                       </time>
                     </dd>
                   </dl>
                   <h2 style={{ fontWeight: 700, paddingTop: ".5rem" }}>
-                    <a href="">
+                    <a href={`/detail/${item.uid}`}>
                       <div>{item.data.title.KO}</div>
                     </a>
                   </h2>

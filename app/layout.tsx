@@ -53,7 +53,7 @@ export default function RootLayout({
           <div className="layoutOuter">
             <div className="layoutInner">
               <Headers />
-              {children}
+              <main style={{ marginBottom: "auto" }}>{children}</main>
               <Footer />
             </div>
           </div>
