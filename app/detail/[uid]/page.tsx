@@ -11,7 +11,6 @@ import { useParams } from "next/navigation";
 export default function Detail(props: any) {
   const [detailData, setDetailData] = useState<string>("");
   const refHtml = useRef<HTMLDivElement>(null);
-  const [title, setTitle] = useState("");
   const { uid } = useParams();
   console.log(uid);
 
@@ -59,7 +58,6 @@ export default function Detail(props: any) {
     );
 
     const getdata = await response.json();
-    setTitle(getdata.data.title.KO);
     setDetailData(getdata.data.content);
   };
 
