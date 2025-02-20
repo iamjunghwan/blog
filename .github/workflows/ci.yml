@@ -63,4 +63,3 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           source: ./deploy-kakao/frontend_*.tar.gz
           target: /home/${{ secrets.EC2_USER }}/blog/
-          strip_components: 2 # 필요시 조절 (압축 풀 때 경로 단계 생략)
