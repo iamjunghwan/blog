@@ -17,7 +17,7 @@ jobs:
       - name: 디버깅 테스트 입니다.
         run: echo "This is a debug message"
 
-      # 2. SSH를 위한 키 설정
+      # 2. SSH를 위한 키 설정.
       - name: Set up SSH key
         run: |
           mkdir -p ~/.ssh
