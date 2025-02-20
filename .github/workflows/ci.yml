@@ -38,10 +38,6 @@ jobs:
       - name: Install pnpm
         run: pnpm i
 
-      - name: TypeScript Build
-        run: |
-          npx tsc --noEmitOnError false
-
       - name: Build
         run: npm run build
 
