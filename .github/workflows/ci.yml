@@ -12,4 +12,6 @@ jobs:
     steps:
       - name: 최신 버전을 다운로드 받습니다.
         uses: actions/checkout@v2
+
+      - name: 디버깅 테스트 입니다.
         run: echo "This is a debug message"
