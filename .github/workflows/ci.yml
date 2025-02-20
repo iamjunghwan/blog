@@ -71,16 +71,7 @@ jobs:
           ssh-keyscan -H ${EC2_HOST} >> ~/.ssh/known_hosts
 
           # 서버에 있는 이전 파일 제거
-          ssh -i private_key.pem ${EC2_USER}@${EC2_HOST} "/bin/rm -rf /home/${EC2_USER}/ssm-frontend-server/*"
+          ssh -i private_key.pem ${EC2_USER}@${EC2_HOST} "/bin/rm -rf /home/${EC2_USER}/blog/*"
 
           # 새 TAR 파일 업로드
-          scp -i private_key.pem ./deploy-kakao/frontend_*.tar.gz ${EC2_USER}@${EC2_HOST}:/home/${EC2_USER}/ssm-frontend-server/
-
-      - name: Restart PM2 using SSH action
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          script: |
-            /home/${{ secrets.EC2_USER }}/script/deploy_frontend_prod.sh
+          scp -i private_key.pem ./deploy-kakao/frontend_*.tar.gz ${EC2_USER}@${EC2_HOST}:/home/${EC2_USER}/blog/
