@@ -65,10 +65,10 @@ jobs:
           chmod 600 private_key.pem
 
           # SSH 디렉터리 생성 및 호스트 키 추가
-          mkdir -p ~/.ssh
-          touch ~/.ssh/known_hosts
-          ssh-keygen -R ${EC2_HOST} || true
-          ssh-keyscan -H ${EC2_HOST} >> ~/.ssh/known_hosts
+          # mkdir -p ~/.ssh
+          # touch ~/.ssh/known_hosts
+          # ssh-keygen -R ${EC2_HOST} || true
+          # ssh-keyscan -H ${EC2_HOST} >> ~/.ssh/known_hosts
 
           # 서버에 있는 이전 파일 제거
           ssh -i private_key.pem ${EC2_USER}@${EC2_HOST} "/bin/rm -rf /home/${EC2_USER}/ssm-frontend-server/*"
