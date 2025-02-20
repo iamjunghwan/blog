@@ -232,7 +232,7 @@ export default function Page() {
             // // });
             try {
               const formData = new FormData();
-              formData.append("file", blobInfo.blob); // `blobInfo.blob()` -> `blobInfo.blob` (파일은 메소드가 아니라 속성이므로 괄호를 제거)
+              formData.append("file", blobInfo.blob); // `blob Info.blob()` -> `blobInfo.blob` (파일은 메소드가 아니라 속성이므로 괄호를 제거)
 
               const response = await fetch("/api/upload", {
                 method: "POST",
