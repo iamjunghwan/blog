@@ -12,6 +12,12 @@ const Editor = dynamic(
   }
 );
 
+interface VideoData {
+  width: number;
+  height: number;
+  source: string;
+}
+
 export default function Page() {
   const editorRef = useRef<TinyMCEEditorInstance | null>(null);
   const titleRef = useRef<HTMLInputElement>(null);
@@ -158,7 +164,7 @@ export default function Page() {
             "removeformat | help",
           content_style:
             "body { font-family:Helvetica,Arial,sans-serif; font-size:8px;text-align: center; }",
-          video_template_callback: (data) => {
+          video_template_callback: (data: VideoData) => {
             console.log("video_template_callback : ", data);
             return `<video width="${data.width}" height="${data.height}" controls>
             <source src="${data.source}" type="video/mp4" />
