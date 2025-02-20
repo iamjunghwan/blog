@@ -24,6 +24,7 @@ export default function Detail() {
       h2Elements.forEach((h2) => {
         h2.addEventListener("click", () => scrollToRef(h2.id));
       });
+      setDetailData("");
     }
     // return () => {
     //   if (refHtml.current) {
