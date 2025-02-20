@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import dynamic from "next/dynamic";
-//import { Editor as TinyMCEEditor } from "@tinymce/tinymce-react";
+import { Editor as TinyMCEEditor } from "@tinymce/tinymce-react";
 import { Editor as TinyMCEEditorInstance } from "tinymce";
 
 const Editor = dynamic(
@@ -11,12 +11,6 @@ const Editor = dynamic(
     ssr: false, // SSR을 비활성화하여 클라이언트에서만 로딩하도록 설정
   }
 );
-
-interface VideoData {
-  width: number;
-  height: number;
-  source: string;
-}
 
 export default function Page() {
   const editorRef = useRef<TinyMCEEditorInstance | null>(null);
@@ -111,7 +105,7 @@ export default function Page() {
     }
 
     if (node.tagName.toLowerCase() === "img") {
-      //console.log(node.src);
+      console.log(node.src);
       // blob:http://localhost:3000/fb6e5d66-c9aa-4de8-8e6d-5cb21223d74b
       // node.src =
       //node.src = "http://localhost:3000/fb6e5d66-c9aa-4de8-8e6d-5cb21223d74b";
@@ -164,103 +158,73 @@ export default function Page() {
             "removeformat | help",
           content_style:
             "body { font-family:Helvetica,Arial,sans-serif; font-size:8px;text-align: center; }",
-          video_template_callback: (data: VideoData) => {
-            console.log("video_template_callback : ", data);
-            return `<video width="${data.width}" height="${data.height}" controls>
-            <source src="${data.source}" type="video/mp4" />
-          </video>`;
-            // `<video width="${data.width}" height="${data.height}"${
-            //   data.poster ? ` poster="${data.poster}"` : ""
-            // } controls="controls">\n` +
-            //   `<source src="${data.source}"${
-            //     data.sourcemime ? ` type="${data.sourcemime}"` : ""
-            //   } />\n` +
-            //   (data.altsource
-            //     ? `<source src="${data.altsource}"${
-            //         data.altsourcemime ? ` type="${data.altsourcemime}"` : ""
-            //       } />\n`
-            //     : "") +
-            //   "</video>";
-          },
+          // video_template_callback: (data) => {
+          //   console.log("video_template_callback : ", data);
+          //   return `<video width="${data.width}" height="${data.height}" controls>
+          //   <source src="${data.source}" type="video/mp4" />
+          // </video>`;
+          // `<video width="${data.width}" height="${data.height}"${
+          //   data.poster ? ` poster="${data.poster}"` : ""
+          // } controls="controls">\n` +
+          //   `<source src="${data.source}"${
+          //     data.sourcemime ? ` type="${data.sourcemime}"` : ""
+          //   } />\n` +
+          //   (data.altsource
+          //     ? `<source src="${data.altsource}"${
+          //         data.altsourcemime ? ` type="${data.altsourcemime}"` : ""
+          //       } />\n`
+          //     : "") +
+          //   "</video>";
+          // },
           font_size_input_default_unit: "8pt",
           image_title: true,
           automatic_uploads: true,
           file_picker_types: "file image media",
           images_upload_url: "/api/upload", // 이미지 업로드 API URL
-          images_upload_handler: async (
-            blobInfo: { blob: File }, // 첫 번째 인자: 업로드할 파일 정보
-            success: (data: {
-              location: string;
-              title?: string;
-              alt?: string;
-            }) => void, // 두 번째 인자: 성공 시 호출되는 함수
-            failure: (message: string) => void // 세 번째 인자: 실패 시 호출되는 함수
-          ) => {
-            // const formData = new FormData();
-            // formData.append("file", blobInfo.blob); // 파일 데이터 전송
-            // console.log(blobInfo.blob);
-            // await fetch("/api/upload", {
-            //   method: "POST",
-            //   body: formData,
-            // })
-            //   .then((response) => response.json())
-            //   .then((data) => {
-            //     console.log("ㅋㅋㅋㅋㅋ ", data);
-            //     if (data.filepath) {
-            //       const fileUrl = `http://localhost:3000/uploads/${data.filepath.replace(
-            //         "/Users/iaman/iaman-dev/public",
-            //         ""
-            //       )}`;
+          // images_upload_handler: async (
+          //   blobInfo: { blob: File },
+          //   success: (data: {
+          //     location: string;
+          //     title?: string;
+          //     alt?: string;
+          //   }) => void,
+          //   failure: (message: string) => void
+          // ) => {
+          //   const formData = new FormData();
+          //   formData.append("file", blobInfo.blob()); // 파일 데이터 전송
+          //   console.log(blobInfo.blob());
+          //   await fetch("/api/upload", {
+          //     method: "POST",
+          //     body: formData,
+          //   })
+          //     .then((response) => response.json())
+          //     .then((data) => {
+          //       console.log("ㅋㅋㅋㅋㅋ ", data);
+          //       if (data.filepath) {
+          //         const fileUrl = `http://localhost:3000/uploads/${data.filepath.replace(
+          //           "/Users/iaman/iaman-dev/public",
+          //           ""
+          //         )}`;
 
-            //       success({
-            //         location: fileUrl,
-            //         title: "Image Title", // 선택 사항
-            //         alt: "Image Description", // 선택 사항
-            //         width: 600, // 선택 사항
-            //         height: 400, // 선택 사항
-            //       });
+          //         success({
+          //           location: fileUrl,
+          //           title: "Image Title", // 선택 사항
+          //           alt: "Image Description", // 선택 사항
+          //           width: 600, // 선택 사항
+          //           height: 400, // 선택 사항
+          //         });
 
-            //       //success(tt); // 성공적으로 업로드된 파일의 URL을 에디터에 삽입
-            //     } else {
-            //       console.log("실패 : ", data.filepath);
-            //       failure("Failed to upload image.");
-            //     }
-            //   });
-            // // .catch((err) => {
-            // //   console.log("캐치 : ");
-            // //   failure("Failed to upload image.");
-            // // });
-            try {
-              const formData = new FormData();
-              formData.append("file", blobInfo.blob); // `blob Info.blob()` -> `blobInfo.blob` (파일은 메소드가 아니라 속성이므로 괄호를 제거)
-
-              const response = await fetch("/api/upload", {
-                method: "POST",
-                body: formData,
-              });
-
-              const data = await response.json();
-
-              if (data.filepath) {
-                const fileUrl = `http://localhost:3000/uploads/${data.filepath.replace(
-                  "/Users/iaman/iaman-dev/public",
-                  ""
-                )}`;
-
-                success({
-                  location: fileUrl, // 업로드된 파일 URL
-                  title: "Image Title", // 선택 사항: 이미지 제목
-                  alt: "Image Description", // 선택 사항: 이미지 alt 텍스트
-                });
-              } else {
-                console.log("실패: ", data.filepath);
-                failure("Failed to upload image.");
-              }
-            } catch (error) {
-              console.error("업로드 오류 발생: ", error);
-              failure("Failed to upload image.");
-            }
-          },
+          //         //success(tt); // 성공적으로 업로드된 파일의 URL을 에디터에 삽입
+          //       } else {
+          //         console.log("실패 : ", data.filepath);
+          //         failure("Failed to upload image.");
+          //       }
+          //     });
+          //   // .catch((err) => {
+          //   //   console.log("캐치 : ");
+          //   //   failure("Failed to upload image.");
+          //   // });
+          // },
           file_picker_callback: (callback, value, meta) => {
             const input = document.createElement("input");
             input.setAttribute("type", "file");
