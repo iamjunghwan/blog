@@ -55,7 +55,7 @@ export default function Detail() {
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [detailData]);
 
   return (
     <Suspense fallback={<div>Loading...</div>}>

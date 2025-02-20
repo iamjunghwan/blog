@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import { Editor as TinyMCEEditor } from "@tinymce/tinymce-react";
 
 const Editor = dynamic(
   () => import("@tinymce/tinymce-react").then((mod) => mod.Editor),
@@ -11,11 +12,11 @@ const Editor = dynamic(
 );
 
 export default function Page() {
-  const editorRef = useRef<any>(null);
+  const editorRef = useRef<TinyMCEEditor>(null);
   const titleRef = useRef<HTMLInputElement>(null);
   const [data, setData] = useState("");
 
-  const handleClick = async (): void => {
+  const handleClick = async (): Promise<void> => {
     if (editorRef.current && titleRef.current) {
       setData(editorRef.current.getContent({ format: "raw" }));
 
@@ -94,7 +95,7 @@ export default function Page() {
     }
   };
 
-  const editorNodeChange = (e: any) => {
+  const editorNodeChange = (e: { element: HTMLElement }): void => {
     const node = e.element;
 
     if (node.tagName.toLowerCase() === "h2" && !node.id) {
@@ -180,9 +181,13 @@ export default function Page() {
           file_picker_types: "file image media",
           images_upload_url: "/api/upload", // 이미지 업로드 API URL
           images_upload_handler: async (
-            blobInfo: any,
-            success: any,
-            failure: any
+            blobInfo: { blob: File },
+            success: (data: {
+              location: string;
+              title?: string;
+              alt?: string;
+            }) => void,
+            failure: (message: string) => void
           ) => {
             const formData = new FormData();
             formData.append("file", blobInfo.blob()); // 파일 데이터 전송
