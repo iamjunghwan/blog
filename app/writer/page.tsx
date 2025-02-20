@@ -105,7 +105,7 @@ export default function Page() {
     }
 
     if (node.tagName.toLowerCase() === "img") {
-      console.log(node.src);
+      //console.log(node.src);
       // blob:http://localhost:3000/fb6e5d66-c9aa-4de8-8e6d-5cb21223d74b
       // node.src =
       //node.src = "http://localhost:3000/fb6e5d66-c9aa-4de8-8e6d-5cb21223d74b";
