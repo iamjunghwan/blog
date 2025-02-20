@@ -195,21 +195,6 @@ export default function Page() {
               .then((data) => {
                 console.log("ㅋㅋㅋㅋㅋ ", data);
                 if (data.filepath) {
-                  // const imageUrl = data.filepath.replace(
-                  //   "/Users/iaman/iaman-dev",
-                  //   ""
-                  // ); // public 폴더를 제외한 경로
-                  // const imageUrlWithBase = `${imageUrl}`; // 클라이언트에서 접근 가능한 URL 형태로 변환
-                  // console.log("파일 경로 : ", imageUrlWithBase);
-
-                  const tt = data.filepath.replace(
-                    "/Users/iaman/iaman-dev/public",
-                    ""
-                  );
-                  //alert(tt);
-                  const _imageUrl = `/uploads${tt}}`; // public을 제외한 상대 경로
-
-                  //alert(tt);
                   const fileUrl = `http://localhost:3000/uploads/${data.filepath.replace(
                     "/Users/iaman/iaman-dev/public",
                     ""

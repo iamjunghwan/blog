@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 
 export default function Header() {
   const [mounted, setMounted] = useState(false);
@@ -46,7 +47,7 @@ export default function Header() {
           ></div>
           <div>
             {" "}
-            <a href="/">localhost:3000</a>
+            <Link href="/">localhost:3000</Link>
           </div>
         </div>
       </div>

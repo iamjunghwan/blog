@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 export default function Page() {
   return (
     <>
@@ -28,7 +30,7 @@ export default function Page() {
             display: "flex",
           }}
         >
-          <img
+          <Image
             style={{ width: "10rem", height: "10rem" }}
             src="/image4.png"
             alt=""
