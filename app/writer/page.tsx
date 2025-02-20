@@ -218,11 +218,11 @@ export default function Page() {
                   console.log("실패 : ", data.filepath);
                   failure("Failed to upload image.");
                 }
-              })
-              .catch((err) => {
-                console.log("캐치 : ");
-                failure("Failed to upload image.");
               });
+            // .catch((err) => {
+            //   console.log("캐치 : ");
+            //   failure("Failed to upload image.");
+            // });
           },
           file_picker_callback: (callback, value, meta) => {
             const input = document.createElement("input");
@@ -240,33 +240,33 @@ export default function Page() {
               const formData = new FormData();
               formData.append("file", file);
 
-              try {
-                // 서버로 파일을 업로드 (예: '/api/upload')
-                const response = await fetch("/api/upload", {
-                  method: "POST",
-                  body: formData,
-                });
+              // try {
+              // 서버로 파일을 업로드 (예: '/api/upload')
+              const response = await fetch("/api/upload", {
+                method: "POST",
+                body: formData,
+              });
 
-                const data = await response.json();
+              const data = await response.json();
 
-                // 업로드 후 서버에서 반환된 파일 경로
-                if (data.filepath) {
-                  const fileUrl = `/uploads/${data.filepath.replace(
-                    "/Users/iaman/iaman-dev/public/uploads/",
-                    ""
-                  )}`;
-                  // 이미지 삽입 (meta.filetype이 "image"인 경우)
-                  if (meta.filetype === "image") {
-                    callback(fileUrl, { alt: file.name }); // alt는 선택 사항
-                  } else if (meta.filetype === "media") {
-                    callback(fileUrl, { alt: file.name }); // 비디오 URL 삽입
-                  }
-                } else {
-                  console.error("파일 업로드 실패");
+              // 업로드 후 서버에서 반환된 파일 경로
+              if (data.filepath) {
+                const fileUrl = `/uploads/${data.filepath.replace(
+                  "/Users/iaman/iaman-dev/public/uploads/",
+                  ""
+                )}`;
+                // 이미지 삽입 (meta.filetype이 "image"인 경우)
+                if (meta.filetype === "image") {
+                  callback(fileUrl, { alt: file.name }); // alt는 선택 사항
+                } else if (meta.filetype === "media") {
+                  callback(fileUrl, { alt: file.name }); // 비디오 URL 삽입
                 }
-              } catch (err) {
-                console.error("파일 업로드 중 에러 발생:", err);
+              } else {
+                console.error("파일 업로드 실패");
               }
+              // } catch (err) {
+              //   console.error("파일 업로드 중 에러 발생:", err);
+              // }
             };
           },
           //  valid_elements: "*[*]",
