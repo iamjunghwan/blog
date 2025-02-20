@@ -12,3 +12,4 @@ jobs:
     steps:
       - name: 최신 버전을 다운로드 받습니다.
         uses: actions/checkout@v2
+        run: echo "This is a debug message"
