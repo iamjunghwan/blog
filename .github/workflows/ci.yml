@@ -55,23 +55,21 @@ jobs:
           echo "env=$(echo ${BRANCH})" >> $GITHUB_OUTPUT
         id: branch
 
-      - name: Remove Existing Tar Files And Upload Tar File to Kakao Cloud
-        env:
-          EC2_HOST: ${{ secrets.EC2_HOST }}
-          EC2_USER: ${{ secrets.EC2_USER }}
-          EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-        run: |
-          echo "${EC2_SSH_PRIVATE_KEY}" | tr -d '\r' > private_key.pem
-          chmod 600 private_key.pem
+      - name: Remove Existing Files
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          script: |
+            /bin/rm -rf /home/${{ secrets.EC2_USER }}/blog/*
 
-          # SSH 디렉터리 생성 및 호스트 키 추가
-          mkdir -p ~/.ssh
-          touch ~/.ssh/known_hosts
-          ssh-keygen -R ${EC2_HOST} || true
-          ssh-keyscan -H ${EC2_HOST} >> ~/.ssh/known_hosts
-
-          # 서버에 있는 이전 파일 제거
-          ssh -i private_key.pem ${EC2_USER}@${EC2_HOST} "/bin/rm -rf /home/${EC2_USER}/blog/*"
-
-          # 새 TAR 파일 업로드
-          scp -i private_key.pem ./deploy-kakao/frontend_*.tar.gz ${EC2_USER}@${EC2_HOST}:/home/${EC2_USER}/blog/
+      - name: Upload Tar File
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          source: ./deploy-kakao/frontend_*.tar.gz
+          target: /home/${{ secrets.EC2_USER }}/blog/
+          strip_components: 2 # 필요시 조절 (압축 풀 때 경로 단계 생략)
