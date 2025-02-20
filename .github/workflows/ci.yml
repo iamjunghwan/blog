@@ -71,7 +71,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           source: ./blog/frontend_*.tar.gz
           target: /home/${{ secrets.EC2_USER }}/blog/
-          strip_components: 1 # blog
+          strip_components: 1 # blog1
 
       - name: Execute run_blog_start.sh on Server
         uses: appleboy/ssh-action@master
