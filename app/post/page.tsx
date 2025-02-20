@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
 export default function Page() {
@@ -32,7 +32,7 @@ export default function Page() {
 
   useEffect(() => {
     getData();
-  }, [getData]);
+  }, []);
 
   return (
     <>

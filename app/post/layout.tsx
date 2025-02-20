@@ -1,8 +1,4 @@
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}) {
+export async function generateMetadata() {
   //글 제목, 내용, 이미지 경로,
 
   const post = {
