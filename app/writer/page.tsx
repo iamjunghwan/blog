@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import dynamic from "next/dynamic";
-import { Editor as TinyMCEEditor } from "@tinymce/tinymce-react";
+//import { Editor as TinyMCEEditor } from "@tinymce/tinymce-react";
 import { Editor as TinyMCEEditorInstance } from "tinymce";
 
 const Editor = dynamic(
