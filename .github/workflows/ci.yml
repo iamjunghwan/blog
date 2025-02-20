@@ -10,8 +10,28 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      #Github에서 제공하는 공식 액션, 현재의 코드를 워크플로우 실행 환경에 복제하는데 사용
       - name: 최신 버전을 다운로드 받습니다.
         uses: actions/checkout@v2
 
       - name: 디버깅 테스트 입니다.
         run: echo "This is a debug message"
+
+      # 2. SSH를 위한 키 설정
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+      # 3. SSH를 통해 EC2에 접속하여 Next.js 앱 배포
+      - name: Deploy to EC2
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            cd /home/ubuntu/blog # EC2에서 Next.js 프로젝트가 위치한 디렉토리로 이동
+            git pull origin main      # 최신 코드로 업데이트
+            pnpm install              # 종속성 설치
+            pnpm run build            # Next.js 앱 빌드
+            pnpm run start            # Next.js 앱 시작
+          EOF
