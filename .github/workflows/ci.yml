@@ -41,12 +41,12 @@ jobs:
         run: pnpm run build
 
       - name: Make Directory for deliver
-        run: mkdir deploy-kakao
+        run: mkdir blog
 
       - name: Make frontend.tar.gz
         run: |
           sudo timedatectl set-timezone Asia/Seoul
-          tar cvfPz ./deploy-kakao/frontend_`date "+%Y%m%d%H%M"`.tar.gz --exclude=./deploy-kakao .
+          tar cvfPz ./blog/frontend_`date "+%Y%m%d%H%M"`.tar.gz --exclude=./blog .
 
       - name: Extract Env From Branch
         run: |
@@ -54,11 +54,30 @@ jobs:
           echo "env=$(echo ${BRANCH})" >> $GITHUB_OUTPUT
         id: branch
 
+      - name: Remove Existing Files
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          script: |
+            /bin/rm -rf /home/${{ secrets.EC2_USER }}/blog/*
+
       - name: Upload Tar File
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          source: ./deploy-kakao/frontend_*.tar.gz
+          source: ./blog/frontend_*.tar.gz
           target: /home/${{ secrets.EC2_USER }}/blog/
+          strip_components: 1 # blog
+
+      - name: Execute run_blog_start.sh on Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          script: |
+            /home/${{ secrets.EC2_USER }}/script/run_blog_start.sh
