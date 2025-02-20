@@ -10,7 +10,6 @@ export default function Page() {
     const response = await fetch(
       "https://api.memexdata.io/memex/api/projects/0e9c148b/models/blog/contents/search/v2",
       {
-        //  method: "GET",
         method: "POST",
         headers: {
           "Content-Type": "application/json",
