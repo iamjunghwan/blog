@@ -3,11 +3,7 @@ import Headers from "../components/Header";
 import Footer from "../components/Footer";
 import { ThemeProvider } from "next-themes";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { slug: string };
-}) {
+export async function generateMetadata() {
   //글 제목, 내용, 이미지 경로,
   //fetch 영역
   const post = {

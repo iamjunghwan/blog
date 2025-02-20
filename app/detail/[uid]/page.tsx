@@ -1,20 +1,12 @@
 "use client";
 
-import { Suspense, use, useEffect, useState, useRef } from "react";
-import dompurify from "dompurify";
+import { Suspense, useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
 
-// function sanitizer(content: string) {
-//   return DOMPurify.sanitize(content); // DOMPurify로 HTML을 안전하게 정리
-// }
-
-export default function Detail(props: any) {
+export default function Detail() {
   const [detailData, setDetailData] = useState<string>("");
   const refHtml = useRef<HTMLDivElement>(null);
   const { uid } = useParams();
-  console.log(uid);
-
-  const sanitizer = dompurify.sanitize;
 
   const scrollToRef = (id: string) => {
     const ref = document.getElementById(id);
@@ -33,14 +25,14 @@ export default function Detail(props: any) {
         h2.addEventListener("click", () => scrollToRef(h2.id));
       });
     }
-    return () => {
-      if (refHtml.current) {
-        const h2Elements = refHtml.current.querySelectorAll("h2");
-        h2Elements.forEach((h2) => {
-          h2.removeEventListener("click", () => scrollToRef(h2.id));
-        });
-      }
-    };
+    // return () => {
+    //   if (refHtml.current) {
+    //     const h2Elements = refHtml.current.querySelectorAll("h2");
+    //     h2Elements.forEach((h2) => {
+    //       h2.removeEventListener("click", () => scrollToRef(h2.id));
+    //     });
+    //   }
+    // };
   }, [detailData]);
 
   const getData = async () => {

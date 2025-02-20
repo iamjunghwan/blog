@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 export default function Home() {
   const dataList = [
     { date: "2025-01-01", title: "node.js에 대해서..." },

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "404 page not found",
@@ -9,7 +10,7 @@ export default function NotFound() {
   return (
     <>
       <div>{"can not find this page"}</div>
-      <a href="/">
+      <Link href="/">
         <button
           style={{
             backgroundColor: "yellow",
@@ -19,7 +20,7 @@ export default function NotFound() {
         >
           go to main
         </button>
-      </a>
+      </Link>
     </>
   );
 }
