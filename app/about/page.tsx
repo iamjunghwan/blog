@@ -35,6 +35,8 @@ export default function Page() {
             src="/image4.png"
             alt=""
             className="leftHeaderInImgArea"
+            width={100}
+            height={100}
           />
           <div
             style={{

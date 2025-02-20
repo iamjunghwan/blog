@@ -3,10 +3,9 @@
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
-// 데이터 타입 정의
 interface PostData {
   uid: string;
-  createdAt: string; // createdAt은 날짜 문자열로 가정
+  createdAt: string;
   data: {
     title: {
       KO: string;
@@ -85,7 +84,13 @@ export default function Page() {
                       </time>
                     </dd>
                   </dl>
-                  <h2 style={{ fontWeight: 700, paddingTop: ".5rem" }}>
+                  <h2
+                    style={{
+                      fontWeight: 700,
+                      paddingTop: ".5rem",
+                      paddingLeft: "2rem",
+                    }}
+                  >
                     <a href={`/detail/${item.uid}`}>
                       <div>{item.data.title.KO}</div>
                     </a>

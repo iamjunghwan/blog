@@ -33,9 +33,5 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <div style={{ border: "1px solid white", paddingLeft: "1rem" }}>
-      {children}
-    </div>
-  );
+  return <div style={{ paddingLeft: "1rem" }}>{children}</div>;
 }
