@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { Editor as TinyMCEEditor } from "@tinymce/tinymce-react";
+import { Editor as TinyMCEEditorInstance } from "tinymce";
 
 const Editor = dynamic(
   () => import("@tinymce/tinymce-react").then((mod) => mod.Editor),
@@ -12,7 +13,7 @@ const Editor = dynamic(
 );
 
 export default function Page() {
-  const editorRef = useRef<TinyMCEEditor>(null);
+  const editorRef = useRef<TinyMCEEditorInstance | null>(null);
   const titleRef = useRef<HTMLInputElement>(null);
   const [data, setData] = useState("");
 
