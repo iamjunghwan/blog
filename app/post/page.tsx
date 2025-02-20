@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
 export default function Page() {
-  const [postData, setPostData] = useState();
+  const [postData, setPostData] = useState<[]>([]);
 
   const getData = async () => {
     const response = await fetch(
@@ -53,7 +53,7 @@ export default function Page() {
           display: "grid",
         }}
       >
-        {postData &&
+        {postData.length > 0 &&
           postData.map((item, index) => (
             <li
               key={index}
