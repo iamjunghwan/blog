@@ -31,9 +31,12 @@ jobs:
           path: "**/node_modules"
           key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}
 
-      - name: Install node_modules
+      - name: Install pnpm
         if: steps.node_modules-cache.outputs.cache-hit == ''
-        run: npm install
+        run: npm install -g pnpm
+
+      - name: Install pnpm
+        run: pnpm i
 
       - name: Build
         run: npm run build
