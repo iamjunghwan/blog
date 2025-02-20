@@ -32,7 +32,6 @@ jobs:
           key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}
 
       - name: npm install -g pnpm
-        if: steps.node_modules-cache.outputs.cache-hit == ''
         run: npm install -g pnpm
 
       - name: Install pnpm
