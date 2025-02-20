@@ -4,8 +4,8 @@ import { NextRequest } from "next/server";
 // import fs from "fs";
 // import { Readable } from "stream";
 // import { IncomingMessage } from "http";
-
-export async function POST(req: NextRequest) {
+//req: NextRequest
+export async function POST() {
   // const uploadDir = path.join(process.cwd(), "/public/uploads");
   // if (!fs.existsSync(uploadDir)) {
   //   fs.mkdirSync(uploadDir, { recursive: true });
