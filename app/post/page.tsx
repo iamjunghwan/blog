@@ -3,8 +3,19 @@
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
 
+// 데이터 타입 정의
+interface PostData {
+  uid: string;
+  createdAt: string; // createdAt은 날짜 문자열로 가정
+  data: {
+    title: {
+      KO: string;
+    };
+  };
+}
+
 export default function Page() {
-  const [postData, setPostData] = useState<[]>([]);
+  const [postData, setPostData] = useState<PostData[]>([]);
 
   const getData = async () => {
     const response = await fetch(
