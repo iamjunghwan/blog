@@ -86,7 +86,7 @@ export default function Page() {
               Hello.
               <br />
               <br />A front developer who always approaches and solves problems
-              for "why?"
+              for why?
             </p>
           </div>
         </div>

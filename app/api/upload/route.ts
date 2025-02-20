@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
       files: formidable.Files;
     }>((resolve, reject) => {
       // 버퍼를 스트림으로 변환 (핵심 부분)
-      const stream = new Readable();
+      const stream: any = new Readable();
       stream.push(Buffer.from(buffer));
       stream.push(null);
 

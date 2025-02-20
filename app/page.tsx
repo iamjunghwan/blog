@@ -9,8 +9,8 @@ export default function Home() {
   return (
     <>
       <ul>
-        {dataList.map((obj) => (
-          <li style={{ paddingBottom: "3rem", paddingTop: "3rem" }}>
+        {dataList.map((obj, index) => (
+          <li style={{ paddingBottom: "3rem", paddingTop: "3rem" }} key={index}>
             <article>
               <dl>
                 <dd>
