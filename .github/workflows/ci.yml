@@ -10,4 +10,5 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/
+      - name: 최신 버전을 다운로드 받습니다.
+        uses: actions/checkout@v2
