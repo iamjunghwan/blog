@@ -67,7 +67,7 @@ jobs:
           # SSH 디렉터리 생성 및 호스트 키 추가
           mkdir -p ~/.ssh
           touch ~/.ssh/known_hosts
-          ssh-keygen -R ${EC2_HOST} || true
+          #ssh-keygen -R ${EC2_HOST} || true
           ssh-keyscan -H ${EC2_HOST} >> ~/.ssh/known_hosts
 
           # 서버에 있는 이전 파일 제거
