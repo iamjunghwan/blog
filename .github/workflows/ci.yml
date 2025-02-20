@@ -1,37 +1,83 @@
-# 테스트
-
-name: CI
+name: Deploy to Amazon ECS
 
 on:
   push:
     branches: ["main"]
 
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [22.12.0]
+
     steps:
-      #Github에서 제공하는 ㅇ공식 액션, 현재의 코드를 워크플로우 실행 환경에 복제하는데 사용
-      - name: 최신 버전을 다운로드 받습니다.
-        uses: actions/checkout@v2
+      - name: Checkout Branch
+        uses: actions/checkout@v3
 
-      - name: 디버깅 테스트 입니다.
-        run: echo "This is a debug message"
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
 
-      # 2. SSH를 위한 키 설정.
-      - name: Set up SSH key
+      - name: Cache node_modules
+        uses: actions/cache@v2
+        id: node_modules-cache
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-node_modules-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install node_modules
+        if: steps.node_modules-cache.outputs.cache-hit == ''
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Make Directory for deliver
+        run: mkdir deploy-kakao
+
+      - name: Make frontend.tar.gz
         run: |
+          sudo timedatectl set-timezone Asia/Seoul
+          tar cvfPz ./deploy-kakao/frontend_`date "+%Y%m%d%H%M"`.tar.gz --exclude=./deploy-kakao .
+
+      - name: Extract Env From Branch
+        run: |
+          BRANCH=${GITHUB_REF#refs/heads/}
+          echo "env=$(echo ${BRANCH})" >> $GITHUB_OUTPUT
+        id: branch
+
+      - name: Remove Existing Tar Files And Upload Tar File to Kakao Cloud
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+          EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+        run: |
+          echo "${EC2_SSH_PRIVATE_KEY}" | tr -d '\r' > private_key.pem
+          chmod 600 private_key.pem
+
+          # SSH 디렉터리 생성 및 호스트 키 추가
           mkdir -p ~/.ssh
-          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+          touch ~/.ssh/known_hosts
+          ssh-keygen -R ${EC2_HOST} || true
+          ssh-keyscan -H ${EC2_HOST} >> ~/.ssh/known_hosts
 
-      # 3. SSH를 통해 EC2에 접속하여 Next.js 앱 배포
-      - name: Deploy to EC2
-        run: |
-          ssh -i "/Users/iaman/Desktop/iaman/important/iaman-pem.pem" -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            cd /home/ubuntu/.nvm/.git      # EC2에서 Next.js 프로젝트가 위치한 디렉토리로 이동
-            git pull origin main      # 최신 코드로 업데이트
-            npm install -g pnpm              # 종속성 설치
-            pnpm run build            # Next.js 앱 빌드.
-            pnpm run start            # Next.js 앱 시작
-          EOF
+          # 서버에 있는 이전 파일 제거
+          ssh -i private_key.pem ${EC2_USER}@${EC2_HOST} "/bin/rm -rf /home/${EC2_USER}/ssm-frontend-server/*"
+
+          # 새 TAR 파일 업로드
+          scp -i private_key.pem ./deploy-kakao/frontend_*.tar.gz ${EC2_USER}@${EC2_HOST}:/home/${EC2_USER}/ssm-frontend-server/
+
+      - name: Restart PM2
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          script: |
+            /home/${{ secrets.EC2_USER }}/script/deploy_frontend_prod.sh
