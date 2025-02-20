@@ -53,7 +53,7 @@ export default function Page() {
           display: "flex",
         }}
       >
-        <h1 style={{ fontSize: "3rem", fontWeight: 900 }}>Posts</h1>
+        <h1 style={{ fontSize: "3rem", fontWeight: 900 }}>Postss</h1>
       </div>
       <hr />
       <ul
