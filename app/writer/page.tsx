@@ -188,48 +188,78 @@ export default function Page() {
           file_picker_types: "file image media",
           images_upload_url: "/api/upload", // 이미지 업로드 API URL
           images_upload_handler: async (
-            blobInfo: { blob: File },
+            blobInfo: { blob: File }, // 첫 번째 인자: 업로드할 파일 정보
             success: (data: {
               location: string;
               title?: string;
               alt?: string;
-            }) => void,
-            failure: (message: string) => void
+            }) => void, // 두 번째 인자: 성공 시 호출되는 함수
+            failure: (message: string) => void // 세 번째 인자: 실패 시 호출되는 함수
           ) => {
-            const formData = new FormData();
-            formData.append("file", blobInfo.blob()); // 파일 데이터 전송
-            console.log(blobInfo.blob());
-            await fetch("/api/upload", {
-              method: "POST",
-              body: formData,
-            })
-              .then((response) => response.json())
-              .then((data) => {
-                console.log("ㅋㅋㅋㅋㅋ ", data);
-                if (data.filepath) {
-                  const fileUrl = `http://localhost:3000/uploads/${data.filepath.replace(
-                    "/Users/iaman/iaman-dev/public",
-                    ""
-                  )}`;
+            // const formData = new FormData();
+            // formData.append("file", blobInfo.blob); // 파일 데이터 전송
+            // console.log(blobInfo.blob);
+            // await fetch("/api/upload", {
+            //   method: "POST",
+            //   body: formData,
+            // })
+            //   .then((response) => response.json())
+            //   .then((data) => {
+            //     console.log("ㅋㅋㅋㅋㅋ ", data);
+            //     if (data.filepath) {
+            //       const fileUrl = `http://localhost:3000/uploads/${data.filepath.replace(
+            //         "/Users/iaman/iaman-dev/public",
+            //         ""
+            //       )}`;
 
-                  success({
-                    location: fileUrl,
-                    title: "Image Title", // 선택 사항
-                    alt: "Image Description", // 선택 사항
-                    width: 600, // 선택 사항
-                    height: 400, // 선택 사항
-                  });
+            //       success({
+            //         location: fileUrl,
+            //         title: "Image Title", // 선택 사항
+            //         alt: "Image Description", // 선택 사항
+            //         width: 600, // 선택 사항
+            //         height: 400, // 선택 사항
+            //       });
 
-                  //success(tt); // 성공적으로 업로드된 파일의 URL을 에디터에 삽입
-                } else {
-                  console.log("실패 : ", data.filepath);
-                  failure("Failed to upload image.");
-                }
+            //       //success(tt); // 성공적으로 업로드된 파일의 URL을 에디터에 삽입
+            //     } else {
+            //       console.log("실패 : ", data.filepath);
+            //       failure("Failed to upload image.");
+            //     }
+            //   });
+            // // .catch((err) => {
+            // //   console.log("캐치 : ");
+            // //   failure("Failed to upload image.");
+            // // });
+            try {
+              const formData = new FormData();
+              formData.append("file", blobInfo.blob); // `blobInfo.blob()` -> `blobInfo.blob` (파일은 메소드가 아니라 속성이므로 괄호를 제거)
+
+              const response = await fetch("/api/upload", {
+                method: "POST",
+                body: formData,
               });
-            // .catch((err) => {
-            //   console.log("캐치 : ");
-            //   failure("Failed to upload image.");
-            // });
+
+              const data = await response.json();
+
+              if (data.filepath) {
+                const fileUrl = `http://localhost:3000/uploads/${data.filepath.replace(
+                  "/Users/iaman/iaman-dev/public",
+                  ""
+                )}`;
+
+                success({
+                  location: fileUrl, // 업로드된 파일 URL
+                  title: "Image Title", // 선택 사항: 이미지 제목
+                  alt: "Image Description", // 선택 사항: 이미지 alt 텍스트
+                });
+              } else {
+                console.log("실패: ", data.filepath);
+                failure("Failed to upload image.");
+              }
+            } catch (error) {
+              console.error("업로드 오류 발생: ", error);
+              failure("Failed to upload image.");
+            }
           },
           file_picker_callback: (callback, value, meta) => {
             const input = document.createElement("input");
