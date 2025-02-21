@@ -21,7 +21,7 @@ export async function generateMetadata() {
       siteName: "Example Blog",
       images: [
         {
-          url: "http://13.209.15.220:3000/iaman.jpeg",
+          url: "http://43.200.3.68:3000/iaman.jpeg",
           width: 800,
           height: 600,
           alt: "Blog Post Image",
