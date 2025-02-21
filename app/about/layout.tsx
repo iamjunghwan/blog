@@ -8,15 +8,15 @@ export async function generateMetadata() {
   };
 
   return {
-    title: post.title,
-    description: "An insightful blog post about modern web development.",
+    title: "IamAn의 블로그 / About",
+    description: "This blog was created by an.",
     openGraph: {
-      title: post.title,
-      description: "An insightful blog post about modern web development.",
+      title: "IamAn의 블로그 / About",
+      description: "Click here to access the blog.",
       siteName: "Example Blog",
       images: [
         {
-          url: "http://13.209.15.220:3000/iaman.jpeg",
+          url: "http://43.200.3.68:3000/iaman.jpeg",
           width: 800,
           height: 600,
           alt: "Blog Post Image",
