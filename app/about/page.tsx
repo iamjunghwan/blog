@@ -41,20 +41,14 @@ export default function Page() {
           <div
             style={{
               paddingTop: "1rem",
-              alignItems: "center",
+              display: "flex",
+              flexDirection: "column", // 세로로 정렬
+              alignItems: "center", // 세로 중앙 정렬
             }}
           >
             <h3 style={{ fontWeight: "700" }}>IamAn</h3>
-            <div style={{ display: "flex" }}>
-              {/* <a>
-                
-              </a>
-              <a>
-
-              </a>
-              <a>
-
-              </a> */}
+            <div style={{ display: "flex", paddingTop: "1rem" }}>
+              <p> ahndks47@gmail.com</p>
             </div>
           </div>
         </div>

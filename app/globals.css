@@ -51,6 +51,67 @@ body {
   font-family: "Arial", sans-serif;
 } */
 
+.mainArticle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.mainTime {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.mainImage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  width: 100px;
+  overflow: hidden;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+}
+
+.mainH2 {
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.main {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+.mainH1 {
+  font-size: 3rem;
+  font-weight: 900;
+}
+
+.mainUl {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
+  grid-template-rows: auto;
+  margin-top: 3rem;
+}
+
+.firstFlexLine {
+  display: flex;
+  flex-direction: "column";
+  justify-content: "flex-start";
+  padding-top: "2rem";
+  padding-bottom: 3rem;
+  height: auto;
+}
+
 *,
 :after,
 :before {
