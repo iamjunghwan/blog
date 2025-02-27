@@ -125,7 +125,7 @@ export default function Page() {
                 <article className="mainArticle">
                   {/* 시간 표시 */}
                   <div className="mainTime">
-                    <time dateTime="">
+                    <time dateTime={`${item.createdAt}`}>
                       {dayjs(item.createdAt).format("YYYY-MM-DD")}
                     </time>
                   </div>

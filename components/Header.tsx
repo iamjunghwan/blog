@@ -31,6 +31,7 @@ export default function Header() {
             src="/image4.png"
             alt=""
             className="leftHeaderInImgArea"
+            aria-label="blogLogo"
             width={100}
             height={100}
           />
@@ -49,7 +50,11 @@ export default function Header() {
             {"About"}
           </Link>
           <div className="padding">
-            <button onClick={toggleTheme}>
+            <button
+              type="button"
+              onClick={toggleTheme}
+              aria-label="toggleTheme"
+            >
               {theme === "light" ? <LightMode /> : <DarkMode />}
             </button>
           </div>

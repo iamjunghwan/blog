@@ -46,7 +46,7 @@ export default function Page() {
               alignItems: "center", // 세로 중앙 정렬
             }}
           >
-            <h3 style={{ fontWeight: "700" }}>IamAn</h3>
+            <h2 style={{ fontWeight: "700" }}>IamAn</h2>
             <div style={{ display: "flex", paddingTop: "1rem" }}>
               <p> ahndks47@gmail.com</p>
             </div>
