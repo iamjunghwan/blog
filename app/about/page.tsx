@@ -32,7 +32,7 @@ export default function Page() {
         >
           <Image
             style={{ width: "10rem", height: "10rem" }}
-            src="/image4.png"
+            src="/iaman.png"
             alt=""
             className="leftHeaderInImgArea"
             width={100}

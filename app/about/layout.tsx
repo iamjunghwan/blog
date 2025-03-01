@@ -4,7 +4,7 @@ export async function generateMetadata() {
   const post = {
     title: "안정환 detail",
     description: "안정환 블로그 detail",
-    imageUrl: "localhost:3000/image4.png",
+    imageUrl: "localhost:3000/iaman.png",
   };
 
   return {

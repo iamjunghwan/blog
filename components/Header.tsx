@@ -28,7 +28,7 @@ export default function Header() {
       <Link href="/">
         <div className="headerAlign">
           <Image
-            src="/image4.png"
+            src="/iaman.png"
             alt=""
             className="leftHeaderInImgArea"
             aria-label="blogLogo"

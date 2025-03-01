@@ -2,6 +2,7 @@ import "./globals.css";
 import Headers from "../components/Header";
 import Footer from "../components/Footer";
 import { ThemeProvider } from "next-themes";
+import Head from "next/head";
 
 export async function generateMetadata() {
   return {
@@ -13,7 +14,7 @@ export async function generateMetadata() {
       siteName: "Example Blog",
       images: [
         {
-          url: "http://43.200.3.68:3000/iaman.jpeg",
+          url: "http://43.200.3.68:3000/iaman.png",
           width: 800,
           height: 600,
           alt: "Blog Image",
@@ -21,6 +22,9 @@ export async function generateMetadata() {
       ],
       locale: "en_US",
       type: "article",
+    },
+    icons: {
+      icon: "/iaman.ico",
     },
   };
 }
@@ -32,6 +36,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="kr" suppressHydrationWarning className="mce-content-body">
+      <Head>
+        <link rel="icon" href="/iaman.ico" sizes="any" />
+        <meta name="robots" content="index, follow " /> {/* noindex 제거 */}
+      </Head>
       <body>
         <ThemeProvider
           defaultTheme="light"
