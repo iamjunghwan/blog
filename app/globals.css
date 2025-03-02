@@ -157,6 +157,21 @@ body {
   }
 }
 
+.centerFooterInTextArea {
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.separation {
+  content: "";
+  width: 1px;
+  background-color: #d3d5d7;
+  margin: 0 10px;
+}
+
 h2:hover {
   text-decoration: underline;
   cursor: pointer;
@@ -1130,7 +1145,7 @@ figure figcaption {
 } */
 
 code {
-  background-color: #e8e8e8;
+  background-color: #f1c40f;
   border-radius: 3px;
   padding: 0.1rem 0.2rem;
 }

@@ -16,37 +16,13 @@ export default function Header() {
 
   return (
     <footer>
-      <div
-        style={{
-          paddingTop: "2.5rem",
-          paddingBottom: "2.5rem",
-          border: "1px solid yellow",
-          alignItems: "center",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+      <div className="centerFooterInTextArea">
         <div style={{ display: "flex" }}>
           <div style={{ marginRight: ".5rem" }}>2025</div>
-          <div
-            style={{
-              content: "",
-              width: "1px",
-              backgroundColor: "#d3d5d7",
-              margin: "0 10px",
-            }}
-          ></div>
+          <div className="separation"></div>
           <div style={{ marginRight: ".5rem" }}> IamAn Blog </div>
-          <div
-            style={{
-              content: "",
-              width: "1px",
-              backgroundColor: "#d3d5d7",
-              margin: "0 10px",
-            }}
-          ></div>
+          <div className="separation"></div>
           <div>
-            {" "}
             <Link href="/">localhost:3000</Link>
           </div>
         </div>
