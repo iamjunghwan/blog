@@ -20,10 +20,10 @@ export default function Header() {
         <div style={{ display: "flex" }}>
           <div style={{ marginRight: ".5rem" }}>2025</div>
           <div className="separation"></div>
-          <div style={{ marginRight: ".5rem" }}> IamAn Blog </div>
+          <div style={{ marginRight: ".5rem" }}> iamAn </div>
           <div className="separation"></div>
           <div>
-            <Link href="/">localhost:3000</Link>
+            <Link href="/">https://iaman.kr</Link>
           </div>
         </div>
       </div>
