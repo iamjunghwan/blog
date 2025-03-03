@@ -29,11 +29,6 @@ export default function Page() {
         "https://cdn.tiny.cloud/1/9dtzx464fe2jqcmdr9ofs0bb0llu07smvpgbs4qm5oaviohb/tinymce/7.6.1-131/skins/ui/oxide/content.min.css"; // TinyMCE 스타일을 추가
       document.head.appendChild(link);
 
-      console.log(
-        "현재 값 : ",
-        editorRef.current.getContent({ format: "raw" }),
-        titleRef.current.value
-      );
       // const response = await fetch("/api/save", {
       //   method: "POST",
       //   headers: {
@@ -83,14 +78,6 @@ export default function Page() {
           // }),
         }
       );
-
-      const data = await response.json();
-      console.log(data);
-      if (data.ok) {
-        alert("저장 성공!!!");
-      } else {
-        alert("실패 ");
-      }
     }
   };
 
@@ -99,15 +86,6 @@ export default function Page() {
 
     if (node.tagName.toLowerCase() === "h2" && !node.id) {
       node.id = "h2-" + node.innerHTML;
-      console.log(node.id);
-      //node.classList.add("clickable");
-    }
-
-    if (node.tagName.toLowerCase() === "img") {
-      console.log(node.src);
-      // blob:http://localhost:3000/fb6e5d66-c9aa-4de8-8e6d-5cb21223d74b
-      // node.src =
-      //node.src = "http://localhost:3000/fb6e5d66-c9aa-4de8-8e6d-5cb21223d74b";
     }
   };
 
@@ -207,15 +185,14 @@ export default function Page() {
                     "/Users/iaman/iaman-dev/public",
                     ""
                   );
-                  //alert(tt);
+
                   const _imageUrl = `/uploads${tt}}`; // public을 제외한 상대 경로
 
-                  //alert(tt);
                   const fileUrl = `http://localhost:3000/uploads/${data.filepath.replace(
                     "/Users/iaman/iaman-dev/public",
                     ""
                   )}`;
-                  console.log("fileUrl : ", fileUrl);
+
                   success({
                     location: fileUrl,
                     title: "Image Title", // 선택 사항

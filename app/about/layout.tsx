@@ -1,12 +1,5 @@
 export async function generateMetadata() {
-  //글 제목, 내용, 이미지 경로,
-
-  const post = {
-    title: "안정환 detail",
-    description: "안정환 블로그 detail",
-    imageUrl: "localhost:3000/iaman.png",
-  };
-
+  //글 제목, 내용, 이미지 경로
   return {
     title: "IamAn의 블로그 / About",
     description: "This blog was created by an.",
