@@ -6,10 +6,10 @@ import Head from "next/head";
 
 export async function generateMetadata() {
   return {
-    title: "IamAn의 블로그",
+    title: "Iaman",
     description: "This blog was created by an.",
     openGraph: {
-      title: "IamAn의 블로그",
+      title: "Iaman",
       description: "Click here to access the blog.",
       siteName: "Example Blog",
       images: [

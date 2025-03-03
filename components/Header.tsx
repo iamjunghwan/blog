@@ -37,7 +37,7 @@ export default function Header() {
           />
 
           <div className="leftHeaderInTextArea">
-            <span style={{ fontStyle: "italic" }}> {"IamAn"}</span>
+            <span style={{ fontStyle: "italic" }}> {"iaman"}</span>
           </div>
         </div>
       </Link>

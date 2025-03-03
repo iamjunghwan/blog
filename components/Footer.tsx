@@ -20,7 +20,7 @@ export default function Header() {
         <div style={{ display: "flex" }}>
           <div style={{ marginRight: ".5rem" }}> © 2025</div>
           <div className="separation"></div>
-          <div style={{ marginRight: ".5rem" }}> iamAn </div>
+          <div style={{ marginRight: ".5rem" }}> iaman </div>
           <div className="separation"></div>
           <div>
             <Link href="/">https://iaman.kr</Link>

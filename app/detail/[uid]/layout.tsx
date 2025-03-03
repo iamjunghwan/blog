@@ -1,9 +1,9 @@
 export async function generateMetadata() {
   return {
-    title: "IamAn의 블로그 / Detail",
+    title: "iaman",
     description: "AnThis blog was created by an.",
     openGraph: {
-      title: "IamAn의 블로그 / Detail",
+      title: "iaman",
       description: "Click here to access the blog.",
       siteName: "Example Blog",
       images: [
