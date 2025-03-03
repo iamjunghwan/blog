@@ -18,7 +18,7 @@ export default function Header() {
     <footer>
       <div className="centerFooterInTextArea">
         <div style={{ display: "flex" }}>
-          <div style={{ marginRight: ".5rem" }}>2025</div>
+          <div style={{ marginRight: ".5rem" }}> © 2025</div>
           <div className="separation"></div>
           <div style={{ marginRight: ".5rem" }}> iamAn </div>
           <div className="separation"></div>
