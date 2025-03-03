@@ -79,7 +79,7 @@ export default function Page() {
                 >
                   <dl>
                     <dd style={{ color: "gray" }}>
-                      <time dateTime="">
+                      <time dateTime={item.createdAt}>
                         {dayjs(item.createdAt).format("YYYY-MM-DD")}
                       </time>
                     </dd>

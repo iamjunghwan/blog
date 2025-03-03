@@ -67,7 +67,7 @@ export default function Page() {
 
   return (
     <>
-      <div className="main">
+      <div className="main ">
         <h1 className="mainH1">The Latest Article</h1>
       </div>
 
@@ -81,7 +81,7 @@ export default function Page() {
                   <a href={`/detail/${item.uid}`}>
                     <article className="mainArticle">
                       <div className="mainTime">
-                        <time dateTime="">
+                        <time dateTime={item.createdAt}>
                           {dayjs(item.createdAt).format("YYYY-MM-DD")}
                         </time>
                       </div>
