@@ -1,2 +1,9 @@
+# *
 User-agent: *
-Disallow:
+Allow: /
+
+# Host
+Host: https://iaman.kr
+
+# Sitemaps
+Sitemap: https://iaman.kr/sitemap.xml
