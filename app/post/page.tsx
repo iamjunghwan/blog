@@ -52,7 +52,6 @@ export default function Page() {
     queryFn: getData,
   });
 
-  console.log(postData, postData?.list);
   if (isPending) return "Loading...";
 
   if (error) return "An error has occurred: " + error.message;

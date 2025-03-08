@@ -12,7 +12,6 @@ export default function Detail(props: any) {
   const [detailData, setDetailData] = useState<string>("");
   const refHtml = useRef<HTMLDivElement>(null);
   const { uid } = useParams();
-  console.log(uid);
 
   const sanitizer = dompurify.sanitize;
 
