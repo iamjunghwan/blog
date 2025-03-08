@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import dynamic from "next/dynamic";
+import dayjs from "dayjs";
 
 const Editor = dynamic(
   () => import("@tinymce/tinymce-react").then((mod) => mod.Editor),
@@ -15,7 +16,7 @@ export default function Page() {
   const titleRef = useRef<HTMLInputElement>(null);
   const [data, setData] = useState("");
 
-  const handleClick = async (): void => {
+  const handleClick = async (): Promise<void> => {
     if (editorRef.current && titleRef.current) {
       setData(editorRef.current.getContent({ format: "raw" }));
 
@@ -63,7 +64,7 @@ export default function Page() {
                 KO: "string text",
               },
               content: editorRef.current.getContent({ format: "raw" }),
-              date: "2022-01-01T00:00:00",
+              date: dayjs().format("YYYY-MM-DDTHH:mm:ss"),
               author: {
                 KO: "string text",
               },
@@ -73,9 +74,6 @@ export default function Page() {
               },
             },
           }),
-          // body: JSON.stringify({
-          //   content: editorRef.current.getContent({ format: "raw" }),
-          // }),
         }
       );
     }
@@ -172,7 +170,6 @@ export default function Page() {
             })
               .then((response) => response.json())
               .then((data) => {
-                console.log("ㅋㅋㅋㅋㅋ ", data);
                 if (data.filepath) {
                   // const imageUrl = data.filepath.replace(
                   //   "/Users/iaman/iaman-dev",

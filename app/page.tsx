@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import dayjs from "dayjs";
+import { useQuery } from "@tanstack/react-query";
 
 interface PostData {
   uid: string;
@@ -16,8 +16,6 @@ interface PostData {
 }
 
 export default function Page() {
-  const [postData, setPostData] = useState<PostData[]>([]);
-
   const getData = async () => {
     const response = await fetch(
       "https://api.memexdata.io/memex/api/projects/0e9c148b/models/blog/contents/search/v2",
@@ -38,13 +36,22 @@ export default function Page() {
       }
     );
 
-    const getdata = await response.json();
-    setPostData(getdata.list);
+    return await response.json();
   };
 
-  useEffect(() => {
-    getData();
-  }, []);
+  const {
+    isPending,
+    error,
+    data: postData,
+    isFetching,
+  } = useQuery({
+    queryKey: ["LatestInfo"],
+    queryFn: getData,
+  });
+
+  if (isPending) return "Loading...";
+
+  if (error) return "An error has occurred: " + error.message;
 
   const check = (htmlString: string): string => {
     const regex = /<img[^>]*>/; // <img> 태그를 찾는 정규 표현식
@@ -73,8 +80,8 @@ export default function Page() {
 
       <hr />
       <ul className="mainUl">
-        {postData.length > 0 &&
-          postData.map((item, index) => {
+        {postData?.list.length > 0 &&
+          postData?.list.map((item: PostData, index: number) => {
             if (index < 3) {
               return (
                 <li key={index} className="firstFlexLine">

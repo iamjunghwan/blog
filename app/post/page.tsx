@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from "react";
 import dayjs from "dayjs";
+import { useQuery } from "@tanstack/react-query";
 
 interface PostData {
   uid: string;
   createdAt: string;
   data: {
+    content: string;
     title: {
       KO: string;
     };
@@ -14,8 +16,6 @@ interface PostData {
 }
 
 export default function Page() {
-  const [postData, setPostData] = useState<PostData[]>([]);
-
   const getData = async () => {
     const response = await fetch(
       "https://api.memexdata.io/memex/api/projects/0e9c148b/models/blog/contents/search/v2",
@@ -37,12 +37,25 @@ export default function Page() {
     );
 
     const getdata = await response.json();
-    setPostData(getdata.list);
+    return getdata;
+    //setPostData(getdata.list);
   };
+  // Queries
+  // const query = useQuery({ queryKey: ["todos"], queryFn: getTodos });
+  const {
+    isPending,
+    error,
+    data: postData,
+    isFetching,
+  } = useQuery({
+    queryKey: ["PostsInfo"],
+    queryFn: getData,
+  });
 
-  useEffect(() => {
-    getData();
-  }, []);
+  console.log(postData, postData?.list);
+  if (isPending) return "Loading...";
+
+  if (error) return "An error has occurred: " + error.message;
 
   return (
     <>
@@ -63,8 +76,8 @@ export default function Page() {
           display: "grid",
         }}
       >
-        {postData.length > 0 &&
-          postData.map((item, index) => (
+        {postData?.list.length > 0 &&
+          postData?.list.map((item: PostData, index: number) => (
             <li
               key={index}
               style={{ paddingTop: "2rem", paddingBottom: "3rem" }}

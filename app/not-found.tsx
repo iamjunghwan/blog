@@ -1,17 +1,4 @@
-import type { Metadata } from "next";
 import Link from "next/link";
-import Head from "next/head";
-
-// export async function generateMetadata() {
-//   return {
-//     title: "404 - Page Not Found",
-//     description: "The page you are looking for cannot be found.",
-//     robots: {
-//       index: true,
-//       follow: true, // 'noindex'를 제거하여 검색엔진이 페이지를 크롤링할 수 있도록 허용
-//     },
-//   };
-// }
 
 export default function NotFound() {
   return (

@@ -3,6 +3,7 @@ import Headers from "../components/Header";
 import Footer from "../components/Footer";
 import { ThemeProvider } from "next-themes";
 import Head from "next/head";
+import Provider from "./Provider";
 
 export async function generateMetadata() {
   return {
@@ -49,7 +50,7 @@ export default function RootLayout({
           <div className="layoutOuter">
             <div className="layoutInner">
               <Headers />
-              <main style={{ marginBottom: "auto" }}>{children}</main>
+              <Provider>{children}</Provider>
               <Footer />
             </div>
           </div>
