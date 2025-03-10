@@ -8,6 +8,7 @@ interface PostData {
   uid: string;
   createdAt: string;
   data: {
+    slug: string;
     content: string;
     title: {
       KO: string;
@@ -85,7 +86,7 @@ export default function Page() {
             if (index < 3) {
               return (
                 <li key={index} className="firstFlexLine">
-                  <a href={`/detail/${item.uid}`}>
+                  <a href={`/${item.data.slug}`}>
                     <article className="mainArticle">
                       <div className="mainTime">
                         <time dateTime={item.createdAt}>
@@ -131,7 +132,7 @@ export default function Page() {
                   gridRow: "2", // 두 번째 줄에 배치
                 }}
               >
-                <a href={`/detail/${item.uid}`}>
+                <a href={`/${item.data.slug}`}>
                   <article className="mainArticle">
                     <div className="mainTime">
                       <time dateTime={`${item.createdAt}`}>
