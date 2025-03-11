@@ -33,6 +33,9 @@ export default function Page() {
           size: 20,
           page: 0,
           direction: "DESC",
+          orderCond: {
+            type: "DATE_CREATE",
+          },
         }),
       }
     );

@@ -32,6 +32,9 @@ export default function Page() {
           size: 20,
           page: 0,
           direction: "DESC",
+          orderCond: {
+            type: "DATE_CREATE",
+          },
         }),
       }
     );
@@ -85,11 +88,12 @@ export default function Page() {
                 <div
                   style={{
                     display: "grid",
-                    gridTemplateColumns: "repeat(4,minmax(0,1fr))",
+                    gridTemplateColumns: "repeat(2, minmax(0, 1fr))", // 2분할로 수정
                     alignItems: "baseline",
+                    gap: "10px",
                   }}
                 >
-                  <dl>
+                  <dl style={{ marginLeft: "120px" }}>
                     <dd style={{ color: "gray" }}>
                       <time dateTime={item.createdAt}>
                         {dayjs(item.createdAt).format("YYYY-MM-DD")}
@@ -101,6 +105,7 @@ export default function Page() {
                       fontWeight: 700,
                       paddingTop: ".5rem",
                       paddingLeft: "2rem",
+                      margin: 0, // h2의 기본 마진 제거
                     }}
                   >
                     <a href={`/detail/${item.uid}`}>
