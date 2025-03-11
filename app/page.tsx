@@ -106,9 +106,9 @@ export default function Page() {
                           }}
                         />
                       </div>
-                      <h2 className="mainH2">
-                        <div>{item.data.title.KO}</div>
-                      </h2>
+                      <div className="mainH2">
+                        <h2>{item.data.title.KO}</h2>
+                      </div>
                     </article>
                   </a>
                 </li>

@@ -76,6 +76,7 @@ body {
 }
 
 .mainH2 {
+  height: 60px; /* 고정 높이 설정 */
   font-weight: 700;
   display: flex;
   align-items: center;
