@@ -1,58 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import dayjs from "dayjs";
-import { useQuery } from "@tanstack/react-query";
-
-interface PostData {
-  uid: string;
-  createdAt: string;
-  data: {
-    content: string;
-    title: {
-      KO: string;
-    };
-  };
-}
+import InnerHeader from "@/components/InnerHeader";
+import { PostData } from "@/type/index";
+import useQueryData from "@/hooks/useQueryData";
 
 export default function Page() {
-  const getData = async () => {
-    const response = await fetch(
-      "https://api.memexdata.io/memex/api/projects/0e9c148b/models/blog/contents/search/v2",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Access-Token":
-            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJSRUJFTDkiLCJpYXQiOjE3Mzk3NzcxMzUsImV4cCI6MjA1NTEzNzEzNSwiSUQiOiIwZTljMTQ4YiIsIkRPTUFJTiI6WyIqIl0sIlRZUEUiOiJFWFRFUk5BTCJ9.i-PuX7QzNpJiqncP06Tc5FyDbFpAg11D-W5csSTdRkg",
-          "X-Forwarded-Host": "localhost:3000",
-        },
-
-        body: JSON.stringify({
-          size: 20,
-          page: 0,
-          direction: "DESC",
-          orderCond: {
-            type: "DATE_CREATE",
-          },
-        }),
-      }
-    );
-
-    const getdata = await response.json();
-    return getdata;
-    //setPostData(getdata.list);
-  };
-  // Queries
-  // const query = useQuery({ queryKey: ["todos"], queryFn: getTodos });
-  const {
-    isPending,
-    error,
-    data: postData,
-    isFetching,
-  } = useQuery({
-    queryKey: ["PostsInfo"],
-    queryFn: getData,
+  const { isPending, error, postData, isFetching } = useQueryData({
+    queryKeyName: ["PostsInfo"],
   });
 
   if (isPending) return "Loading...";
@@ -61,16 +16,7 @@ export default function Page() {
 
   return (
     <>
-      <div
-        style={{
-          alignItems: "center",
-          justifyContent: "center",
-          display: "flex",
-        }}
-      >
-        <h1 style={{ fontSize: "3rem", fontWeight: 900 }}>Posts</h1>
-      </div>
-      <hr />
+      <InnerHeader title={`Posts`} />
       <ul
         style={{
           alignItems: "center",

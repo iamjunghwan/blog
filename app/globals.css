@@ -90,6 +90,7 @@ body {
 }
 
 .mainH1 {
+  /* line-height : 3rem; */
   font-size: 3rem;
   font-weight: 900;
 }

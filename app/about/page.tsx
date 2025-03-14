@@ -1,21 +1,12 @@
 "use client";
 
+import InnerHeader from "@/components/InnerHeader";
 import Image from "next/image";
 
 export default function Page() {
   return (
     <>
-      <div
-        style={{
-          alignItems: "center",
-          justifyContent: "center",
-          display: "flex",
-        }}
-      >
-        <h1 style={{ fontSize: "3rem", fontWeight: 900 }}>About</h1>
-      </div>
-      <hr />
-
+      <InnerHeader title={`About`} />
       <div
         style={{
           display: "grid",

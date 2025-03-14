@@ -1,11 +1,6 @@
-import { NextRequest } from "next/server";
-import { PostData } from "@/type/index";
+import { useQuery } from "@tanstack/react-query";
 
-export async function POST(req: NextRequest) {
-  const body = await req.json();
-
-  const { slug } = body;
-
+const getData = async () => {
   const response = await fetch(
     "https://api.memexdata.io/memex/api/projects/0e9c148b/models/blog/contents/search/v2",
     {
@@ -21,18 +16,28 @@ export async function POST(req: NextRequest) {
         size: 20,
         page: 0,
         direction: "DESC",
+        orderCond: {
+          type: "DATE_CREATE",
+        },
       }),
     }
   );
 
-  const result = await response.json();
-  const content = result.list
-    .filter((val: PostData) => val.data.slug === slug)
-    .map((obj: PostData) => obj.data.content)
-    .toString();
+  return await response.json();
+};
 
-  return new Response(JSON.stringify({ data: content }), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
+const useQueryData = ({ queryKeyName }: { queryKeyName: string[] }) => {
+  const {
+    isPending,
+    error,
+    data: postData,
+    isFetching,
+  } = useQuery({
+    queryKey: queryKeyName,
+    queryFn: getData,
   });
-}
+
+  return { isPending, error, postData, isFetching };
+};
+
+export default useQueryData;

@@ -1,17 +1,10 @@
+import InnerHeader from "@/components/InnerHeader";
 import Link from "next/link";
 
 export default function NotFound() {
   return (
     <>
-      <div
-        style={{
-          alignItems: "center",
-          justifyContent: "center",
-          display: "flex",
-        }}
-      >
-        <h1 style={{ fontSize: "3rem", fontWeight: 900 }}>404</h1>
-      </div>
+      <InnerHeader title={`404`} />
       <hr />
       <div
         style={{
