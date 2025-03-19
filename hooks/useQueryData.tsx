@@ -35,7 +35,6 @@ const useQueryData = ({ queryKeyName }: { queryKeyName: string[] }) => {
   } = useQuery({
     queryKey: queryKeyName,
     queryFn: getData,
-    refetchOnMount: false,
   });
 
   return { isPending, error, postData, isFetching };

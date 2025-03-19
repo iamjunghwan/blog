@@ -9,6 +9,7 @@ function getQueryClient() {
       queries: {
         staleTime: 60 * 1000 * 15,
         gcTime: 1000 * 60 * 15,
+        refetchOnMount: false,
       },
     },
   });
