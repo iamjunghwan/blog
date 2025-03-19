@@ -17,10 +17,11 @@ function getQueryClient() {
 
 const Provider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const queryClient = getQueryClient();
+
   return (
     <QueryClientProvider client={queryClient}>
       <main style={{ marginBottom: "auto" }}>{children}</main>
-      <ReactQueryDevtools />
+      {process.env.NODE_ENV === "development" && <ReactQueryDevtools />}
     </QueryClientProvider>
   );
 };
