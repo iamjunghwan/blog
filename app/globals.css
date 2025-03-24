@@ -184,6 +184,11 @@ h2 {
     line-height: 2.25rem;
   }
 
+  .mainUl {
+    display: flex;
+    flex-direction: column;
+  }
+
   .leftHeaderInTextArea {
     display: none;
   }
