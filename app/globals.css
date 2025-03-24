@@ -50,27 +50,6 @@ body {
   color: var(--text-color);
   font-family: "Arial", sans-serif;
 } */
-hr {
-  position: relative;
-  border: none;
-  border-top: 2px solid black; /* 기본적인 수평선 */
-  margin: 30px 0;
-}
-
-/* 마름모 모양을 나타내는 div */
-.diamond {
-  position: absolute;
-  top: -10px; /* 수평선 위로 위치를 올림 */
-  left: 50%;
-  transform: translateX(-50%);
-  width: 0;
-  height: 0;
-  border-left: 15px solid transparent; /* 왼쪽 경계 */
-  border-right: 15px solid transparent; /* 오른쪽 경계 */
-  border-top: 15px solid transparent; /* 위쪽 경계 (보이지 않음) */
-  border-bottom: 15px solid black; /* 아래쪽 경계 (마름모의 반) */
-  z-index: 1; /* 마름모가 수평선 위에 오도록 설정 */
-}
 
 .mainArticle {
   display: flex;
@@ -180,6 +159,13 @@ hr {
   grid-template-columns: 1fr 2.5fr;
 }
 
+.postInnerArea {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: baseline;
+  gap: 10px;
+}
+
 @media (max-width: 500px) {
   .leftHeaderInTextArea {
     display: none;
@@ -190,6 +176,11 @@ hr {
   }
 
   .aboutInnerArea {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .postInnerArea {
     display: flex;
     flex-direction: column;
   }
