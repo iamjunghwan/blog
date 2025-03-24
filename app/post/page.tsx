@@ -46,7 +46,7 @@ export default function Page() {
                       margin: 0, // h2의 기본 마진 제거
                     }}
                   >
-                    <a href={`/detail/${item.uid}`}>
+                    <a href={`/${item.data.slug}`}>
                       <div>{item.data.title.KO}</div>
                     </a>
                   </h2>
