@@ -174,13 +174,24 @@ hr {
 .leftHeaderInTextArea {
   display: flex;
 }
-@media (max-width: 400px) {
+
+.aboutInnerArea {
+  display: grid;
+  grid-template-columns: 1fr 2.5fr;
+}
+
+@media (max-width: 500px) {
   .leftHeaderInTextArea {
     display: none;
   }
 
   .mainH1 {
     font-size: 2rem;
+  }
+
+  .aboutInnerArea {
+    display: flex;
+    flex-direction: column;
   }
 }
 

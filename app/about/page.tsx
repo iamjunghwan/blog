@@ -1,5 +1,6 @@
 "use client";
 
+import "@/app/globals.css";
 import InnerHeader from "@/components/InnerHeader";
 import Image from "next/image";
 
@@ -7,12 +8,7 @@ export default function Page() {
   return (
     <>
       <InnerHeader title={`About`} />
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 2.5fr",
-        }}
-      >
+      <div className="aboutInnerArea">
         <div
           style={{
             paddingTop: "1.5rem",
@@ -44,7 +40,7 @@ export default function Page() {
           </div>
         </div>
 
-        <div style={{ display: "column" }}>
+        <div style={{ display: "column", paddingLeft: "1rem" }}>
           <div
             style={{
               paddingTop: "1.5rem",
