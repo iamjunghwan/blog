@@ -27,11 +27,11 @@ export async function POST(req: NextRequest) {
 
   const result = await response.json();
   const content = result.list
-    .filter((val: PostData) => val.data.slug === slug)
+    .filter((obj: PostData) => obj.data.slug === slug)
     .map((obj: PostData) => obj.data.content)
     .toString();
 
-  return new Response(JSON.stringify({ data: content }), {
+  return new Response(JSON.stringify({ content }), {
     status: 200,
     headers: { "Content-Type": "application/json" },
   });
