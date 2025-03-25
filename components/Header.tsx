@@ -29,7 +29,7 @@ export default function Header() {
         <div className="headerAlign">
           <Image
             src="/iaman.png"
-            alt=""
+            alt="blog logo"
             className="leftHeaderInImgArea"
             aria-label="blogLogo"
             width={100}
