@@ -5,10 +5,6 @@ import DOMPurify from "dompurify";
 import { useParams } from "next/navigation";
 import { notFound } from "next/navigation";
 
-// function sanitizer(content: string) {
-//   return DOMPurify.sanitize(content); // DOMPurify로 HTML을 안전하게 정리
-// }
-
 export default function Detail() {
   const [detailData, setDetailData] = useState<string>("");
   const refHtml = useRef<HTMLDivElement>(null);
@@ -28,6 +24,7 @@ export default function Detail() {
     }).then((res) => res.json());
 
     if (content !== "") {
+      //HTML이나 script에 코드 삽입 (XSS) 필터링
       setDetailData(DOMPurify.sanitize(content));
       return;
     }
