@@ -30,7 +30,6 @@ export default function Page() {
             return (
               <li
                 key={index}
-                //className="secondFlexLine"
                 className="container"
                 style={{
                   display: "flex",

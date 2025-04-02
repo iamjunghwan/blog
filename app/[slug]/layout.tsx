@@ -1,7 +1,7 @@
 export async function generateMetadata() {
   return {
     title: "iaman",
-    description: "AnThis blog was created by an.",
+    description: "This blog was created by an.",
     openGraph: {
       title: "iaman",
       description: "Click here to access the blog.",

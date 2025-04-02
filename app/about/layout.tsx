@@ -1,5 +1,4 @@
 export async function generateMetadata() {
-  //글 제목, 내용, 이미지 경로
   return {
     title: "About by iaman",
     description: "This blog was created by an.",
@@ -17,6 +16,9 @@ export async function generateMetadata() {
       ],
       locale: "en_US",
       type: "article",
+    },
+    icons: {
+      icon: "/iaman.ico",
     },
   };
 }

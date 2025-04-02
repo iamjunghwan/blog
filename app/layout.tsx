@@ -39,7 +39,7 @@ export default function RootLayout({
     <html lang="kr" suppressHydrationWarning className="mce-content-body">
       <Head>
         <link rel="icon" href="/iaman.ico" sizes="any" />
-        <meta name="robots" content="index, follow " /> {/* noindex 제거 */}
+        <meta name="robots" content="index, follow " />
       </Head>
       <body>
         <ThemeProvider

@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
   );
 
   const result = await response.json();
-  const content = result.list
+  const content: string = result.list
     .filter((obj: PostData) => obj.data.slug === slug)
     .map((obj: PostData) => obj.data.content)
     .toString();

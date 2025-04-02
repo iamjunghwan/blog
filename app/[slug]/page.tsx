@@ -8,7 +8,7 @@ import { notFound } from "next/navigation";
 export default function Detail() {
   const [detailData, setDetailData] = useState<string>("");
   const refHtml = useRef<HTMLDivElement>(null);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<Boolean>(false);
 
   const { slug } = useParams();
 
@@ -35,7 +35,6 @@ export default function Detail() {
   useEffect(
     function handleDataProcessFromUrl() {
       if (!slug) return;
-
       getData();
     },
     [slug]
@@ -48,7 +47,7 @@ export default function Detail() {
     [error]
   );
 
-  const scrollToRef = (id: string) => {
+  const scrollToRef = (id: string): void => {
     const ref = document.getElementById(id);
     if (ref) {
       ref.scrollIntoView({
@@ -77,7 +76,7 @@ export default function Detail() {
     },
     [detailData]
   );
-  console.log(DOMPurify);
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <div ref={refHtml} dangerouslySetInnerHTML={{ __html: detailData }}></div>
