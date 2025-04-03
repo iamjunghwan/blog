@@ -4,13 +4,14 @@ import InnerHeader from "@/components/InnerHeader";
 import ArticleCard from "@/components/Card/ArticleCard";
 import { PostData } from "@/type/index";
 import useQueryData from "@/hooks/useQueryData";
+import Loading from "@/components/\bLoading";
 
-export default function Page() {
+const Page = () => {
   const { isPending, error, postData, isFetching } = useQueryData({
     queryKeyName: ["LatestInfo"],
   });
 
-  if (isPending) return "Loading...";
+  if (isPending) return <Loading />;
   if (error) return "An error has occurred: " + error.message;
 
   return (
@@ -49,4 +50,5 @@ export default function Page() {
       </ul>
     </>
   );
-}
+};
+export default Page;

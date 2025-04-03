@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState, useRef } from "react";
 import DOMPurify from "dompurify";
 import { useParams } from "next/navigation";
 import { notFound } from "next/navigation";
+import Loading from "@/components/\bLoading";
 
 export default function Detail() {
   const [detailData, setDetailData] = useState<string>("");
@@ -78,7 +79,7 @@ export default function Detail() {
   );
 
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<Loading />}>
       <div ref={refHtml} dangerouslySetInnerHTML={{ __html: detailData }}></div>
     </Suspense>
   );

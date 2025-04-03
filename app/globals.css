@@ -256,6 +256,23 @@ html.dark body {
   color: white;
 }
 
+.loading-container {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loading-bar {
+  border-top: 3px solid #000;
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  animation: tox-rotation 2s linear infinite;
+}
+
 @keyframes tox-rotation {
   0% {
     transform: rotate(0);

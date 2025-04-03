@@ -5,13 +5,14 @@ import dayjs from "dayjs";
 import InnerHeader from "@/components/InnerHeader";
 import { PostData } from "@/type/index";
 import useQueryData from "@/hooks/useQueryData";
+import Loading from "@/components/\bLoading";
 
 export default function Page() {
   const { isPending, error, postData, isFetching } = useQueryData({
     queryKeyName: ["PostsInfo"],
   });
 
-  if (isPending) return "Loading...";
+  if (isPending) return <Loading />;
   if (error) return "An error has occurred: " + error.message;
 
   return (
