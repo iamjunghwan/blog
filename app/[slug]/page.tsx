@@ -2,41 +2,47 @@
 
 import { Suspense, useEffect, useState, useRef } from "react";
 import DOMPurify from "dompurify";
-import { useParams } from "next/navigation";
-import { notFound } from "next/navigation";
+import { useParams, notFound } from "next/navigation";
 import Loading from "@/components/\bLoading";
 
 export default function Detail() {
   const [detailData, setDetailData] = useState<string>("");
   const refHtml = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<Boolean>(false);
-
   const { slug } = useParams();
 
-  const getData = async () => {
-    const params = { slug };
-
+  const fetchData = async (): Promise<string> => {
     const { content } = await fetch(`/api/slug`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(params),
+      body: JSON.stringify({ slug }),
     }).then((res) => res.json());
 
-    if (content !== "") {
-      //HTML이나 script에 코드 삽입 (XSS) 필터링
-      setDetailData(DOMPurify.sanitize(content));
+    return content;
+  };
+
+  const sanitizeContent = (content: string): string => {
+    return DOMPurify.sanitize(content);
+  };
+
+  const handleArticleFetch = async () => {
+    if (!slug) return;
+
+    const articleContent = await fetchData();
+
+    if (articleContent !== "") {
+      setDetailData(sanitizeContent(articleContent));
       return;
     }
-
     setError(true);
   };
 
   useEffect(
-    function handleDataProcessFromUrl() {
+    function handleDataProcessFromUrlParam() {
       if (!slug) return;
-      getData();
+      handleArticleFetch();
     },
     [slug]
   );
