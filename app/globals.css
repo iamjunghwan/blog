@@ -87,14 +87,6 @@ h2 {
   border-radius: 10px;
 }
 
-.mainH2 {
-  height: 60px; /* 고정 높이 설정 */
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .main {
   align-items: center;
   justify-content: center;

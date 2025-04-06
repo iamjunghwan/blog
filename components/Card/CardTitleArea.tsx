@@ -6,7 +6,15 @@
 
 const CardTitleArea = ({ title }: { title: string }) => {
   return (
-    <div className="mainH2">
+    <div
+      style={{
+        height: "60px",
+        fontWeight: "700",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+      }}
+    >
       <h2>{title}</h2>
     </div>
   );
