@@ -1,5 +1,3 @@
-"use client";
-
 import "@/app/globals.css";
 import InnerHeader from "@/components/InnerHeader";
 import Image from "next/image";

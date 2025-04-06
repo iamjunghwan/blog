@@ -1,28 +1,8 @@
-"use client";
-
-import { useTheme } from "next-themes";
 import Image from "next/image";
-import { useState, useEffect } from "react";
 import Link from "next/link";
-import DarkMode from "../public/darkMode.svg";
-import LightMode from "../public/lightMode.svg";
+import Theme from "./Theme";
 
 export default function Header() {
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (!mounted) {
-    return null;
-  }
-
-  const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
-  };
-
   return (
     <header className="header">
       <Link href="/">
@@ -49,15 +29,7 @@ export default function Header() {
           <Link className="padding" href="/about">
             {"About"}
           </Link>
-          <div className="padding">
-            <button
-              type="button"
-              onClick={toggleTheme}
-              aria-label="toggleTheme"
-            >
-              {theme === "light" ? <LightMode /> : <DarkMode />}
-            </button>
-          </div>
+          <Theme />
         </div>
       </div>
     </header>

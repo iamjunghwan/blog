@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState, useRef } from "react";
 import DOMPurify from "dompurify";
 import { useParams, notFound } from "next/navigation";
-import Loading from "@/components/\bLoading";
+import Loading from "@/components/Loading";
 
 export default function Detail() {
   const [detailData, setDetailData] = useState<string>("");

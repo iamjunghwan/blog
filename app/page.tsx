@@ -1,18 +1,35 @@
-"use client";
-
 import InnerHeader from "@/components/InnerHeader";
 import ArticleCard from "@/components/Card/ArticleCard";
 import { PostData } from "@/type/index";
-import useQueryData from "@/hooks/useQueryData";
-import Loading from "@/components/\bLoading";
 
-const Page = () => {
-  const { isPending, error, postData, isFetching } = useQueryData({
-    queryKeyName: ["LatestInfo"],
-  });
+const fetchData = async () => {
+  const response = await fetch(
+    "https://api.memexdata.io/memex/api/projects/0e9c148b/models/blog/contents/search/v2",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Token":
+          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJSRUJFTDkiLCJpYXQiOjE3Mzk3NzcxMzUsImV4cCI6MjA1NTEzNzEzNSwiSUQiOiIwZTljMTQ4YiIsIkRPTUFJTiI6WyIqIl0sIlRZUEUiOiJFWFRFUk5BTCJ9.i-PuX7QzNpJiqncP06Tc5FyDbFpAg11D-W5csSTdRkg",
+        "X-Forwarded-Host": "localhost:3000",
+      },
 
-  if (isPending) return <Loading />;
-  if (error) return "An error has occurred: " + error.message;
+      body: JSON.stringify({
+        size: 20,
+        page: 0,
+        direction: "DESC",
+        orderCond: {
+          type: "DATE_CREATE",
+        },
+      }),
+    }
+  );
+
+  return await response.json();
+};
+
+const Page = async () => {
+  const postData = await fetchData();
 
   return (
     <>
