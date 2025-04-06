@@ -1,5 +1,5 @@
 import { PostData } from "@/type/index";
-
+import NotFound from "../not-found";
 type Props = {
   params: { slug: string };
   searchParams: { [key: string]: string | string[] | undefined };
@@ -32,31 +32,34 @@ export async function generateMetadata({ params, searchParams }: Props) {
 
   const result = await response.json();
 
-  const { data } = result.list.filter(
-    (obj: PostData) => obj.data.slug === slug
-  )[0];
-
-  return {
-    title: data.title.KO,
-    description: "https://iaman.kr",
-    openGraph: {
+  try {
+    const { data } = result.list.filter(
+      (obj: PostData) => obj.data.slug === slug
+    )[0];
+    return {
       title: data.title.KO,
       description: "https://iaman.kr",
-      images: [
-        {
-          url: "https://iaman.kr/iaman.png",
-          width: 800,
-          height: 600,
-          alt: "Blog Image",
-        },
-      ],
-      locale: "en_US",
-      type: "article",
-    },
-    icons: {
-      icon: "/iaman.ico",
-    },
-  };
+      openGraph: {
+        title: data.title.KO,
+        description: "https://iaman.kr",
+        images: [
+          {
+            url: "https://iaman.kr/iaman.png",
+            width: 800,
+            height: 600,
+            alt: "Blog Image",
+          },
+        ],
+        locale: "en_US",
+        type: "article",
+      },
+      icons: {
+        icon: "/iaman.ico",
+      },
+    };
+  } catch (err) {
+    return <NotFound />;
+  }
 }
 export default function RootLayout({
   children,
