@@ -101,12 +101,6 @@ h2 {
   display: flex;
 }
 
-.mainH1 {
-  /* line-height : 3rem; */
-  font-size: 3rem;
-  font-weight: 900;
-}
-
 .mainUl {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
