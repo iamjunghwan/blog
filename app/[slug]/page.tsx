@@ -85,8 +85,6 @@ export default function Detail() {
   );
 
   return (
-    <Suspense fallback={<Loading />}>
-      <div ref={refHtml} dangerouslySetInnerHTML={{ __html: detailData }}></div>
-    </Suspense>
+    <div ref={refHtml} dangerouslySetInnerHTML={{ __html: detailData }}></div>
   );
 }
