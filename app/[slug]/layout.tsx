@@ -2,10 +2,9 @@ import { PostData } from "@/type/index";
 import NotFound from "../not-found";
 type Props = {
   params: { slug: string };
-  searchParams: { [key: string]: string | string[] | undefined };
 };
 
-export async function generateMetadata({ params, searchParams }: Props) {
+export async function generateMetadata({ params }: Props) {
   const { slug } = params;
 
   const response = await fetch(
