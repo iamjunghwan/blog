@@ -1,24 +1,14 @@
-"use client";
+import { notFound } from "next/navigation";
+import ArticleContent from "./components/ArticleContent";
+import { getArticleContent } from "./services/articleService";
 
-import { useEffect } from "react";
-import { useParams, notFound } from "next/navigation";
-import { useArticleFetch } from "./hooks/useArticleFetch";
-import { useHeadingClickHandler } from "./hooks/useHeadingClickHandler";
+export default async function Detail({ params }: { params: { slug: string } }) {
+  const { slug } = await Promise.resolve(params);
+  const articleContent = await getArticleContent(slug);
 
-export default function Detail() {
-  const { slug } = useParams();
-  const { detailData, error, fetchArticle } = useArticleFetch(slug);
-  const { refHtml } = useHeadingClickHandler(detailData);
+  if (!articleContent) {
+    notFound();
+  }
 
-  useEffect(() => {
-    fetchArticle();
-  }, [fetchArticle]);
-
-  useEffect(() => {
-    if (error) notFound();
-  }, [error]);
-
-  return (
-    <div ref={refHtml} dangerouslySetInnerHTML={{ __html: detailData }}></div>
-  );
+  return <ArticleContent content={articleContent} />;
 }
