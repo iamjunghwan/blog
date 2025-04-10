@@ -4,30 +4,14 @@ import Footer from "../components/Footer";
 import { ThemeProvider } from "next-themes";
 import Head from "next/head";
 import Provider from "./Provider";
+import { generateCommonMetadata } from "./utils/metadata";
 
 export async function generateMetadata() {
-  return {
+  return generateCommonMetadata({
     title: "Iaman",
     description: "This blog was created by an.",
-    openGraph: {
-      title: "Iaman",
-      description: "Click here to access the blog.",
-      siteName: "Example Blog",
-      images: [
-        {
-          url: "https://iaman.kr/iaman.png",
-          width: 800,
-          height: 600,
-          alt: "Blog Image",
-        },
-      ],
-      locale: "en_US",
-      type: "article",
-    },
-    icons: {
-      icon: "/iaman.ico",
-    },
-  };
+    type: "website",
+  });
 }
 
 export default function RootLayout({
@@ -36,7 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="kr" suppressHydrationWarning className="mce-content-body">
+    <html lang="kr" suppressHydrationWarning>
       <Head>
         <link rel="icon" href="/iaman.ico" sizes="any" />
         <meta name="robots" content="index, follow " />
