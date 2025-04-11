@@ -2,11 +2,11 @@ import { generateCommonMetadata } from "../utils/metadata";
 import { PostData } from "@/type/index";
 
 type Props = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 export async function generateMetadata({ params }: Props) {
-  const { slug } = params;
+  const { slug } = await params;
 
   const response = await fetch(
     "https://api.memexdata.io/memex/api/projects/0e9c148b/models/blog/contents/search/v2",
