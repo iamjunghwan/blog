@@ -2,6 +2,7 @@ import InnerHeader from "@/components/InnerHeader";
 import ArticleCard from "@/components/Card/ArticleCard";
 import { PostData } from "@/type/index";
 import NotFound from "./not-found";
+
 const fetchData = async () => {
   try {
     const response = await fetch(
@@ -14,7 +15,6 @@ const fetchData = async () => {
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJSRUJFTDkiLCJpYXQiOjE3Mzk3NzcxMzUsImV4cCI6MjA1NTEzNzEzNSwiSUQiOiIwZTljMTQ4YiIsIkRPTUFJTiI6WyIqIl0sIlRZUEUiOiJFWFRFUk5BTCJ9.i-PuX7QzNpJiqncP06Tc5FyDbFpAg11D-W5csSTdRkg",
           "X-Forwarded-Host": "localhost:3000",
         },
-
         body: JSON.stringify({
           size: 20,
           page: 0,
@@ -40,12 +40,15 @@ const Page = async () => {
   return (
     <>
       <InnerHeader title={`The Latest Article`} />
-      <ul className="mainUl">
+      <ul className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
         {postData?.list.length > 0 &&
           postData?.list.map((item: PostData, index: number) => {
             if (index < 3) {
               return (
-                <li key={index} className="firstFlexLine">
+                <li
+                  key={index}
+                  className="flex flex-col justify-start pt-8 pb-12"
+                >
                   <ArticleCard getData={item} />
                 </li>
               );
@@ -54,17 +57,11 @@ const Page = async () => {
             return (
               <li
                 key={index}
-                className="container"
-                style={{
-                  display: "flex",
-                  flexDirection: "column", // 세로로 정렬되도록 설정
-                  justifyContent: "flex-start", // 세로 방향으로 정렬
-                  paddingTop: "2rem",
-                  paddingBottom: "3rem",
-                  height: "auto", // 높이를 자동으로 조정
-                  gridColumn: index === 3 ? "1 / span 2" : "2 / span 2", // 4번 항목은 첫 번째 열, 5번 항목은 세 번째 열에 배치
-                  gridRow: "2", // 두 번째 줄에 배치
-                }}
+                className={`flex flex-col justify-start pt-8 pb-12 ${
+                  index === 3
+                    ? "md:col-span-2 md:col-start-1"
+                    : "md:col-span-2 md:col-start-2"
+                }`}
               >
                 <ArticleCard getData={item} />
               </li>
@@ -74,4 +71,5 @@ const Page = async () => {
     </>
   );
 };
+
 export default Page;

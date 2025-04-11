@@ -20,19 +20,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="kr" suppressHydrationWarning>
+    <html lang="kr" suppressHydrationWarning className="h-full">
       <Head>
         <link rel="icon" href="/iaman.ico" sizes="any" />
         <meta name="robots" content="index, follow " />
       </Head>
-      <body>
+      <body className="min-h-full bg-white dark:bg-black text-black dark:text-white">
         <ThemeProvider
           defaultTheme="light"
           storageKey="blog-Theme"
           attribute="class"
         >
-          <div className="layoutOuter">
-            <div className="layoutInner">
+          <div className="mx-auto max-w-3xl px-6">
+            <div className="flex flex-col justify-between min-h-screen">
               <Headers />
               <Provider>{children}</Provider>
               <Footer />
