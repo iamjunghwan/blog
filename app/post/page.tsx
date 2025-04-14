@@ -42,36 +42,37 @@ export default async function Page() {
           display: "grid",
         }}
       >
-        {postData?.list.length > 0 &&
-          postData?.list.map((item: PostData, index: number) => (
-            <li
-              key={index}
-              style={{ paddingTop: "2rem", paddingBottom: "3rem" }}
-            >
-              <article>
-                <div className="postInnerArea">
-                  <dl>
-                    <dd style={{ color: "gray" }}>
-                      <time dateTime={item.createdAt}>
-                        {dayjs(item.createdAt).format("YYYY-MM-DD")}
-                      </time>
-                    </dd>
-                  </dl>
-                  <h2
-                    style={{
-                      fontWeight: 700,
-                      paddingTop: ".5rem",
-                      margin: 0, // h2의 기본 마진 제거
-                    }}
-                  >
-                    <a href={`/${item.data.slug}`}>
-                      <div>{item.data.title.KO}</div>
-                    </a>
-                  </h2>
-                </div>
-              </article>
-            </li>
-          ))}
+        {postData?.list
+          ? postData?.list.map((item: PostData, index: number) => (
+              <li
+                key={index}
+                style={{ paddingTop: "2rem", paddingBottom: "3rem" }}
+              >
+                <article>
+                  <div className="postInnerArea">
+                    <dl>
+                      <dd style={{ color: "gray" }}>
+                        <time dateTime={item.createdAt}>
+                          {dayjs(item.createdAt).format("YYYY-MM-DD")}
+                        </time>
+                      </dd>
+                    </dl>
+                    <h2
+                      style={{
+                        fontWeight: 700,
+                        paddingTop: ".5rem",
+                        margin: 0, // h2의 기본 마진 제거
+                      }}
+                    >
+                      <a href={`/${item.data.slug}`}>
+                        <div>{item.data.title.KO}</div>
+                      </a>
+                    </h2>
+                  </div>
+                </article>
+              </li>
+            ))
+          : null}
       </ul>
     </>
   );
