@@ -1,4 +1,4 @@
-# iaman Bolg
+# iaman Blog
 
 https://iaman.kr/
 
