@@ -3,7 +3,6 @@ import Headers from "../components/Header";
 import Footer from "../components/Footer";
 import { ThemeProvider } from "next-themes";
 import Head from "next/head";
-import Provider from "./Provider";
 import { generateCommonMetadata } from "./utils/metadata";
 
 export async function generateMetadata() {
@@ -34,7 +33,7 @@ export default function RootLayout({
           <div className="mx-auto max-w-3xl px-6">
             <div className="flex flex-col justify-between min-h-screen">
               <Headers />
-              <Provider>{children}</Provider>
+              {children}
               <Footer />
             </div>
           </div>
