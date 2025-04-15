@@ -1,4 +1,4 @@
-export interface PostData {
+export interface ApiResponse {
   uid: string;
   createdAt: string;
   data: {
@@ -8,4 +8,10 @@ export interface PostData {
       KO: string;
     };
   };
+}
+
+export interface ApiResponseError {
+  error: string;
+  status: number;
+  message: string;
 }

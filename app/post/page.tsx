@@ -1,37 +1,15 @@
 import "@/app/globals.css";
 import dayjs from "dayjs";
 import InnerHeader from "@/components/InnerHeader";
-import { PostData } from "@/type/index";
-
-const getData = async () => {
-  const response = await fetch(
-    "https://api.memexdata.io/memex/api/projects/0e9c148b/models/blog/contents/search/v2",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Token":
-          "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJSRUJFTDkiLCJpYXQiOjE3Mzk3NzcxMzUsImV4cCI6MjA1NTEzNzEzNSwiSUQiOiIwZTljMTQ4YiIsIkRPTUFJTiI6WyIqIl0sIlRZUEUiOiJFWFRFUk5BTCJ9.i-PuX7QzNpJiqncP06Tc5FyDbFpAg11D-W5csSTdRkg",
-        "X-Forwarded-Host": "localhost:3000",
-      },
-
-      body: JSON.stringify({
-        size: 20,
-        page: 0,
-        direction: "DESC",
-        orderCond: {
-          type: "DATE_CREATE",
-        },
-      }),
-    }
-  );
-
-  return await response.json();
-};
+import { ApiResponse } from "@/type/index";
+import { callApi } from "../utils/callApi";
+import NotFound from "../not-found";
 
 export default async function Page() {
-  const postData = await getData();
-
+  const postData = await callApi();
+  if (!("list" in postData)) {
+    return <NotFound />;
+  }
   return (
     <>
       <InnerHeader title={`Posts`} />
@@ -43,7 +21,7 @@ export default async function Page() {
         }}
       >
         {postData?.list
-          ? postData?.list.map((item: PostData, index: number) => (
+          ? postData?.list.map((item: ApiResponse, index: number) => (
               <li
                 key={index}
                 style={{ paddingTop: "2rem", paddingBottom: "3rem" }}
@@ -61,7 +39,7 @@ export default async function Page() {
                       style={{
                         fontWeight: 700,
                         paddingTop: ".5rem",
-                        margin: 0, // h2의 기본 마진 제거
+                        margin: 0,
                       }}
                     >
                       <a href={`/${item.data.slug}`}>
