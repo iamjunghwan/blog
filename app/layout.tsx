@@ -4,6 +4,7 @@ import Footer from "../components/Footer";
 import { ThemeProvider } from "next-themes";
 import Head from "next/head";
 import { generateCommonMetadata } from "./utils/metadata";
+import Article from "@/components/Article";
 
 export async function generateMetadata() {
   return generateCommonMetadata({
@@ -33,7 +34,7 @@ export default function RootLayout({
           <div className="mx-auto max-w-3xl px-6">
             <div className="flex flex-col justify-between min-h-screen">
               <Headers />
-              {children}
+              <Article>{children}</Article>
               <Footer />
             </div>
           </div>
