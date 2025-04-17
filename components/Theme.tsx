@@ -22,7 +22,7 @@ const Theme = () => {
   };
 
   return (
-    <div className="padding">
+    <div className="p-4">
       <button type="button" onClick={toggleTheme} aria-label="toggleTheme">
         {theme === "light" ? <LightMode /> : <DarkMode />}
       </button>

@@ -2,55 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-[data-theme="dark"] {
-  --bg-color: #121212;
-  --text-color: #e0e0e0;
-  --link-color: #bb86fc;
-  --button-bg: #333333;
-  --button-text: #ffffff;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-} */
-/* 
-:root {
-  --bg-color: #ffffff;
-  --text-color: #000000;
-  --link-color: #1a73e8;
-  --button-bg: #f0f0f0;
-  --button-text: #000000;
-}
-
-
-[theme="dark"] {
-  --bg-color: #121212;
-  --text-color: #e0e0e0;
-  --link-color: #bb86fc;
-  --button-bg: #333333;
-  --button-text: #ffffff;
-}
-
-body {
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  font-family: "Arial", sans-serif;
-} */
-
 h1 {
   font-size: 3em;
   line-height: 3.5rem;
@@ -63,52 +14,10 @@ h2 {
   line-height: 2rem;
 }
 
-.mainArticle {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
-
-.mainTime {
-  display: flex;
-  align-items: center;
-  margin-bottom: 1rem;
-}
-
-.mainImage {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100px;
-  width: 100px;
-  overflow: hidden;
-  margin-bottom: 1rem;
-  border-radius: 10px;
-}
-
 .main {
   align-items: center;
   justify-content: center;
   display: flex;
-}
-
-.mainUl {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-  align-items: center;
-  justify-content: center;
-  grid-template-rows: auto;
-  margin-top: 3rem;
-}
-
-.firstFlexLine {
-  flex-direction: "column";
-  justify-content: "flex-start";
-  padding-top: "2rem";
-  padding-bottom: 3rem;
-  height: auto;
 }
 
 *,
@@ -118,95 +27,11 @@ h2 {
   border: 0 solid #e5e7eb;
 }
 
-.header {
-  padding-top: 2.5rem;
-  padding-bottom: 2.5rem;
-  justify-content: space-between;
-  align-items: center;
-  display: flex;
-}
-
-.padding {
-  padding: 1rem;
-}
-
-.headerAlign {
-  display: flex;
-  align-items: center;
-}
-
-.rightHeaderInTextArea {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.leftHeaderInImgArea {
-  width: 40px;
-  height: 40px;
-  border-radius: 100%;
-  margin-right: 0.5rem;
-}
-
-.leftHeaderInTextArea {
-  display: flex;
-}
-
-.aboutInnerArea {
-  display: grid;
-  grid-template-columns: 1fr 2.5fr;
-}
-
-.postInnerArea {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: baseline;
-  gap: 10px;
-}
-
 @media (max-width: 500px) {
   h1 {
     font-size: 2.24rem;
     line-height: 2.25rem;
   }
-
-  .mainUl {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .leftHeaderInTextArea {
-    display: none;
-  }
-
-  .mainH1 {
-    font-size: 2rem;
-  }
-
-  .aboutInnerArea {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .postInnerArea {
-    display: flex;
-    flex-direction: column;
-  }
-}
-
-.centerFooterInTextArea {
-  padding-top: 2.5rem;
-  padding-bottom: 2.5rem;
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-}
-
-.separation {
-  content: "";
-  width: 1px;
-  background-color: #d3d5d7;
-  margin: 0 10px;
 }
 
 h2:hover {
@@ -214,21 +39,6 @@ h2:hover {
   cursor: pointer;
   /* right: -20px;
   font-size: 20px;  */
-}
-
-.layoutOuter {
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: 1.5rem;
-  padding-right: 1.5rem;
-  max-width: 50rem;
-}
-
-.layoutInner {
-  justify-content: space-between;
-  flex-direction: column;
-  display: flex;
-  height: 100vh;
 }
 
 html.light body {
@@ -240,23 +50,6 @@ html.light body {
 html.dark body {
   background-color: black;
   color: white;
-}
-
-.loading-container {
-  margin: 0;
-  padding: 0;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.loading-bar {
-  border-top: 3px solid #000;
-  border-radius: 50%;
-  width: 80px;
-  height: 80px;
-  animation: tox-rotation 2s linear infinite;
 }
 
 @keyframes tox-rotation {

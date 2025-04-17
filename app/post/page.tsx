@@ -22,26 +22,17 @@ export default async function Page() {
       >
         {postData?.list
           ? postData?.list.map((item: ApiResponse, index: number) => (
-              <li
-                key={index}
-                style={{ paddingTop: "2rem", paddingBottom: "3rem" }}
-              >
+              <li key={index} className="pt-8 pb-12">
                 <article>
-                  <div className="postInnerArea">
+                  <div className="grid grid-cols-2 gap-2.5 items-baseline max-[500px]:flex max-[500px]:flex-col">
                     <dl>
-                      <dd style={{ color: "gray" }}>
+                      <dd className="text-gray-500">
                         <time dateTime={item.createdAt}>
                           {dayjs(item.createdAt).format("YYYY-MM-DD")}
                         </time>
                       </dd>
                     </dl>
-                    <h2
-                      style={{
-                        fontWeight: 700,
-                        paddingTop: ".5rem",
-                        margin: 0,
-                      }}
-                    >
+                    <h2 className="font-bold pt-2 m-0">
                       <a href={`/${item.data.slug}`}>
                         <div>{item.data.title.KO}</div>
                       </a>

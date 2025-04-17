@@ -7,14 +7,14 @@
 import CardDateArea from "./CardDateArea";
 import CardImageArea from "./CardImageArea";
 import CardTitleArea from "./CardTitleArea";
-import { PostData } from "@/type/index";
+import { ApiResponse } from "@/type/index";
 
-const ArticleCard = ({ getData }: { getData: PostData }) => {
+const ArticleCard = ({ getData }: { getData: ApiResponse }) => {
   const { data, createdAt } = getData;
 
   return (
     <a href={`/${data.slug}`}>
-      <article className="mainArticle">
+      <article className="flex flex-col items-center w-full">
         <CardDateArea createdAt={createdAt} />
         <CardImageArea content={data.content} />
         <CardTitleArea title={data.title.KO} />

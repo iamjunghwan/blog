@@ -30,17 +30,13 @@ const check = (htmlString: string): string => {
 
 const CardImageArea = ({ content }: { content: string }) => {
   return (
-    <div className="mainImage">
+    <div className="flex items-center justify-center h-24 w-24 overflow-hidden mb-4 rounded-lg">
       <Image
         src={check(content)}
         alt=""
         width={100}
         height={100}
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-        }}
+        className="w-full h-full object-cover"
       />
     </div>
   );

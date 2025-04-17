@@ -6,45 +6,25 @@ export default function Page() {
   return (
     <>
       <InnerHeader title={`About`} />
-      <div className="aboutInnerArea">
-        <div
-          style={{
-            paddingTop: "1.5rem",
-            alignItems: "center",
-            flexDirection: "column",
-            display: "flex",
-          }}
-        >
+      <div className="grid [grid-template-columns:1fr_2.5fr] max-[500px]:flex max-[500px]:flex-col">
+        <div className="pt-6 flex flex-col items-center">
           <Image
-            style={{ width: "10rem", height: "10rem" }}
             src="/iaman.png"
             alt=""
-            className="leftHeaderInImgArea"
+            className="w-[10rem] h-[10rem] rounded-full mr-2"
             width={100}
             height={100}
           />
-          <div
-            style={{
-              paddingTop: "1rem",
-              display: "flex",
-              flexDirection: "column", // 세로로 정렬
-              alignItems: "center", // 세로 중앙 정렬
-            }}
-          >
-            <h2 style={{ fontWeight: "700" }}>iaman</h2>
-            <div style={{ display: "flex", paddingTop: "1rem" }}>
+          <div className="pt-4 flex flex-col items-center">
+            <h2 className="font-bold">iaman</h2>
+            <div className="flex pt-4">
               <p> ahndks47@gmail.com</p>
             </div>
           </div>
         </div>
 
-        <div style={{ display: "column", paddingLeft: "1rem" }}>
-          <div
-            style={{
-              paddingTop: "1.5rem",
-              paddingBottom: "1.5rem",
-            }}
-          >
+        <div className="flex flex-col pl-4">
+          <div className="pt-6 pb-6">
             <h3>ko.</h3>
             <p>
               <br />
@@ -56,11 +36,7 @@ export default function Page() {
             </p>
           </div>
           <hr />
-          <div
-            style={{
-              paddingTop: "1.5rem",
-            }}
-          >
+          <div className="pt-6">
             <h3>en.</h3>
             <p>
               <br />

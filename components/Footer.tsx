@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 
-export default function Header() {
+export default function Footer() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -16,12 +16,12 @@ export default function Header() {
 
   return (
     <footer>
-      <div className="centerFooterInTextArea">
-        <div style={{ display: "flex" }}>
-          <div style={{ marginRight: ".5rem" }}> © 2025</div>
-          <div className="separation"></div>
-          <div style={{ marginRight: ".5rem" }}> iaman </div>
-          <div className="separation"></div>
+      <div className="pt-10 pb-10 flex flex-col items-center">
+        <div className="flex">
+          <div className="mr-2"> © 2025</div>
+          <div className="w-px bg-[#d3d5d7] mx-2"></div>
+          <div className="mr-2"> iaman </div>
+          <div className="w-px bg-[#d3d5d7] mx-2"></div>
           <div>
             <Link href="/">https://iaman.kr</Link>
           </div>
