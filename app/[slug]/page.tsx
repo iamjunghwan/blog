@@ -15,9 +15,5 @@ export default async function Detail({
     notFound();
   }
 
-  return (
-    <Suspense fallback={<div>Loading post...</div>}>
-      <ArticleContent content={articleContent} />
-    </Suspense>
-  );
+  return <ArticleContent content={articleContent} />;
 }

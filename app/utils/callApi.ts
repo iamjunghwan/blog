@@ -13,7 +13,6 @@ export async function callApi(): Promise<
       headers: {
         "Content-Type": "application/json",
         "Access-Token": API_TOKEN,
-        "X-Forwarded-Host": "localhost:3000",
       },
       body: JSON.stringify({
         size: 20,
@@ -25,12 +24,17 @@ export async function callApi(): Promise<
       }),
     });
 
+    if (!response.ok) {
+      throw {
+        message: `Server Error ${response.status}`,
+        status: response.status,
+        error: "UNKNOWN_SERVER_ERROR",
+      };
+    }
+
     return await response.json();
   } catch (error: unknown) {
-    return {
-      message: "Server Error",
-      status: 500,
-      error: "INTERNAL_SERVER_ERROR",
-    };
+    const errorObj = error as ApiResponseError;
+    return errorObj;
   }
 }
