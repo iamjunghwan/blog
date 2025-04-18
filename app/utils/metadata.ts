@@ -35,6 +35,14 @@ export function generateCommonMetadata(options: MetadataOptions): Metadata {
       locale,
       type,
     },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+      },
+    },
     icons: {
       icon: "/iaman.ico",
     },

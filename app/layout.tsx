@@ -20,11 +20,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="kr" suppressHydrationWarning className="h-full">
-      <Head>
-        <link rel="icon" href="/iaman.ico" sizes="any" />
-        <meta name="robots" content="index, follow " />
-      </Head>
+    <html lang="kr" suppressHydrationWarning>
       <body className="min-h-full bg-white dark:bg-black text-black dark:text-white">
         <ThemeProvider
           defaultTheme="light"
