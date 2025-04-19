@@ -2,7 +2,6 @@ import "./globals.css";
 import Headers from "../components/Header";
 import Footer from "../components/Footer";
 import { ThemeProvider } from "next-themes";
-import Head from "next/head";
 import { generateCommonMetadata } from "./utils/metadata";
 import Article from "@/components/Article";
 
