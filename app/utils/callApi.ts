@@ -14,6 +14,7 @@ export async function callApi(): Promise<
         "Content-Type": "application/json",
         "Access-Token": API_TOKEN,
       },
+      cache: "force-cache",
       body: JSON.stringify({
         size: 20,
         page: 0,
