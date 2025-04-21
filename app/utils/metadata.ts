@@ -23,7 +23,7 @@ export function generateCommonMetadata(options: MetadataOptions): Metadata {
     openGraph: {
       title,
       description,
-      siteName: "iaman's Blog",
+      siteName: "iaman Blog",
       images: [
         {
           url: imageUrl,
