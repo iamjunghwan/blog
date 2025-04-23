@@ -14,7 +14,6 @@ export async function generateMetadata({ params }: Props) {
     return generateCommonMetadata({
       title: "Not Found",
       description: "Page not found",
-      type: "website",
     });
   }
   const { data } = result.list.filter(

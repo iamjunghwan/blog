@@ -7,9 +7,8 @@ import Article from "@/components/Article";
 
 export async function generateMetadata() {
   return generateCommonMetadata({
-    title: "Iaman",
+    title: "iaman",
     description: "This blog was created by an.",
-    type: "website",
   });
 }
 

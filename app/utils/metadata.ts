@@ -14,7 +14,7 @@ export function generateCommonMetadata(options: MetadataOptions): Metadata {
     description,
     imageUrl = "https://iaman.kr/iaman.png",
     type = "article",
-    locale = "en_US",
+    locale = "ko_KR",
   } = options;
 
   return {
