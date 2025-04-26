@@ -9,37 +9,33 @@ const Page = async () => {
   if (!("list" in postData)) {
     return <NotFound />;
   }
+
   return (
     <>
       <InnerHeader title={`The Latest Article`} />
       <ul className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
         {postData?.list
-          ? postData?.list.map((item: ApiResponse, index: number) => {
-              if (index < 3) {
-                return (
-                  <li
-                    key={index}
-                    className="flex flex-col justify-start pt-8 pb-12"
-                  >
-                    <ArticleCard getData={item} />
-                  </li>
-                );
-              }
-
-              return (
+          ? postData.list
+              .slice(0, 3)
+              .map((item: ApiResponse, index: number) => (
                 <li
                   key={index}
-                  className={`flex flex-col justify-start pt-8 pb-12 ${
-                    index === 3
-                      ? "md:col-span-2 md:col-start-1"
-                      : "md:col-span-2 md:col-start-2"
-                  }`}
+                  className="flex flex-col justify-start pt-8 pb-12"
                 >
                   <ArticleCard getData={item} />
                 </li>
-              );
-            })
+              ))
           : null}
+
+        {postData?.list && postData.list.length > 4 ? (
+          <li className="md:col-span-3 flex flex-col md:flex-row gap-8 pt-8 pb-12">
+            {[postData.list[3], postData.list[4]].map((item, i) => (
+              <div key={i}>
+                <ArticleCard getData={item} />
+              </div>
+            ))}
+          </li>
+        ) : null}
       </ul>
     </>
   );
