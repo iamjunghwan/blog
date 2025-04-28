@@ -1008,3 +1008,21 @@ code {
   margin-right: 1.5rem;
   padding-right: 1rem;
 }
+
+blockquote {
+  border-inline-start-width: 0.25rem;
+  margin-top: 1.6em;
+  margin-bottom: 1.6em;
+  padding-inline-start: 1em;
+  font-style: italic;
+  font-weight: 500;
+}
+
+ul {
+  list-style-type: disc;
+  padding-left: 1.5em;
+}
+
+li::marker {
+  color: #9ca3af;
+}
