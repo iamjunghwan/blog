@@ -23,7 +23,7 @@ export default function Header() {
       </Link>
       <div className="flex justify-between items-center">
         <div className="flex items-center">
-          <Link className="p-4" href="/post">
+          <Link className="p-4" href="/post/all">
             {"Posts"}
           </Link>
           <Link className="p-4" href="/about">

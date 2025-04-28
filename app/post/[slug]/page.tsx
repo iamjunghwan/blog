@@ -2,17 +2,32 @@ import "@/app/globals.css";
 import dayjs from "dayjs";
 import InnerHeader from "@/components/InnerHeader";
 import { ApiResponse } from "@/type/index";
-import { callApi } from "../utils/callApi";
-import NotFound from "../not-found";
+import { callApi } from "../../utils/callApi";
+import NotFound from "../../not-found";
+import Tags from "@/components/Tags";
+import { getTagsArticle } from "./service/getTagsArticle";
 
-export default async function Page() {
-  const postData = await callApi();
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  let postData;
+  if (slug === "" || slug === "all") {
+    postData = await callApi();
+  } else {
+    postData = await getTagsArticle(slug);
+  }
+
   if (!("list" in postData)) {
     return <NotFound />;
   }
+
   return (
     <>
-      <InnerHeader title={`Posts`} />
+      <InnerHeader title={`Posts ${slug} ${postData.list.length}`} />
+      <Tags />
       <ul
         style={{
           alignItems: "center",

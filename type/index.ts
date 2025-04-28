@@ -7,6 +7,7 @@ export interface ApiResponse {
     title: {
       KO: string;
     };
+    tags: string;
   };
 }
 
