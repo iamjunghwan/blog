@@ -7,6 +7,19 @@ import NotFound from "../../not-found";
 import Tags from "@/components/Tags";
 import { getTagsArticle } from "./service/getTagsArticle";
 
+export const generateStaticParams = async () => {
+  try {
+    const data = await callApi();
+    if ("error" in data) {
+      throw new Error("Failed to fetch posts");
+    }
+    return data.list.map((obj) => ({ slug: obj.data.slug }));
+  } catch (error) {
+    console.log("building error in generateStaticParams", error);
+    return [];
+  }
+};
+
 export default async function Page({
   params,
 }: {
