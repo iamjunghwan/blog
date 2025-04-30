@@ -6,4 +6,4 @@ Allow: /
 Host: https://iaman.kr
 
 # Sitemaps
-Sitemap: https://iaman.kr/sitemap.xml
+Sitemap: https://iaman.kr/sitemap-0.xml
