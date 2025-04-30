@@ -22,6 +22,20 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true, // 이 설정을 추가하여 TypeScript 체크 오류 무시
   },
+
+  async headers() {
+    return [
+      {
+        source: "/", // 또는 원하는 경로
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=0, must-revalidate",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
