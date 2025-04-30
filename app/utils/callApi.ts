@@ -2,9 +2,7 @@ import { ApiResponse, ApiResponseError } from "@/type/index";
 const API_URL =
   "https://api.memexdata.io/memex/api/projects/0e9c148b/models/blog/contents/search/v2";
 
-export async function callApi(): Promise<
-  { list: ApiResponse[] } | ApiResponseError
-> {
+export async function callApi(): Promise<ApiResponse | ApiResponseError> {
   try {
     const response = await fetch(API_URL, {
       method: "POST",

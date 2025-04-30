@@ -1,4 +1,4 @@
-export interface ApiResponse {
+export interface ApiItem {
   uid: string;
   createdAt: string;
   data: {
@@ -9,6 +9,10 @@ export interface ApiResponse {
     };
     tags: string;
   };
+}
+
+export interface ApiResponse {
+  list: ApiItem[];
 }
 
 export interface ApiResponseError {

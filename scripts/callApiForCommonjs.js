@@ -1,7 +1,6 @@
 const API_URL =
   "https://api.memexdata.io/memex/api/projects/0e9c148b/models/blog/contents/search/v2";
 
-console.log("`${process.env.API_TOKEN}` : ", `${process.env.API_TOKEN}`);
 export async function callApi() {
   try {
     const response = await fetch(API_URL, {

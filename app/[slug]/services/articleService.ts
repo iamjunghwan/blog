@@ -1,4 +1,4 @@
-import { ApiResponse } from "@/type/index";
+import { ApiItem } from "@/type/index";
 import { callApi } from "@/app/utils/callApi";
 
 export async function getArticleContent(slug: string): Promise<string> {
@@ -8,8 +8,8 @@ export async function getArticleContent(slug: string): Promise<string> {
   }
 
   const content = result.list
-    .filter((obj: ApiResponse) => obj.data.slug === slug)
-    .map((obj: ApiResponse) => obj.data.content)
+    .filter((obj: ApiItem) => obj.data.slug === slug)
+    .map((obj: ApiItem) => obj.data.content)
     .toString();
 
   return content;

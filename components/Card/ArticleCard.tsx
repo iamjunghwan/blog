@@ -7,9 +7,9 @@
 import CardDateArea from "./CardDateArea";
 import CardImageArea from "./CardImageArea";
 import CardTitleArea from "./CardTitleArea";
-import { ApiResponse } from "@/type/index";
+import { ApiItem } from "@/type/index";
 
-const ArticleCard = ({ getData }: { getData: ApiResponse }) => {
+const ArticleCard = ({ getData }: { getData: ApiItem }) => {
   const { data, createdAt } = getData;
 
   return (

@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { ApiResponse } from "@/type/index";
+import { ApiItem } from "@/type/index";
 import { callApi } from "@/app/utils/callApi";
 
 export async function POST(req: NextRequest) {
@@ -22,8 +22,8 @@ export async function POST(req: NextRequest) {
     );
   }
   const content: string = result.list
-    .filter((obj: ApiResponse) => obj.data.slug === slug)
-    .map((obj: ApiResponse) => obj.data.content)
+    .filter((obj: ApiItem) => obj.data.slug === slug)
+    .map((obj: ApiItem) => obj.data.content)
     .toString();
 
   return new Response(JSON.stringify({ content }), {

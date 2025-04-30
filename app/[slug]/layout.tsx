@@ -1,6 +1,7 @@
 import { generateCommonMetadata } from "../utils/metadata";
-import { ApiResponse } from "@/type/index";
+import { ApiItem } from "@/type/index";
 import { callApi } from "../utils/callApi";
+import { helperCallApi } from "../utils/helperCallApi";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -9,21 +10,23 @@ type Props = {
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
 
-  const result = await callApi();
-  if (!("list" in result)) {
+  try {
+    const result = await helperCallApi();
+
+    const { data } = result.list.filter(
+      (obj: ApiItem) => obj.data.slug === slug
+    )[0];
+
+    return generateCommonMetadata({
+      title: data.title.KO,
+      description: "https://iaman.kr",
+    });
+  } catch (error) {
     return generateCommonMetadata({
       title: "Not Found",
       description: "Page not found",
     });
   }
-  const { data } = result.list.filter(
-    (obj: ApiResponse) => obj.data.slug === slug
-  )[0];
-
-  return generateCommonMetadata({
-    title: data.title.KO,
-    description: "https://iaman.kr",
-  });
 }
 
 export default function RootLayout({

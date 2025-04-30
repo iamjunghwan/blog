@@ -1,14 +1,14 @@
-import { ApiResponse, ApiResponseError } from "@/type/index";
+import { ApiResponse, ApiResponseError, ApiItem } from "@/type/index";
 import { callApi } from "@/app/utils/callApi";
 import Link from "next/link";
 import NotFound from "@/app/not-found";
 
 const Tags = async () => {
-  const postData: { list: ApiResponse[] } | ApiResponseError = await callApi();
+  const postData: ApiResponse | ApiResponseError = await callApi();
   if (!("list" in postData)) {
     return <NotFound />;
   }
-  const tags = postData.list.map((obj: ApiResponse) => obj.data.tags);
+  const tags = postData.list.map((obj: ApiItem) => obj.data.tags);
 
   const uniqueTags = new Set();
   tags.forEach((item: string) => {

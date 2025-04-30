@@ -1,12 +1,14 @@
 import InnerHeader from "@/components/InnerHeader";
 import ArticleCard from "@/components/Card/ArticleCard";
-import { ApiResponse } from "@/type/index";
+import { ApiItem } from "@/type/index";
 import NotFound from "./not-found";
-import { callApi } from "./utils/callApi";
+import { helperCallApi } from "./utils/helperCallApi";
 
 const Page = async () => {
-  const postData = await callApi();
-  if (!("list" in postData)) {
+  let postData;
+  try {
+    postData = await helperCallApi();
+  } catch (error) {
     return <NotFound />;
   }
 
@@ -15,16 +17,14 @@ const Page = async () => {
       <InnerHeader title={`The Latest Article`} />
       <ul className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
         {postData?.list
-          ? postData.list
-              .slice(0, 3)
-              .map((item: ApiResponse, index: number) => (
-                <li
-                  key={index}
-                  className="flex flex-col justify-start pt-8 pb-12"
-                >
-                  <ArticleCard getData={item} />
-                </li>
-              ))
+          ? postData.list.slice(0, 3).map((item: ApiItem, index: number) => (
+              <li
+                key={index}
+                className="flex flex-col justify-start pt-8 pb-12"
+              >
+                <ArticleCard getData={item} />
+              </li>
+            ))
           : null}
 
         {postData?.list && postData.list.length > 4 ? (
