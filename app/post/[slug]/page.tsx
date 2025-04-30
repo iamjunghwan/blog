@@ -7,6 +7,9 @@ import { generateStaticParams } from "@/app/lib/posts";
 import PostArticle from "@/components/PostArticle";
 import { helperCallApi } from "@/app/utils/helperCallApi";
 
+export const revalidate = 3600;
+export const dynamicParams = true;
+
 export { generateStaticParams };
 
 export default async function Page({

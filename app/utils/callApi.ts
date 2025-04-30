@@ -10,7 +10,7 @@ export async function callApi(): Promise<ApiResponse | ApiResponseError> {
         "Content-Type": "application/json",
         "Access-Token": `${process.env.API_TOKEN}`,
       },
-      cache: "force-cache",
+
       body: JSON.stringify({
         size: 20,
         page: 0,
@@ -19,6 +19,7 @@ export async function callApi(): Promise<ApiResponse | ApiResponseError> {
           type: "DATE_CREATE",
         },
       }),
+      next: { revalidate: 3600 },
     });
 
     if (!response.ok) {
