@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation";
 import ArticleContent from "./components/ArticleContent";
 import { getArticleContent } from "./services/articleService";
-import { Suspense } from "react";
+
+export const revalidate = 3600;
+export const dynamic = "force-static";
 
 export default async function Detail({
   params,

@@ -10,10 +10,10 @@
 import Image from "next/image";
 
 const check = (htmlString: string): string => {
-  const regex = /<img[^>]*>/; // <img> 태그를 찾는 정규 표현식
-  const firstImageTag = htmlString.match(regex); // 첫 번째 <img> 태그를 찾음
+  const regex = /<img[^>]*>/;
+  const firstImageTag = htmlString.match(regex);
   if (firstImageTag === null) {
-    return "/iaman.png"; // 기본 경로를 리턴
+    return "/iaman.png";
   }
 
   const regex2 = /<img[^>]+src=["']([^"']+)["']/;
@@ -21,10 +21,9 @@ const check = (htmlString: string): string => {
 
   if (match) {
     const srcValue = match[1];
-
     return "/" + srcValue;
   } else {
-    return "/iaman.png"; // 기본 경로를 리턴
+    return "/iaman.png";
   }
 };
 
