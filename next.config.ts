@@ -16,6 +16,19 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "20mb", // 원하는 크기로 설정 (예: 5MB)
     },
   },
+  async headers() {
+    return [
+      {
+        source: "/", // 또는 원하는 경로
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=0, must-revalidate",
+          },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;
