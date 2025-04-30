@@ -12,7 +12,7 @@ export default function NotFound() {
           <div>
             <Link href="/">
               <button className="bg-yellow-200 rounded-lg text-base py-4 px-8">
-                go to main
+                Go To Main
               </button>
             </Link>
           </div>
