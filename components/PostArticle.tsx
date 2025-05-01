@@ -3,13 +3,7 @@ import { ApiItem, ApiResponse } from "@/type/index";
 
 export default function PostArticle({ data }: { data: ApiResponse }) {
   return (
-    <ul
-      style={{
-        alignItems: "center",
-        justifyContent: "center",
-        display: "grid",
-      }}
-    >
+    <ul className="list-none grid items-center justify-center">
       {data?.list
         ? data?.list.map((item: ApiItem, index: number) => (
             <li key={index} className="pt-8 pb-12">
