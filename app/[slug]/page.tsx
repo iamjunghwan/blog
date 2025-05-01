@@ -11,9 +11,11 @@ export default async function Detail({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const articleContent = await getArticleContent(slug);
 
-  if (!articleContent) {
+  let articleContent;
+  try {
+    articleContent = await getArticleContent(slug);
+  } catch (error) {
     notFound();
   }
 
