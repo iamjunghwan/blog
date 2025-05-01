@@ -1,6 +1,5 @@
 import { generateCommonMetadata } from "../utils/metadata";
 import { ApiItem } from "@/type/index";
-import { callApi } from "../utils/callApi";
 import { helperCallApi } from "../utils/helperCallApi";
 
 type Props = {
