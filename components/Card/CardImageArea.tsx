@@ -32,7 +32,7 @@ const CardImageArea = ({ content }: { content: string }) => {
     <div className="flex items-center justify-center h-24 w-24 overflow-hidden mb-4 rounded-lg">
       <Image
         src={check(content)}
-        alt=""
+        alt="Post Representative Image"
         width={100}
         height={100}
         className="w-full h-full object-cover"
