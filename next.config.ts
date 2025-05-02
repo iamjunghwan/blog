@@ -19,7 +19,7 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: "/", // 또는 원하는 경로
+        source: "/:path*",
         headers: [
           {
             key: "Cache-Control",
