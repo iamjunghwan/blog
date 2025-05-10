@@ -28,7 +28,7 @@ export default async function Page({
   } catch (error) {
     return <NotFound />;
   }
-
+  console.log(postData);
   return (
     <>
       <InnerHeader title={`Posts ${slug} ${postData.list.length}`} />
