@@ -6,8 +6,8 @@
 
 const CardTitleArea = ({ title }: { title: string }) => {
   return (
-    <div className="h-16 font-bold flex items-center justify-center">
-      <h2>{title}</h2>
+    <div className=" h-16 font-bold flex items-center justify-center">
+      <h2 className="line-clamp-2 leading-tight text-base">{title}</h2>
     </div>
   );
 };
