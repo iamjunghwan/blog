@@ -19,7 +19,6 @@ export async function callApi(): Promise<ApiResponse | ApiResponseError> {
           type: "DATE_CREATE",
         },
       }),
-      //next: { revalidate: 3600 },
     });
 
     if (!response.ok) {
