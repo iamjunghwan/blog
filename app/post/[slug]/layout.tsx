@@ -1,8 +1,5 @@
 import { generateCommonMetadata } from "../../utils/metadata";
 
-type Props = {
-  params: Promise<{ slug: string }>;
-};
 export async function generateMetadata() {
   return generateCommonMetadata({
     title: "Posts by iaman",
