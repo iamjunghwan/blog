@@ -2,10 +2,13 @@ import { ApiResponse, ApiResponseError, ApiItem } from "@/type/index";
 import { callApi } from "@/app/utils/callApi";
 import Link from "next/link";
 import NotFound from "@/app/not-found";
+import { helperCallApi } from "@/app/utils/helperCallApi";
 
 const Tags = async () => {
-  const postData: ApiResponse | ApiResponseError = await callApi();
-  if (!("list" in postData)) {
+  let postData;
+  try {
+    postData = await helperCallApi();
+  } catch (error) {
     return <NotFound />;
   }
   const tags = postData.list.map((obj: ApiItem) => obj.data.tags);
