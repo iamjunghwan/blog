@@ -1,5 +1,4 @@
-import { ApiResponse, ApiResponseError, ApiItem } from "@/type/index";
-import { callApi } from "@/app/utils/callApi";
+import { ApiItem } from "@/type/index";
 import Link from "next/link";
 import NotFound from "@/app/not-found";
 import { helperCallApi } from "@/app/utils/helperCallApi";
