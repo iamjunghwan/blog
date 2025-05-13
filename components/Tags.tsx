@@ -3,6 +3,7 @@ import Link from "next/link";
 import NotFound from "@/app/not-found";
 import { helperCallApi } from "@/app/utils/helperCallApi";
 console.log("rebase test");
+console.log("rebase test1");
 const Tags = async () => {
   let postData;
   try {
