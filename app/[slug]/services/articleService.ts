@@ -9,5 +9,9 @@ export async function getArticleContent(slug: string): Promise<string> {
     .map((obj: ApiItem) => obj.data.content)
     .toString();
 
+  if (content.length === 0) {
+    throw new Error("No articles exist on that slug.");
+  }
+
   return content;
 }
