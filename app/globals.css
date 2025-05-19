@@ -2,24 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-h1 {
-  font-size: 3em;
-  line-height: 3.5rem;
-  font-weight: 800;
-}
-
-h2 {
-  font-size: 1.5em;
-  font-weight: 600;
-  line-height: 2rem;
-}
-
-.main {
-  align-items: center;
-  justify-content: center;
-  display: flex;
-}
-
 *,
 :after,
 :before {
@@ -32,6 +14,18 @@ h2 {
     font-size: 2.24rem;
     line-height: 2.25rem;
   }
+}
+
+h1 {
+  font-size: 3em;
+  line-height: 3.5rem;
+  font-weight: 800;
+}
+
+h2 {
+  font-size: 1.5em;
+  font-weight: 600;
+  line-height: 2rem;
 }
 
 h2:hover {
@@ -73,12 +67,7 @@ pre[class*="language-"]::selection {
   text-shadow: none;
   background: #b3d4fc;
 }
-@media print {
-  code[class*="language-"],
-  pre[class*="language-"] {
-    text-shadow: none;
-  }
-}
+
 pre[class*="language-"] {
   padding: 1em;
   margin: 0.5em 0;
@@ -179,9 +168,7 @@ table[style*="border-width: 0px"] th {
 .mce-shy::after {
   content: "-";
 }
-/* body {
-  font-family: "Merriweather", serif;
-} */
+
 table {
   border-collapse: collapse;
 }
