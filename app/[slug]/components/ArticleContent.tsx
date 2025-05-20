@@ -34,6 +34,8 @@ export default function ArticleContent({ content }: { content: string }) {
   }, [content]);
 
   return (
-    <div ref={refHtml} dangerouslySetInnerHTML={{ __html: content }}></div>
+    <article className="font-body">
+      <div ref={refHtml} dangerouslySetInnerHTML={{ __html: content }}></div>
+    </article>
   );
 }
