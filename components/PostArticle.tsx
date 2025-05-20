@@ -16,7 +16,7 @@ export default function PostArticle({ data }: { data: ApiResponse }) {
                       </time>
                     </dd>
                   </dl>
-                  <h2 className="font-bold pt-2 m-0">
+                  <h2>
                     <a href={`/${item.data.slug}`}>
                       <div>{item.data.title.KO}</div>
                     </a>

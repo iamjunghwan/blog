@@ -4,6 +4,7 @@ import Footer from "../components/Footer";
 import { ThemeProvider } from "next-themes";
 import { generateCommonMetadata } from "./utils/metadata";
 import Article from "@/components/Article";
+import { fonts } from "./utils/fonts";
 
 export async function generateMetadata() {
   return generateCommonMetadata({
@@ -18,22 +19,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="kr" suppressHydrationWarning>
-      <body className="min-h-full bg-white dark:bg-black text-black dark:text-white">
-        <ThemeProvider
-          defaultTheme="light"
-          storageKey="blog-Theme"
-          attribute="class"
-        >
-          <div className="mx-auto max-w-3xl px-6">
-            <div className="flex flex-col justify-between min-h-screen">
-              <Headers />
-              <Article>{children}</Article>
-              <Footer />
+    <>
+      <html lang="kr" className={fonts.variable} suppressHydrationWarning>
+        <body className="font-custom min-h-full bg-white dark:bg-black text-black dark:text-white">
+          <ThemeProvider
+            defaultTheme="light"
+            storageKey="blog-Theme"
+            attribute="class"
+          >
+            <div className="mx-auto max-w-3xl px-6">
+              <div className="flex flex-col justify-between min-h-screen">
+                <Headers />
+                <Article>{children}</Article>
+                <Footer />
+              </div>
             </div>
-          </div>
-        </ThemeProvider>
-      </body>
-    </html>
+          </ThemeProvider>
+        </body>
+      </html>
+    </>
   );
 }
