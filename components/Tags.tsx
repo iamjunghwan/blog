@@ -11,6 +11,7 @@ const Tags = async ({ currTag }: TagsProps) => {
   } catch (error) {
     return <NotFound />;
   }
+
   const tags = postData.list.map((obj: ApiItem) => obj.data.tags);
 
   const uniqueTags = new Set<string>();
