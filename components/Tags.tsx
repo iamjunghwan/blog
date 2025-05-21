@@ -14,16 +14,14 @@ const Tags = async ({ currTag }: TagsProps) => {
 
   const tags = postData.list.map((obj: ApiItem) => obj.data.tags);
 
-  const uniqueTags = new Set();
+  const uniqueTags = new Set<string>();
   tags.forEach((item: string) => {
     item.split(",").forEach((tag) => {
       uniqueTags.add(tag);
     });
   });
 
-  const tagNames = [...uniqueTags];
-
-  return <TagList currTag={currTag} tagNames={tagNames} />;
+  return <TagList currTag={currTag} tagNames={[...uniqueTags]} />;
 };
 
 export default Tags;
