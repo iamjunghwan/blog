@@ -21,9 +21,7 @@ const Tags = async ({ currTag }: TagsProps) => {
     });
   });
 
-  const tagNames = [...uniqueTags];
-
-  return <TagList currTag={currTag} tagNames={tagNames} />;
+  return <TagList currTag={currTag} tagNames={[...uniqueTags]} />;
 };
 
 export default Tags;
