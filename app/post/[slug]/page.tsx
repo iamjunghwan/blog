@@ -32,7 +32,7 @@ export default async function Page({
   return (
     <>
       <InnerHeader title={`Posts ${slug} ${postData.list.length}`} />
-      <Tags />
+      <Tags currTag={slug} />
       <PostArticle data={postData}></PostArticle>
     </>
   );

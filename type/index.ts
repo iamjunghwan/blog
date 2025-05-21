@@ -20,3 +20,11 @@ export interface ApiResponseError {
   status: number;
   message: string;
 }
+
+export interface TagListProps extends TagsProps {
+  tagNames: string[];
+}
+
+export interface TagsProps {
+  currTag: string;
+}
