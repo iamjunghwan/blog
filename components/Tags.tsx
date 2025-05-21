@@ -3,7 +3,7 @@ import NotFound from "@/app/not-found";
 import { helperCallApi } from "@/app/utils/helperCallApi";
 import TagList from "./TagList";
 import { TagsProps } from "@/type/index";
-
+console.log("work");
 const Tags = async ({ currTag }: TagsProps) => {
   let postData;
   try {
@@ -21,7 +21,9 @@ const Tags = async ({ currTag }: TagsProps) => {
     });
   });
 
-  return <TagList currTag={currTag} tagNames={[...uniqueTags]} />;
+  const tags = [...uniqueTags];
+
+  return <TagList currTag={currTag} tagNames={tags} />;
 };
 
 export default Tags;
