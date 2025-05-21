@@ -17,7 +17,7 @@ const Tags = async ({ currTag }: TagsProps) => {
   const uniqueTags = new Set<string>();
   tags.forEach((item: string) => {
     item.split(",").forEach((tag) => {
-      uniqueTags.add(tag);
+      uniqueTags.add(tag.trim());
     });
   });
 
