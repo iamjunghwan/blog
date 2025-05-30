@@ -7,9 +7,10 @@
 import dayjs from "dayjs";
 
 const CardDateArea = ({ createdAt }: { createdAt: string }) => {
+  const dateTime = dayjs(createdAt).format("YYYY-MM-DD");
   return (
     <div className="flex items-center mb-4">
-      <time dateTime={createdAt}>{dayjs(createdAt).format("YYYY-MM-DD")}</time>
+      <time dateTime={dateTime}>{dateTime}</time>
     </div>
   );
 };

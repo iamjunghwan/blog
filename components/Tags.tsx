@@ -3,7 +3,7 @@ import NotFound from "@/app/not-found";
 import { helperCallApi } from "@/app/utils/helperCallApi";
 import TagList from "./TagList";
 import { TagsProps } from "@/type/index";
-console.log("work");
+
 const Tags = async ({ currTag }: TagsProps) => {
   let postData;
   try {
