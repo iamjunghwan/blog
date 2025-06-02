@@ -1,6 +1,6 @@
 import { generateCommonMetadata } from "../utils/metadata";
-import { ApiItem } from "@/type/index";
-import { helperCallApi } from "../utils/helperCallApi";
+import { GET_ARTICLES_BY_SLUG } from "@/graphql/queries/articleQueries";
+import { getClient } from "../lib/apollo-server-client";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -10,14 +10,13 @@ export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
 
   try {
-    const result = await helperCallApi();
-
-    const { data } = result.list.filter(
-      (obj: ApiItem) => obj.data.slug === slug
-    )[0];
+    const { data } = await getClient.query({
+      query: GET_ARTICLES_BY_SLUG,
+      variables: { slug },
+    });
 
     return generateCommonMetadata({
-      title: data.title.KO,
+      title: data.title,
       description: "https://iaman.kr",
     });
   } catch (error) {

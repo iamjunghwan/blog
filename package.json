@@ -10,12 +10,20 @@
     "postbuild": "next-sitemap"
   },
   "dependencies": {
+    "@apollo/client": "^3.13.8",
+    "@apollo/experimental-nextjs-app-support": "^0.12.2",
+    "@apollo/server": "^4.12.1",
+    "@as-integrations/next": "^3.2.0",
+    "@prisma/client": "^6.8.2",
     "@svgr/webpack": "^8.1.0",
     "dayjs": "^1.11.13",
     "formidable": "^3.5.2",
     "fs-extra": "^11.3.0",
+    "graphql": "^16.11.0",
+    "graphql-tag": "^2.12.6",
     "next": "15.3.1",
     "next-themes": "^0.4.4",
+    "prisma": "^6.8.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },

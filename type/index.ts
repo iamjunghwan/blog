@@ -1,18 +1,9 @@
 export interface ApiItem {
-  uid: string;
+  title: string;
+  content: string;
+  slug: string;
+  tag: string;
   createdAt: string;
-  data: {
-    slug: string;
-    content: string;
-    title: {
-      KO: string;
-    };
-    tags: string;
-  };
-}
-
-export interface ApiResponse {
-  list: ApiItem[];
 }
 
 export interface ApiResponseError {

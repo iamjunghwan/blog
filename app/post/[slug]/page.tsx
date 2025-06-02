@@ -2,15 +2,34 @@ import "@/app/globals.css";
 import InnerHeader from "@/components/InnerHeader";
 import NotFound from "../../not-found";
 import Tags from "@/components/Tags";
-import { getTagsArticle } from "./service/getTagsArticle";
 import { generateStaticParams } from "@/app/lib/posts";
 import PostArticle from "@/components/PostArticle";
-import { helperCallApi } from "@/app/utils/helperCallApi";
+import { getClient } from "@/app/lib/apollo-server-client";
+import {
+  GET_ARTICLES,
+  GET_ARTICLES_BY_TAG,
+} from "@/graphql/queries/articleQueries";
 
 export const revalidate = 3600;
 export const dynamic = "force-static";
 
-export { generateStaticParams };
+// export { generateStaticParams };
+
+async function fetchArticles(slug: string) {
+  try {
+    const isAll = !slug || slug === "all";
+
+    const { data } = await getClient.query({
+      query: isAll ? GET_ARTICLES : GET_ARTICLES_BY_TAG,
+      variables: isAll ? undefined : { tag: slug },
+    });
+
+    return isAll ? data.posts : data.postsByTag;
+  } catch (error) {
+    console.error("GraphQL fetch error:", error);
+    return null;
+  }
+}
 
 export default async function Page({
   params,
@@ -18,22 +37,17 @@ export default async function Page({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  let postData;
-  try {
-    if (slug === "" || slug === "all") {
-      postData = await helperCallApi();
-    } else {
-      postData = await getTagsArticle(slug);
-    }
-  } catch (error) {
+  const data = await fetchArticles(slug);
+
+  if (!data) {
     return <NotFound />;
   }
 
   return (
     <>
-      <InnerHeader title={`Posts ${slug} ${postData.list.length}`} />
+      <InnerHeader title={`Posts ${slug} ${data.length}`} />
       <Tags currTag={slug} />
-      <PostArticle data={postData}></PostArticle>
+      <PostArticle data={data}></PostArticle>
     </>
   );
 }

@@ -10,14 +10,14 @@ import CardTitleArea from "./CardTitleArea";
 import { ApiItem } from "@/type/index";
 
 const ArticleCard = ({ getData }: { getData: ApiItem }) => {
-  const { data, createdAt } = getData;
+  const { slug, content, title } = getData;
 
   return (
-    <a href={`/${data.slug}`}>
+    <a href={`/${slug}`}>
       <article className="flex flex-col items-center w-full">
-        <CardDateArea createdAt={createdAt} />
-        <CardImageArea content={data.content} />
-        <CardTitleArea title={data.title.KO} />
+        <CardDateArea createdAt={""} />
+        <CardImageArea content={content} />
+        <CardTitleArea title={title} />
       </article>
     </a>
   );

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { TagListProps } from "@/type/index";
 
 export default function TagList({ currTag, tagNames }: TagListProps) {
-  const [activeTag, setActiveTag] = useState(currTag);
+  const [activeTag, setActiveTag] = useState<string>(currTag);
   const router = useRouter();
 
   const handleClick = useCallback(
@@ -15,7 +15,7 @@ export default function TagList({ currTag, tagNames }: TagListProps) {
       setActiveTag(tag);
       router.push(`/post/${tag}`);
     },
-    [activeTag]
+    [currTag, router]
   );
 
   return (
