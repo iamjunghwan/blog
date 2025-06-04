@@ -1,12 +1,11 @@
-import { helperCallApi } from "../utils/helperCallApi";
+import { prisma } from "./prisma";
 
-export const generateStaticParams = async () => {
-  try {
-    const data = await helperCallApi();
+export async function generateStaticParams() {
+  const posts = await prisma.post.findMany({
+    select: { slug: true },
+  });
 
-    return data.list.map((obj) => ({ slug: obj.data.slug }));
-  } catch (error) {
-    console.log("building error in generateStaticParams", error);
-    return [];
-  }
-};
+  return posts.map((post) => ({
+    slug: post.slug,
+  }));
+}

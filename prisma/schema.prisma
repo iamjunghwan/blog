@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Post {
-  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
   title     String
   content   String?
   slug      String @unique

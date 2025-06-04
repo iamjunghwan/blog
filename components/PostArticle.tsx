@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import { ApiItem } from "@/type/index";
 import Link from "next/link";
 import Image from "next/image";
-import { check } from "@/app/utils/common";
+import { imgCheck } from "@/app/utils/common";
 
 export default function PostArticle({ data }: { data: ApiItem[] }) {
   return (
@@ -34,7 +34,7 @@ export default function PostArticle({ data }: { data: ApiItem[] }) {
 
             <div className="w-24 h-24 flex-shrink-0 overflow-hidden rounded-lg">
               <Image
-                src={check(item.content)}
+                src={imgCheck(item.content)}
                 alt="Post Representative Image"
                 width={96}
                 height={96}

@@ -6,12 +6,6 @@ export interface ApiItem {
   createdAt: string;
 }
 
-export interface ApiResponseError {
-  error: string;
-  status: number;
-  message: string;
-}
-
 export interface TagListProps extends TagsProps {
   tagNames: string[];
 }

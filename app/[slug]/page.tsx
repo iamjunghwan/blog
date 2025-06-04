@@ -1,21 +1,19 @@
-import { notFound } from "next/navigation";
 import ArticleContent from "./components/ArticleContent";
-import { getClient } from "../lib/apollo-server-client";
-import { GET_ARTICLE } from "@/graphql/queries/articleQueries";
+import NotFound from "../not-found";
+import { fetchArticles } from "./services/articleService";
 
 export const revalidate = 3600;
 export const dynamic = "force-static";
 
-export default async function Detail({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+const Page = async ({ params }: { params: { slug: string } }) => {
   const { slug } = await params;
-  const { data } = await getClient.query({
-    query: GET_ARTICLE,
-    variables: { slug },
-  });
+  const { data } = await fetchArticles(slug);
 
-  return <ArticleContent content={data.post.content} />;
-}
+  if (!data) {
+    return <NotFound />;
+  }
+
+  return <ArticleContent content={data.content} />;
+};
+
+export default Page;

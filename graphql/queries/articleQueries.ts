@@ -1,46 +1,9 @@
 import { gql } from "graphql-tag";
 
-//단일 아티클 정보
-export const GET_ARTICLE = gql`
-  query getArticle($slug: String!) {
-    post(slug: $slug) {
-      id
-      title
-      content
-      slug
-    }
-  }
-`;
-
-//slug에 따른 단일 아티클 정보
-
-export const GET_ARTICLES_BY_SLUG = gql`
-  query getArticlesBySlug($slug: String!) {
-    postsBySlug(slug: $slug) {
-      title
-      content
-    }
-  }
-`;
-
-//모든 아티클's
-export const GET_ARTICLES = gql`
-  query getArticles {
-    posts {
-      id
-      title
-      content
-      slug
-      tag
-    }
-  }
-`;
-
-//태그에 따른 아티클's
-export const GET_ARTICLES_BY_TAG = gql`
-  query getArticlesByTag($tag: String!) {
-    postsByTag(tag: $tag) {
-      id
+//모든 아티클 또는 태그별 아티클 조회
+export const GET_ALL_ARTICLES = gql`
+  query getArticles($tag: String) {
+    posts(tag: $tag) {
       title
       content
       slug
@@ -50,6 +13,17 @@ export const GET_ARTICLES_BY_TAG = gql`
   }
 `;
 
+//단일 아티클 정보 & generateMetadata 참고 데이터
+export const GET_ARTICLE = gql`
+  query getArticle($slug: String!) {
+    post(slug: $slug) {
+      title
+      content
+    }
+  }
+`;
+
+//모든 아티클의 태그만 추출
 export const GET_ALL_TAGS = gql`
   query {
     tags

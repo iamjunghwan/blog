@@ -10,10 +10,13 @@ export const typeDefs = gql`
     createdAt: String
   }
 
+  type Slug {
+    slug: String!
+  }
+
   type Query {
-    posts: [Post!]!
+    posts(tag: String): [Post!]
     post(slug: String!): Post
-    postsByTag(tag: String!): [Post!]!
     tags: [String!]!
   }
 `;

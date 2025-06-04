@@ -2,42 +2,46 @@ import { prisma } from "@/app/lib/prisma";
 // GraphQL 리졸버
 export const resolvers = {
   Query: {
-    post: async (_: any, args: { slug: string }) => {
+    // 상세 아티클
+    post: async (_: any, { slug }: { slug: string }) => {
       const post = await prisma.post.findFirst({
-        where: { slug: args.slug },
+        where: { slug },
       });
+
       if (!post) return null;
       return {
         ...post,
       };
     },
 
-    posts: async () => {
-      const posts = await prisma.post.findMany();
-      return posts.map((post) => ({
-        ...post,
-      }));
-    },
+    // 전체 아티클 및 태그 조건에 따른 아티클 정보's
+    posts: async (_: any, { tag }: { tag?: string }) => {
+      if (!tag) {
+        return await prisma.post.findMany();
+      }
 
-    postsByTag: async (_: any, { tag }: { tag: string }) => {
       return await prisma.post.findMany({
         where: {
-          tag: {
-            contains: tag,
-            mode: "insensitive",
-          },
+          OR: [
+            { tag: { equals: tag, mode: "insensitive" } },
+            { tag: { startsWith: `${tag},`, mode: "insensitive" } },
+            { tag: { endsWith: `,${tag}`, mode: "insensitive" } },
+            { tag: { contains: `,${tag},`, mode: "insensitive" } },
+          ],
         },
       });
     },
+
+    // 각 아티클에 속한 태그's
     tags: async () => {
       const posts = await prisma.post.findMany({
         select: { tag: true },
       });
 
       const allTags = posts
-        .flatMap((post) => post.tag?.split(",") ?? []) // 문자열 분리
-        .map((tag) => tag.trim()) // 공백 제거
-        .filter(Boolean); // 빈 문자열 제거
+        .flatMap((post) => post.tag?.split(",") ?? [])
+        .map((tag) => tag.trim())
+        .filter(Boolean);
 
       const uniqueTags = [...new Set(allTags)];
 

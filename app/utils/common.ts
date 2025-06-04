@@ -1,4 +1,4 @@
-export const check = (htmlString: string): string => {
+export const imgCheck = (htmlString: string): string => {
   const regex = /<img[^>]*>/;
   const firstImageTag = htmlString.match(regex);
   if (firstImageTag === null) {

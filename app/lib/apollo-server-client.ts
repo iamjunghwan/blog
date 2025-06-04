@@ -1,6 +1,9 @@
 import { ApolloClient, InMemoryCache, HttpLink } from "@apollo/client";
 
-const baseUrl = process.env.BASE_URL || `http://localhost:3000`;
+const baseUrl =
+  process.env.NODE_ENV === "production"
+    ? "https://iaman.kr"
+    : `http://localhost:3000`;
 
 export const getClient = new ApolloClient({
   cache: new InMemoryCache(),

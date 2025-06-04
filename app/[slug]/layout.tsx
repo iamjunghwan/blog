@@ -1,5 +1,5 @@
 import { generateCommonMetadata } from "../utils/metadata";
-import { GET_ARTICLES_BY_SLUG } from "@/graphql/queries/articleQueries";
+import { GET_ARTICLE } from "@/graphql/queries/articleQueries";
 import { getClient } from "../lib/apollo-server-client";
 
 type Props = {
@@ -11,12 +11,12 @@ export async function generateMetadata({ params }: Props) {
 
   try {
     const { data } = await getClient.query({
-      query: GET_ARTICLES_BY_SLUG,
+      query: GET_ARTICLE,
       variables: { slug },
     });
 
     return generateCommonMetadata({
-      title: data.title,
+      title: data.post.title,
       description: "https://iaman.kr",
     });
   } catch (error) {
