@@ -7,31 +7,14 @@
  *
  ****************************************/
 
+import { imgCheck } from "@/app/utils/common";
 import Image from "next/image";
-
-const check = (htmlString: string): string => {
-  const regex = /<img[^>]*>/;
-  const firstImageTag = htmlString.match(regex);
-  if (firstImageTag === null) {
-    return "/iaman.png";
-  }
-
-  const regex2 = /<img[^>]+src=["']([^"']+)["']/;
-  const match = firstImageTag[0].match(regex2);
-
-  if (match) {
-    const srcValue = match[1];
-    return "/" + srcValue;
-  } else {
-    return "/iaman.png";
-  }
-};
 
 const CardImageArea = ({ content }: { content: string }) => {
   return (
     <div className="flex items-center justify-center h-24 w-24 overflow-hidden mb-4 rounded-lg">
       <Image
-        src={check(content)}
+        src={imgCheck(content)}
         alt="Post Representative Image"
         width={96}
         height={96}

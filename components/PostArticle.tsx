@@ -1,48 +1,49 @@
 import dayjs from "dayjs";
 import { ApiItem, ApiResponse } from "@/type/index";
 import Link from "next/link";
+import Image from "next/image";
+import { imgCheck } from "@/app/utils/common";
 
 export default function PostArticle({ data }: { data: ApiResponse }) {
   return (
-    <ul className="list-none grid items-center justify-center">
-      {data?.list
-        ? data?.list.map((item: ApiItem, index: number) => (
-            <li key={index} className="pt-8 pb-12">
-              <article>
-                <div className="grid grid-cols-2 gap-2.5 items-baseline max-[500px]:flex max-[500px]:flex-col">
-                  <dl>
-                    <dd className="text-gray-500">
-                      <time dateTime={item.createdAt}>
-                        {dayjs(item.createdAt).format("YYYY-MM-DD")}
-                      </time>
-                    </dd>
-                  </dl>
-                  <div>
-                    <h2>
-                      <a href={`/${item.data.slug}`}>
-                        <div>{item.data.title.KO}</div>
-                      </a>
-                    </h2>
+    <ul className="list-none grid gap-8 mt-8 ">
+      {data?.list.map((item: ApiItem, index: number) => (
+        <li key={index}>
+          <article className="flex flex-col sm:flex-row justify-start items-start sm:items-center gap-2">
+            <div className="w-[400px]">
+              <h2 className="text-xl font-semibold mb-2">
+                <a href={`/${item.data.slug}`}>{item.data.title.KO}</a>
+              </h2>
 
-                    <div className="flex">
-                      {item.data.tags
-                        .split(",")
-                        .map((tag: string, index: number) => (
-                          <Link
-                            key={index}
-                            href={`/post/${tag}`}
-                            className="uppercase text-blue-500 mr-4"
-                          >
-                            {tag}
-                          </Link>
-                        ))}
-                    </div>
-                  </div>
-                </div>
-              </article>
-            </li>
-          ))
-        : null}
+              <div className="flex flex-wrap gap-2 mb-2">
+                {item.data.tags.split(",").map((tag: string, i: number) => (
+                  <Link
+                    key={i}
+                    href={`/post/${tag}`}
+                    className="text-sm text-blue-600 uppercase hover:underline"
+                  >
+                    {tag.trim()}
+                  </Link>
+                ))}
+              </div>
+
+              <time dateTime={item.createdAt} className="text-sm text-gray-500">
+                {dayjs(item.createdAt ?? "").format("YYYY-MM-DD")}
+              </time>
+            </div>
+
+            <div className="w-24 h-24 flex-shrink-0 overflow-hidden rounded-lg flex items-center">
+              <Image
+                src={imgCheck(item.data.content)}
+                alt="Post Representative Image"
+                width={96}
+                height={96}
+                className="object-cover rounded-lg"
+              />
+            </div>
+          </article>
+        </li>
+      ))}
     </ul>
   );
 }
