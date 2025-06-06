@@ -19,4 +19,8 @@ export const typeDefs = gql`
     post(slug: String!): Post
     tags: [String!]!
   }
+
+  type Mutation {
+    updateArticle(slug: String!, title: String!): Post!
+  }
 `;

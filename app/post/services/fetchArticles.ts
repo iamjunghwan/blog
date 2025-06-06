@@ -11,11 +11,13 @@ export async function fetchArticles(
 ): Promise<FetchArticlesResult> {
   const isAll = !slug || slug === "all";
 
-  const { data } = await getClient.query({
+  const client = getClient;
+
+  const { data } = await client.query({
     query: GET_ALL_ARTICLES,
     variables: isAll ? {} : { tag: slug },
   });
-
+  console.log("📦 SSR 캐시 상태:", client.extract().ROOT_QUERY);
   return {
     data: data.posts,
   };

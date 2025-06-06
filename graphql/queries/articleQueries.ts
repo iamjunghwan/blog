@@ -29,3 +29,12 @@ export const GET_ALL_TAGS = gql`
     tags
   }
 `;
+
+export const UPDATE_ARTICLE_TITLE = gql`
+  mutation updateArticleTitle($slug: String!, $title: String!) {
+    updateArticle(slug: $slug, title: $title) {
+      title
+      slug
+    }
+  }
+`;

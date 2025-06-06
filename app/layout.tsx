@@ -5,6 +5,8 @@ import { ThemeProvider } from "next-themes";
 import { generateCommonMetadata } from "./utils/metadata";
 import Article from "@/components/Article";
 import { fonts } from "./utils/fonts";
+import { StagewiseToolbar } from "@stagewise/toolbar-next";
+import ApolloWrapper from "./ApolloWrapper";
 
 export async function generateMetadata() {
   return generateCommonMetadata({
@@ -22,19 +24,26 @@ export default function RootLayout({
     <>
       <html lang="kr" className={fonts.variable} suppressHydrationWarning>
         <body className="font-custom min-h-full bg-white dark:bg-black text-black dark:text-white">
-          <ThemeProvider
-            defaultTheme="light"
-            storageKey="blog-Theme"
-            attribute="class"
-          >
-            <div className="mx-auto max-w-3xl px-6">
-              <div className="flex flex-col justify-between min-h-screen">
-                <Headers />
-                <Article>{children}</Article>
-                <Footer />
+          <StagewiseToolbar
+            config={{
+              plugins: [], // Add your custom plugins here
+            }}
+          />
+          <ApolloWrapper>
+            <ThemeProvider
+              defaultTheme="light"
+              storageKey="blog-Theme"
+              attribute="class"
+            >
+              <div className="mx-auto max-w-3xl px-6">
+                <div className="flex flex-col justify-between min-h-screen">
+                  <Headers />
+                  <Article>{children}</Article>
+                  <Footer />
+                </div>
               </div>
-            </div>
-          </ThemeProvider>
+            </ThemeProvider>
+          </ApolloWrapper>
         </body>
       </html>
     </>

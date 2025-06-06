@@ -10,4 +10,5 @@ export const getClient = new ApolloClient({
   link: new HttpLink({
     uri: `${baseUrl}/api/graphql`,
   }),
+  connectToDevTools: true,
 });

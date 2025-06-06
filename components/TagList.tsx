@@ -8,6 +8,8 @@ export default function TagList({ currTag, tagNames }: TagListProps) {
   const [activeTag, setActiveTag] = useState<string>(currTag);
   const router = useRouter();
 
+  //여기다가 client 구현을 해보자.
+
   const handleClick = useCallback(
     (tag: string) => {
       if (tag === currTag) return;

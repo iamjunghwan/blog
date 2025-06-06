@@ -48,4 +48,18 @@ export const resolvers = {
       return uniqueTags;
     },
   },
+
+  Mutation: {
+    updateArticle: async (
+      _: any,
+      { slug, title }: { slug: string; title: string }
+    ) => {
+      const updatedPost = await prisma.post.update({
+        where: { slug },
+        data: { title },
+      });
+
+      return updatedPost;
+    },
+  },
 };
