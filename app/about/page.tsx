@@ -1,6 +1,7 @@
 import "@/app/globals.css";
 import InnerHeader from "@/components/InnerHeader";
 import Image from "next/image";
+import { GithubIcon, MailIcon } from "@/components/social/index";
 
 export default function Page() {
   return (
@@ -15,6 +16,19 @@ export default function Page() {
             width={100}
             height={100}
           />
+          <h3 className="pt-4 pb-2 text-2xl font-bold leading-8 tracking-tight ">
+            Junghwan An
+          </h3>
+          <div>Software Engineer</div>
+          <div>Korea</div>
+          <div className="flex pt-4">
+            <a href="mailto:ahndks47@gmail.com" className="mr-4">
+              <MailIcon className="w-8 h-8" />
+            </a>
+            <a href="https://github.com/iamjunghwan">
+              <GithubIcon className="w-8 h-8" />
+            </a>
+          </div>
         </div>
 
         <div className="flex flex-col pl-4 pt-14">
