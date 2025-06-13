@@ -20,12 +20,12 @@ export default function InnerHeader({ title }: { title: string }) {
 
   return (
     <>
-      <div className="flex items-center justify-center pb-8">
+      <div className="flex items-center justify-center ">
         <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-center gap-2">
           {renderTitle()}
         </h1>
       </div>
-      <hr />
+      <div className="w-full h-px bg-gray-300 dark:bg-gray-700 my-6" />
     </>
   );
 }

@@ -1,4 +1,3 @@
-import "@/app/globals.css";
 import InnerHeader from "@/components/InnerHeader";
 import NotFound from "../../not-found";
 import Tags from "@/components/Tags";

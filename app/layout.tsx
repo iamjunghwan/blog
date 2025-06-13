@@ -5,6 +5,7 @@ import { ThemeProvider } from "next-themes";
 import { generateCommonMetadata } from "./utils/metadata";
 import Article from "@/components/Article";
 import { fonts } from "./utils/fonts";
+import { StagewiseToolbar } from "@stagewise/toolbar-next";
 
 export async function generateMetadata() {
   return generateCommonMetadata({
@@ -22,6 +23,12 @@ export default function RootLayout({
     <>
       <html lang="kr" className={fonts.variable} suppressHydrationWarning>
         <body className="font-custom min-h-full bg-white dark:bg-black text-black dark:text-white">
+          <StagewiseToolbar
+            config={{
+              plugins: [], // Add your custom plugins here
+            }}
+          />
+
           <ThemeProvider
             defaultTheme="light"
             storageKey="blog-Theme"

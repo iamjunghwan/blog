@@ -15,7 +15,7 @@ const Page = async () => {
   return (
     <>
       <InnerHeader title={`The Latest Article`} />
-      <ul className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+      <ul className="grid grid-cols-1 md:grid-cols-3 gap-8 ">
         {postData?.list
           ? postData.list.slice(0, 3).map((item: ApiItem, index: number) => (
               <li
