@@ -5,7 +5,7 @@ export default function NotFound() {
   return (
     <>
       <InnerHeader title={`404`} />
-      <hr />
+
       <div className="flex items-center justify-center flex-col mt-12">
         <div className="flex flex-col items-center justify-center mt-12">
           <p className="font-bold text-2xl">{"Can Not Find This Page !"}</p>
