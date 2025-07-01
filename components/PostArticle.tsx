@@ -1,8 +1,8 @@
-import dayjs from "dayjs";
 import { ApiItem, ApiResponse } from "@/type/index";
-import Link from "next/link";
-import Image from "next/image";
-import { imgCheck } from "@/app/utils/common";
+import CardDateArea from "./Card/CardDateArea";
+import CardTitleArea from "./Card/CardTitleArea";
+import CardTagsArea from "./Card/CardTagsArea";
+import CardImageArea from "./Card/CardImageArea";
 
 export default function PostArticle({ data }: { data: ApiResponse }) {
   return (
@@ -11,41 +11,19 @@ export default function PostArticle({ data }: { data: ApiResponse }) {
         <li key={index}>
           <article className=" flex flex-col sm:flex-row justify-start items-start sm:items-center gap-2">
             <div className="w-[400px]">
-              <h2 className="text-xl font-semibold mb-2">
-                <a
-                  className="text-gray-900 dark:text-gray-100 no-underline "
-                  href={`/${item.data.slug}`}
-                >
-                  {item.data.title.KO}
-                </a>
-              </h2>
-
-              <div className="flex flex-wrap gap-2 mb-2">
-                {item.data.tags.split(",").map((tag: string, i: number) => (
-                  <Link
-                    key={i}
-                    href={`/post/${tag}`}
-                    className="text-sm text-blue-600 uppercase no-underline"
-                  >
-                    {tag.trim()}
-                  </Link>
-                ))}
-              </div>
-
-              <time dateTime={item.createdAt} className="text-sm text-gray-500">
-                {dayjs(item.createdAt ?? "").format("YYYY-MM-DD")}
-              </time>
-            </div>
-
-            <div className="w-24 h-24 flex-shrink-0 overflow-hidden rounded-lg flex items-center">
-              <Image
-                src={imgCheck(item.data.content)}
-                alt="Post Representative Image"
-                width={96}
-                height={96}
-                className="object-cover rounded-lg"
+              <CardTitleArea
+                title={item.data.title.KO}
+                slug={`/${item.data.slug}`}
+                className={`flex`}
               />
+              <CardTagsArea tags={item.data.tags} />
+              <CardDateArea createdAt={item.createdAt} />
             </div>
+
+            <CardImageArea
+              content={item.data.content}
+              className="w-24 h-24 flex-shrink-0 overflow-hidden rounded-lg flex items-center"
+            />
           </article>
         </li>
       ))}

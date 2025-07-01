@@ -4,11 +4,24 @@
  *
  ****************************************/
 
-const CardTitleArea = ({ title }: { title: string }) => {
+interface CardTitleAreaProps {
+  title: string;
+  slug: string;
+  className?: string;
+}
+
+const CardTitleArea = ({
+  title,
+  className = "h-16 font-bold flex items-center justify-center",
+  slug,
+}: CardTitleAreaProps) => {
   return (
-    <div className=" h-16 font-bold flex items-center justify-center">
-      <h2 className="line-clamp-2 leading-tight text-base">{title}</h2>
+    <div className={className}>
+      <h2 className="line-clamp-2 leading-tight text-base text-xl font-semibold mb-2">
+        <a href={slug}>{title}</a>
+      </h2>
     </div>
   );
 };
+
 export default CardTitleArea;

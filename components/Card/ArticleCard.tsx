@@ -13,13 +13,11 @@ const ArticleCard = ({ getData }: { getData: ApiItem }) => {
   const { data, createdAt } = getData;
 
   return (
-    <a href={`/${data.slug}`}>
-      <article className="flex flex-col items-center w-full">
-        <CardDateArea createdAt={createdAt} />
-        <CardImageArea content={data.content} />
-        <CardTitleArea title={data.title.KO} />
-      </article>
-    </a>
+    <article className="flex flex-col items-center w-full">
+      <CardDateArea createdAt={createdAt} />
+      <CardImageArea content={data.content} />
+      <CardTitleArea title={data.title.KO} slug={data.slug} />
+    </article>
   );
 };
 

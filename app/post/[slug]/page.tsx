@@ -1,10 +1,9 @@
-import InnerHeader from "@/components/InnerHeader";
 import NotFound from "../../not-found";
-import Tags from "@/components/Tags";
 import { getTagsArticle } from "./service/getTagsArticle";
 import { generateStaticParams } from "@/app/lib/posts";
-import PostArticle from "@/components/PostArticle";
 import { helperCallApi } from "@/app/utils/helperCallApi";
+import { ApiResponse } from "@/type/index";
+import PostPageContent from "@/components/PostPageContent";
 
 export const revalidate = 3600;
 export const dynamic = "force-static";
@@ -17,7 +16,8 @@ export default async function Page({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  let postData;
+  let postData: ApiResponse = { list: [] };
+
   try {
     if (slug === "" || slug === "all") {
       postData = await helperCallApi();
@@ -28,11 +28,5 @@ export default async function Page({
     return <NotFound />;
   }
 
-  return (
-    <>
-      <InnerHeader title={`Posts ${slug} ${postData.list.length}`} />
-      <Tags currTag={slug} />
-      <PostArticle data={postData}></PostArticle>
-    </>
-  );
+  return <PostPageContent slug={slug} postData={postData} />;
 }
