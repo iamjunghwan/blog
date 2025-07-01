@@ -12,7 +12,7 @@ export default async function SlugPage({
 }) {
   const { slug } = await params;
 
-  let articleContent;
+  let articleContent: string = "";
   try {
     articleContent = await getArticleContent(slug);
   } catch (error) {
