@@ -2,10 +2,11 @@ import { ApiItem } from "@/type/index";
 import NotFound from "@/app/not-found";
 import { helperCallApi } from "@/app/utils/helperCallApi";
 import TagList from "./TagList";
+import { ApiResponse } from "@/type/index";
 import { TagsProps } from "@/type/index";
 
 const Tags = async ({ currTag }: TagsProps) => {
-  let postData;
+  let postData: ApiResponse = { list: [] };
   try {
     postData = await helperCallApi();
   } catch (error) {

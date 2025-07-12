@@ -15,7 +15,7 @@ export default function TagList({ currTag, tagNames }: TagListProps) {
       setActiveTag(tag);
       router.push(`/post/${tag}`);
     },
-    [activeTag]
+    [currTag, router]
   );
 
   return (
