@@ -1,9 +1,12 @@
+import { generateStaticParams } from "../lib/posts";
 import NotFound from "../not-found";
 import ArticleContent from "./components/ArticleContent";
 import { getArticleContent } from "./services/articleService";
 
 export const revalidate = 3600;
 export const dynamic = "force-static";
+
+export { generateStaticParams };
 
 export default async function SlugPage({
   params,

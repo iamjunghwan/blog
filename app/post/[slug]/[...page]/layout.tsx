@@ -1,4 +1,4 @@
-import { generateCommonMetadata } from "../../utils/metadata";
+import { generateCommonMetadata } from "../../../utils/metadata";
 
 export async function generateMetadata() {
   return generateCommonMetadata({

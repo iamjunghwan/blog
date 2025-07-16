@@ -13,7 +13,7 @@ export default function TagList({ currTag, tagNames }: TagListProps) {
       if (tag === currTag) return;
 
       setActiveTag(tag);
-      router.push(`/post/${tag}`);
+      router.push(`/post/${tag}/1`);
     },
     [currTag, router]
   );
