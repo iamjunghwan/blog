@@ -3,7 +3,6 @@ import { helperCallApi } from "../utils/helperCallApi";
 export const generateStaticParams = async () => {
   try {
     const data = await helperCallApi();
-    // console.log(data.list.map((obj) => ({ slug: obj.data.slug })));
     return data.list.map((obj) => ({ slug: obj.data.slug }));
   } catch (error) {
     console.log("building error in generateStaticParams", error);
@@ -42,7 +41,6 @@ export const generateStaticParamsWithPagination = async () => {
       }
     }
 
-    console.log("Generated params:", params);
     return params;
   } catch (error) {
     console.log("building error in generateStaticParamsWithPagination", error);
