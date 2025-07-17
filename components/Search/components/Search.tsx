@@ -60,7 +60,9 @@ function SearchModal({
                   className="flex justify-between w-full dark:text-gray-100 focus:bg-yellow-100 "
                 >
                   <div className="text-gray-400 text-sm">{item.createdAt}</div>
-                  <div className="dark:text-gray-500">{item.data.title.KO}</div>
+                  <div className="dark:text-gray-500 truncate ml-10 flex-1">
+                    {item.data.title.KO}
+                  </div>
                 </a>
               </div>
             ))
