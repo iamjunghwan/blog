@@ -1,7 +1,7 @@
 import "@/app/globals.css";
 import InnerHeader from "@/components/InnerHeader";
 import Image from "next/image";
-import { GithubIcon, MailIcon } from "@/components/Social/index";
+import { GithubIcon, MailIcon } from "@/components/social/index";
 
 export default function Page() {
   return (
