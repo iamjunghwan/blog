@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import Theme from "./Theme";
+import Search from "./Search/components/Search";
 
 export default function Header() {
   return (
@@ -29,6 +30,7 @@ export default function Header() {
           <Link className="p-4" href="/about">
             {"About"}
           </Link>
+          <Search />
           <Theme />
         </div>
       </div>
