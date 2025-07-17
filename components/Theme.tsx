@@ -23,7 +23,7 @@ const Theme = () => {
 
   return (
     <div className="p-4">
-      <button type="button" onClick={toggleTheme} aria-label="toggleTheme">
+      <button type="button" onClick={toggleTheme} aria-label="ThemeButton">
         {theme === "light" ? <LightMode /> : <DarkMode />}
       </button>
     </div>

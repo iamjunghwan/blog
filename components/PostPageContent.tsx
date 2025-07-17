@@ -1,5 +1,5 @@
 import InnerHeader from "@/components/InnerHeader";
-import Tags from "@/components/Tags";
+import Tags from "@/components/Tags/components/Tags";
 import PostArticle from "@/components/PostArticle/index";
 import { ApiResponse } from "@/type/index";
 
