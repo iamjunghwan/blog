@@ -1,5 +1,4 @@
-import { useState, useRef, useEffect } from "react";
-import { ApiResponse, ApiItem } from "@/type/index";
+import { useEffect } from "react";
 
 const focusableSelectors = `
   a[href],
@@ -16,15 +15,15 @@ const useSearchEvent = (
 ) => {
   useEffect(
     function eventSetByModalOpen() {
+      const modalContainer = modalContainerRef.current;
+      if (!modalContainer) return;
+
       if (searchInputRef.current !== null) {
         searchInputRef.current?.focus();
       }
 
       const handleKeyDown = (e: KeyboardEvent) => {
         if (e.key === "Tab") {
-          const modalContainer = modalContainerRef.current;
-          if (!modalContainer) return;
-
           const focusableElements = Array.from(
             modalContainer.querySelectorAll(focusableSelectors)
           );
@@ -55,11 +54,11 @@ const useSearchEvent = (
       };
 
       if (open) {
-        document.addEventListener("keydown", handleKeyDown);
+        modalContainer.addEventListener("keydown", handleKeyDown);
       }
 
       return () => {
-        document.removeEventListener("keydown", handleKeyDown);
+        modalContainer.removeEventListener("keydown", handleKeyDown);
       };
     },
     [open, onClose, modalContainerRef, searchInputRef]
