@@ -17,7 +17,7 @@ function SearchModal({
   const searchInputRef = useRef<HTMLInputElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-  const { postData, handleSearch } = useSearchData(open, searchInputRef);
+  const { filteredData, setSearchValue } = useSearchData(open, searchInputRef);
   useSearchEvent(open, modalContainerRef, searchInputRef, onClose);
 
   if (!open) {
@@ -42,15 +42,17 @@ function SearchModal({
           아티클 검색
         </div>
         <input
-          onChange={handleSearch}
+          onChange={(e) => setSearchValue(e.target.value)}
           ref={searchInputRef}
           type="search"
           placeholder="검색어를 입력하세요"
           className="w-full border rounded px-3 py-2 mb-4 "
         />
         <div className="text-gray-500 text-sm min-h-[400px] w-full">
-          {postData && Array.isArray(postData) && postData.length > 0 ? (
-            postData.map((item: ApiItem, idx: number) => (
+          {filteredData &&
+          Array.isArray(filteredData) &&
+          filteredData.length > 0 ? (
+            filteredData.map((item: ApiItem, idx: number) => (
               <div
                 key={idx}
                 className="flex cursor-pointer justify-between px-4 py-2 text-gray-700 dark:text-gray-100 bg-transparent hover:bg-yellow-100"

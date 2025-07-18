@@ -6,8 +6,8 @@ const useSearchData = (
   open: boolean,
   searchInputRef: React.RefObject<HTMLInputElement | null>
 ) => {
-  const [postData, setPostData] = useState<ApiItem[]>([]);
-  const [originalData, setOriginalData] = useState<ApiItem[]>([]);
+  const [customData, setCustomData] = useState<ApiItem[]>([]);
+  const [searchValue, setSearchValue] = useState<string>("");
 
   useEffect(
     function fetchDataByOpen() {
@@ -24,7 +24,7 @@ const useSearchData = (
         })
           .then((res) => res.json())
           .then(function (data) {
-            let customData = data.list.map((obj: ApiItem) => {
+            let _customData = data.list.map((obj: ApiItem) => {
               return {
                 createdAt: dayjs(obj.createdAt).format("YYYY-MM-DD"),
                 data: {
@@ -36,31 +36,19 @@ const useSearchData = (
               };
             });
 
-            setOriginalData(customData);
-            setPostData(customData);
+            setCustomData(_customData);
           });
       }
     },
     [open]
   );
-
-  const handleSearch = () => {
-    const searchValue = searchInputRef.current?.value || "";
-    if (searchValue === "") {
-      setPostData(originalData);
-      return;
-    }
-    const filteredData = originalData.filter((item: ApiItem) =>
-      item.data.title.KO.toLowerCase().includes(searchValue.toLowerCase())
-    );
-    setPostData(filteredData);
-  };
+  const filteredData = customData.filter((item: ApiItem) =>
+    item.data.title.KO.toLowerCase().includes(searchValue.toLowerCase())
+  );
 
   return {
-    postData,
-
-    setPostData,
-    handleSearch,
+    setSearchValue,
+    filteredData,
   };
 };
 export default useSearchData;
