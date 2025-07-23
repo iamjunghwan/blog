@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect } from "react";
-import { ApiResponse, ApiItem } from "@/type/index";
+import { useState, useEffect } from "react";
+import { ApiItem } from "@/type/index";
 import dayjs from "dayjs";
+import { useDebounce } from "./useDebounce";
 
 const useSearchData = (
   open: boolean,
@@ -8,6 +9,7 @@ const useSearchData = (
 ) => {
   const [customData, setCustomData] = useState<ApiItem[]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
+  const debouncedSearchValue = useDebounce(searchValue, 500);
 
   useEffect(
     function fetchDataByOpen() {
@@ -42,8 +44,11 @@ const useSearchData = (
     },
     [open]
   );
+
   const filteredData = customData.filter((item: ApiItem) =>
-    item.data.title.KO.toLowerCase().includes(searchValue.toLowerCase())
+    item.data.title.KO.toLowerCase().includes(
+      debouncedSearchValue.toLowerCase()
+    )
   );
 
   return {
