@@ -22,9 +22,9 @@ const ArticleList = ({ postData }: ArticleListProps) => {
         : null}
 
       {postData?.list && postData.list.length > 4 ? (
-        <li className="md:col-span-3 flex flex-col md:flex-row gap-8 pt-8 pb-12 items-stretch">
+        <li className="md:col-span-3 flex flex-col md:flex-row gap-2  items-stretch">
           {[postData.list[3], postData.list[4]].map((item, i) => (
-            <div key={i} className="flex-1 h-full">
+            <div key={i} className="flex-1 h-full pt-8 pb-12">
               <ArticleCard getData={item} />
             </div>
           ))}

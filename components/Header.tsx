@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Theme from "./Theme";
 import Search from "./Search/components/Search";
+import MenuToggleButton from "./MenuToggleButton";
 
 export default function Header() {
   return (
@@ -23,7 +24,7 @@ export default function Header() {
         </div>
       </Link>
       <div className="flex justify-between items-center">
-        <div className="flex items-center">
+        <div className="hidden sm:flex items-center">
           <Link className="p-4" href="/post/all/1">
             {"Posts"}
           </Link>
@@ -32,6 +33,11 @@ export default function Header() {
           </Link>
           <Search />
           <Theme />
+        </div>
+        <div className="sm:hidden flex items-center">
+          <Search />
+          <Theme />
+          <MenuToggleButton />
         </div>
       </div>
     </header>
