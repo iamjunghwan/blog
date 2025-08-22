@@ -4,7 +4,6 @@ import CardTitleArea from "../../Card/CardTitleArea";
 import CardTagsArea from "../../Card/CardTagsArea";
 import CardImageArea from "../../Card/CardImageArea";
 
-// 게시글 아이템 컴포넌트
 export const ArticleItem = ({ item }: { item: ApiItem }) => (
   <li>
     <article className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
