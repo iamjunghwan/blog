@@ -5,6 +5,7 @@ import { ApiItem } from "@/type/index";
 import useSearchData from "../hooks/useSearchData";
 import useSearchEvent from "../hooks/useSearchEvent";
 import SearchIcon from "../../../public/search.svg";
+import { useRouter } from "next/navigation";
 
 function SearchModal({
   open,
@@ -16,7 +17,7 @@ function SearchModal({
   const modalContainerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-
+  const router = useRouter();
   const { filteredData, setSearchValue } = useSearchData(open, searchInputRef);
   useSearchEvent(open, modalContainerRef, searchInputRef, onClose);
 
@@ -56,16 +57,16 @@ function SearchModal({
               <div
                 key={idx}
                 className="flex cursor-pointer justify-between px-4 py-2 text-gray-700 dark:text-gray-100 bg-transparent hover:bg-yellow-100"
+                tabIndex={0}
+                onClick={() => {
+                  onClose();
+                  router.push(`/${item.data.slug}`);
+                }}
               >
-                <a
-                  href={item.data.slug}
-                  className="flex justify-between w-full dark:text-gray-100 focus:bg-yellow-100 "
-                >
-                  <div className="text-gray-400 text-sm">{item.createdAt}</div>
-                  <div className="dark:text-gray-500 truncate ml-10 flex-1">
-                    {item.data.title.KO}
-                  </div>
-                </a>
+                <div className="text-gray-400 text-sm">{item.createdAt}</div>
+                <div className="dark:text-gray-500 truncate ml-10 flex-1">
+                  {item.data.title.KO}
+                </div>
               </div>
             ))
           ) : (
