@@ -1,8 +1,8 @@
 import { ApiItem } from "@/type/index";
-import CardDateArea from "../../Card/CardDateArea";
-import CardTitleArea from "../../Card/CardTitleArea";
-import CardTagsArea from "../../Card/CardTagsArea";
-import CardImageArea from "../../Card/CardImageArea";
+import CardDateArea from "../Card/CardDateArea";
+import CardTitleArea from "../Card/CardTitleArea";
+import CardTagsArea from "../Card/CardTagsArea";
+import CardImageArea from "../Card/CardImageArea";
 
 export const ArticleItem = ({ item }: { item: ApiItem }) => (
   <li>

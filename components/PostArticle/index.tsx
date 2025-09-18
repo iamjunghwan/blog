@@ -2,8 +2,8 @@
 
 import { ApiItem, ApiResponse } from "@/type/index";
 import { usePaginationState } from "./hooks/usePaginationState";
-import { ArticleList } from "./components/ArticleList";
-import { PaginationNavigation } from "./components/PaginationNavigation";
+import { ArticleList } from "./ArticleList";
+import { PaginationNavigation } from "./PaginationNavigation";
 
 export default function PostArticle({
   data,
