@@ -2,7 +2,7 @@
 
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
-import DarkMode from "../../public/DarkMode.svg";
+import DarkMode from "../../public/darkMode.svg";
 import LightMode from "../../public/lightMode.svg";
 
 const Theme = () => {
