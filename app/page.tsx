@@ -1,8 +1,8 @@
-import InnerHeader from "@/components/InnerHeader";
+import InnerHeader from "@/components/Layout/InnerHeader";
 import { ApiResponse } from "@/type/index";
 import NotFound from "./not-found";
 import { helperCallApi } from "./utils/helperCallApi";
-import ArticleList from "@/components/ArticleList";
+import MainArticleList from "@/components/MainArticleList";
 
 const Page = async () => {
   let postData: ApiResponse = { list: [] };
@@ -15,7 +15,7 @@ const Page = async () => {
   return (
     <>
       <InnerHeader title={`The Latest Article`} />
-      <ArticleList postData={postData} />
+      <MainArticleList postData={postData} />
     </>
   );
 };

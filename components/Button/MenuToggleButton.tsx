@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import MenuToggle from "../public/MenuToggle.svg";
+import MenuToggle from "../../public/MenuToggle.svg";
 
 const MenuToggleButton = () => {
   const [isOpen, setIsOpen] = useState(false);

@@ -1,4 +1,4 @@
-import InnerHeader from "@/components/InnerHeader";
+import InnerHeader from "@/components/Layout/InnerHeader";
 import Link from "next/link";
 
 export default function NotFound() {

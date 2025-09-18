@@ -1,11 +1,11 @@
 import ArticleCard from "@/components/Card/ArticleCard";
 import { ApiItem, ApiResponse } from "@/type/index";
 
-interface ArticleListProps {
+interface MainArticleListProps {
   postData: ApiResponse;
 }
 
-const ArticleList = ({ postData }: ArticleListProps) => {
+const MainArticleList = ({ postData }: MainArticleListProps) => {
   return (
     <ul className="grid grid-cols-1 md:grid-cols-3 gap-8 ">
       {postData?.list
@@ -34,4 +34,4 @@ const ArticleList = ({ postData }: ArticleListProps) => {
   );
 };
 
-export default ArticleList;
+export default MainArticleList;

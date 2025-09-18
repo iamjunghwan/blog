@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import Theme from "./Theme";
-import Search from "./Search/components/Search";
-import MenuToggleButton from "./MenuToggleButton";
+import Theme from "../Button/Theme";
+import Search from "../Search/components/Search";
+import MenuToggleButton from "../Button/MenuToggleButton";
 
 export default function Header() {
   return (

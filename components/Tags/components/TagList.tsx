@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { TagListProps } from "@/type/index";
 
@@ -8,15 +8,12 @@ export default function TagList({ currTag, tagNames }: TagListProps) {
   const [activeTag, setActiveTag] = useState(currTag);
   const router = useRouter();
 
-  const handleClick = useCallback(
-    (tag: string) => {
-      if (tag === currTag) return;
+  const handleClick = (tag: string) => {
+    if (tag === currTag) return;
 
-      setActiveTag(tag);
-      router.push(`/post/${tag}/1`);
-    },
-    [currTag, router]
-  );
+    setActiveTag(tag);
+    router.push(`/post/${tag}/1`);
+  };
 
   return (
     <div className="w-full flex overflow-x-auto space-x-1 whitespace-nowrap mt-4 pb-2 px-2">

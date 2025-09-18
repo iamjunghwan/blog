@@ -1,9 +1,9 @@
 import "./globals.css";
-import Headers from "../components/Header";
-import Footer from "../components/Footer";
+import Headers from "../components/Layout/Header";
+import Footer from "../components/Layout/Footer";
 import { ThemeProvider } from "next-themes";
 import { generateCommonMetadata } from "./utils/metadata";
-import Article from "@/components/Article";
+import Article from "@/components/Layout/Article";
 import { fonts } from "./utils/fonts";
 
 export async function generateMetadata() {
