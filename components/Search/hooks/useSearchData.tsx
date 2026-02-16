@@ -3,10 +3,7 @@ import { ApiItem } from "@/type/index";
 import dayjs from "dayjs";
 import { useDebounce } from "./useDebounce";
 
-const useSearchData = (
-  open: boolean,
-  searchInputRef: React.RefObject<HTMLInputElement | null>
-) => {
+const useSearchData = (open: boolean) => {
   const [customData, setCustomData] = useState<ApiItem[]>([]);
   const [searchValue, setSearchValue] = useState<string>("");
   const debouncedSearchValue = useDebounce(searchValue, 500);

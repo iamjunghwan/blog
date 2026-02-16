@@ -18,7 +18,7 @@ function SearchModal({
   const searchInputRef = useRef<HTMLInputElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
-  const { filteredData, setSearchValue } = useSearchData(open, searchInputRef);
+  const { filteredData, setSearchValue } = useSearchData(open);
   useSearchEvent(open, modalContainerRef, searchInputRef, onClose);
 
   if (!open) {
