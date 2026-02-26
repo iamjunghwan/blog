@@ -209,3 +209,23 @@ ul {
 li::marker {
   color: #9ca3af;
 }
+
+.toc {
+  background-color: #f9fafb;
+  border-left: 4px solid #3b82f6;
+  padding: 20px 24px;
+  margin-bottom: 40px;
+}
+
+html.dark .toc {
+  background-color: #111827;
+  border-left: 4px solid #3b82f6;
+}
+
+html.dark .toc h2 {
+  color: #f3f4f6;
+}
+
+html.dark .toc a {
+  color: #60a5fa;
+}
