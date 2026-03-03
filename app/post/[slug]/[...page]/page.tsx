@@ -1,8 +1,11 @@
+import { generateStaticParams } from "../../../lib/posts";
 import NotFound from "../../../not-found";
 import { getTagsArticle } from "./service/getTagsArticle";
 import { helperCallApi } from "@/app/utils/helperCallApi";
 import { ApiResponse } from "@/type/index";
 import PostPageContent from "@/components/PostPageContent";
+
+export { generateStaticParams };
 
 // 데이터 페칭 로직
 const fetchPostData = async (slug: string): Promise<ApiResponse> => {
