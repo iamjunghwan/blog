@@ -5,6 +5,31 @@ import { helperCallApi } from "@/app/utils/helperCallApi";
 import { ApiResponse,ApiItem } from "@/type/index";
 import PostPageContent from "@/components/PostPageContent";
 
+interface Item {
+    slug: string;
+    content?: string;
+    title?: {
+      KO?: string;
+    };
+    tags?: string;
+  }
+export async function generateStaticParams() {
+  const response = await helperCallApi(); 
+  
+  const posts = response.list;
+  
+  if (!Array.isArray(posts)) {
+    return [];
+  }
+ return posts.flatMap(post => {
+    const totalPages = Math.ceil(posts.length / 5);
+    return Array.from({ length: totalPages }).map((_, i) => ({
+      slug: post.data.slug,
+      page: [(i + 1).toString()]
+    }));
+  });
+}
+
 // 데이터 페칭 로직
 const fetchPostData = async (slug: string): Promise<ApiResponse> => {
   if (slug === "" || slug === "all") {
