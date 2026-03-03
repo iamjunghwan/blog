@@ -6,15 +6,15 @@ import { ApiResponse } from "@/type/index";
 import PostPageContent from "@/components/PostPageContent";
 
 export async function generateStaticParams() {
-  const response = await helperCallApi(); // Memex에서 전체 글 목록 가져오기
-  const posts = response.list; // 배열 꺼내기
+  const response = await helperCallApi(); 
+  const posts = response.list;
 
   if (!Array.isArray(posts)) {
     return [];
   }
   return posts.map((post:any) => ({
     slug: post.data.slug,
-    page: ['1'], // 최소 1페이지라도 만들어줘야 함
+    page: ['1'], 
   }));
 }
 
