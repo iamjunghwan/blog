@@ -1,11 +1,22 @@
-import { generateStaticParams } from "../../../lib/posts";
+
 import NotFound from "../../../not-found";
 import { getTagsArticle } from "./service/getTagsArticle";
 import { helperCallApi } from "@/app/utils/helperCallApi";
 import { ApiResponse } from "@/type/index";
 import PostPageContent from "@/components/PostPageContent";
 
-export { generateStaticParams };
+export async function generateStaticParams() {
+  const response = await helperCallApi(); // Memex에서 전체 글 목록 가져오기
+  const posts = response.list; // 배열 꺼내기
+
+  if (!Array.isArray(posts)) {
+    return [];
+  }
+  return posts.map((post:any) => ({
+    slug: post.data.slug,
+    page: ['1'], // 최소 1페이지라도 만들어줘야 함
+  }));
+}
 
 // 데이터 페칭 로직
 const fetchPostData = async (slug: string): Promise<ApiResponse> => {
