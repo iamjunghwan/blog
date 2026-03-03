@@ -2,7 +2,7 @@
 import NotFound from "../../../not-found";
 import { getTagsArticle } from "./service/getTagsArticle";
 import { helperCallApi } from "@/app/utils/helperCallApi";
-import { ApiResponse } from "@/type/index";
+import { ApiResponse,ApiItem } from "@/type/index";
 import PostPageContent from "@/components/PostPageContent";
 
 export async function generateStaticParams() {
@@ -12,7 +12,7 @@ export async function generateStaticParams() {
   if (!Array.isArray(posts)) {
     return [];
   }
-  return posts.map((post:any) => ({
+  return posts.map((post:ApiItem) => ({
     slug: post.data.slug,
     page: ['1'], 
   }));
