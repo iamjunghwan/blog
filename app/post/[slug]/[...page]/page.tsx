@@ -5,16 +5,24 @@ import { helperCallApi } from "@/app/utils/helperCallApi";
 import { ApiResponse,ApiItem } from "@/type/index";
 import PostPageContent from "@/components/PostPageContent";
 
+interface Item {
+    slug: string;
+    content?: string;
+    title?: {
+      KO?: string;
+    };
+    tags?: string;
+  }
 export async function generateStaticParams() {
   const response = await helperCallApi(); 
+  
   const posts = response.list;
-
+  
   if (!Array.isArray(posts)) {
     return [];
   }
-  return posts.map((post:ApiItem) => ({
-    slug: post.data.slug,
-    page: ['1'], 
+  return response.list.map((item) => ({
+    slug: item.data.slug,
   }));
 }
 
