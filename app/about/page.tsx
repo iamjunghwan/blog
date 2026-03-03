@@ -9,7 +9,7 @@ export default function Page() {
       <InnerHeader title={`About`} />
       <main className="grid [grid-template-columns:1fr_2.5fr] max-[500px]:flex max-[500px]:flex-col">
         <section className="pt-6 flex flex-col items-center">
-          <Image
+          <img
             src="/iaman.png"
             alt="Junghwan An profile picture"
             className="w-[10rem] h-[10rem] rounded-full mr-2"

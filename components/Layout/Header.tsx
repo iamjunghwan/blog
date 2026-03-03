@@ -9,7 +9,7 @@ export default function Header() {
     <header className="pt-10 pb-10 flex justify-between items-center">
       <Link href="/">
         <div className="flex items-center">
-          <Image
+          <img
             src="/iaman.png"
             alt="blog logo"
             className="w-10 h-10 rounded-full mr-2"

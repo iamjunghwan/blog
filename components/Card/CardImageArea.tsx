@@ -27,7 +27,7 @@ const CardImageArea = ({
 }: CardImageAreaProps) => {
   return (
     <div className={className}>
-      <Image
+      <img
         src={imgCheck(content)}
         alt={alt}
         width={width}

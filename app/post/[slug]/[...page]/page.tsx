@@ -21,13 +21,22 @@ export async function generateStaticParams() {
   if (!Array.isArray(posts)) {
     return [];
   }
- return posts.flatMap(post => {
+
+ const postParams = posts.flatMap(post => {
     const totalPages = Math.ceil(posts.length / 5);
     return Array.from({ length: totalPages }).map((_, i) => ({
       slug: post.data.slug,
       page: [(i + 1).toString()]
     }));
   });
+
+  // 임시 조치
+  postParams.push({
+    slug: "all",
+    page: ["1"],
+  });
+
+  return postParams;
 }
 
 // 데이터 페칭 로직
