@@ -22,19 +22,22 @@ export async function generateStaticParams() {
     return [];
   }
 
+ const totalPages = Math.ceil(posts.length / 5);
  const postParams = posts.flatMap(post => {
-    const totalPages = Math.ceil(posts.length / 5);
     return Array.from({ length: totalPages }).map((_, i) => ({
       slug: post.data.slug,
       page: [(i + 1).toString()]
     }));
   });
 
-  // 임시 조치
-  postParams.push({
-    slug: "all",
-    page: ["1"],
-  });
+  
+  // 임시 조치 (정적 URL) 예 : post/all/1
+  for(let i=1 ; i <= totalPages ; i++){
+      postParams.push({
+      slug: "all",
+      page: [`${i}`],
+    });
+  }
 
   return postParams;
 }
