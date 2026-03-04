@@ -1,92 +1,92 @@
-name: Deploy to Amazon ECS
+# name: Deploy to Amazon ECS
 
-on:
-  push:
-    branches: ["main"]
+# on:
+#   push:
+#     branches: ["main"]
 
-permissions:
-  contents: read
+# permissions:
+#   contents: read
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [22.12.0]
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+#     strategy:
+#       matrix:
+#         node-version: [22.12.0]
 
-    steps:
-      - name: Checkout Branch
-        uses: actions/checkout@v3
+#     steps:
+#       - name: Checkout Branch
+#         uses: actions/checkout@v3
 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: "npm"
+#       - name: Use Node.js ${{ matrix.node-version }}
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: ${{ matrix.node-version }}
+#           cache: "npm"
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: latest
+#       - name: Setup pnpm
+#         uses: pnpm/action-setup@v2
+#         with:
+#           version: latest
 
-      - name: Cache pnpm store
-        uses: actions/cache@v4
-        with:
-          path: ~/.pnpm-store
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+#       - name: Cache pnpm store
+#         uses: actions/cache@v4
+#         with:
+#           path: ~/.pnpm-store
+#           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+#           restore-keys: |
+#             ${{ runner.os }}-pnpm-store-
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+#       - name: Install dependencies
+#         run: pnpm install --frozen-lockfile
 
-      - name: Create .env.production file
-        run: |
-          echo "API_TOKEN=${{ secrets.API_TOKEN }}" >> .env.production
-          echo "GA_MEASURE_ID=${{ secrets.GA_MEASURE_ID }}" >> .env.production
+#       - name: Create .env.production file
+#         run: |
+#           echo "API_TOKEN=${{ secrets.API_TOKEN }}" >> .env.production
+#           echo "GA_MEASURE_ID=${{ secrets.GA_MEASURE_ID }}" >> .env.production
 
-      - name: Build
-        run: pnpm run build
+#       - name: Build
+#         run: pnpm run build
 
-      - name: Make Directory for deliver
-        run: mkdir blog
+#       - name: Make Directory for deliver
+#         run: mkdir blog
 
-      - name: Make frontend.tar.gz
-        run: |
-          sudo timedatectl set-timezone Asia/Seoul
-          tar cvfPz ./blog/frontend_`date "+%Y%m%d%H%M"`.tar.gz --exclude=./blog .
+#       - name: Make frontend.tar.gz
+#         run: |
+#           sudo timedatectl set-timezone Asia/Seoul
+#           tar cvfPz ./blog/frontend_`date "+%Y%m%d%H%M"`.tar.gz --exclude=./blog .
 
-      - name: Extract Env From Branch
-        run: |
-          BRANCH=${GITHUB_REF#refs/heads/}
-          echo "env=$(echo ${BRANCH})" >> $GITHUB_OUTPUT
-        id: branch
+#       - name: Extract Env From Branch
+#         run: |
+#           BRANCH=${GITHUB_REF#refs/heads/}
+#           echo "env=$(echo ${BRANCH})" >> $GITHUB_OUTPUT
+#         id: branch
 
-      - name: Remove Existing Files
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          port: 22
-          script: |
-            /bin/rm -rf /home/${{ secrets.EC2_USER }}/blog/*
+#       - name: Remove Existing Files
+#         uses: appleboy/ssh-action@master
+#         with:
+#           host: ${{ secrets.EC2_HOST }}
+#           username: ${{ secrets.EC2_USER }}
+#           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+#           port: 22
+#           script: |
+#             /bin/rm -rf /home/${{ secrets.EC2_USER }}/blog/*
 
-      - name: Upload Tar File
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          source: ./blog/frontend_*.tar.gz
-          target: /home/${{ secrets.EC2_USER }}/blog/
-          strip_components: 1 # blog1
+#       - name: Upload Tar File
+#         uses: appleboy/scp-action@master
+#         with:
+#           host: ${{ secrets.EC2_HOST }}
+#           username: ${{ secrets.EC2_USER }}
+#           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+#           source: ./blog/frontend_*.tar.gz
+#           target: /home/${{ secrets.EC2_USER }}/blog/
+#           strip_components: 1 # blog1
 
-      - name: Execute run_blog_start.sh on Server
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          script: |
-            /home/${{ secrets.EC2_USER }}/script/run_blog_start.sh
+#       - name: Execute run_blog_start.sh on Server
+#         uses: appleboy/ssh-action@master
+#         with:
+#           host: ${{ secrets.EC2_HOST }}
+#           username: ${{ secrets.EC2_USER }}
+#           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+#           script: |
+#             /home/${{ secrets.EC2_USER }}/script/run_blog_start.sh
