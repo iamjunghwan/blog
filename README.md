@@ -5,11 +5,14 @@ https://iaman.kr/
 # Structure
 
 Next.js
+
 pnpm
+
 output: export
+
 Cloudflare Pages
 
-## 기능
+## Features
 
 - 반응형 웹
   - 메인 화면 글들은 최신 5개 글만 보여주기, 윗줄은 아티클 3개 아랫줄은 아티클 2개
