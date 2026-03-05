@@ -18,7 +18,7 @@ export default function Footer() {
     <footer>
       <div className="pt-10 pb-10 flex flex-col items-center">
         <div className="flex">
-          <div className="mr-2"> © 2025</div>
+          <div className="mr-2"> © 2026</div>
           <div className="w-px bg-[#d3d5d7] mx-2"></div>
           <div className="mr-2"> iaman </div>
           <div className="w-px bg-[#d3d5d7] mx-2"></div>
