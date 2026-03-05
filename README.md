@@ -2,11 +2,11 @@
 
 https://iaman.kr/
 
-# Deploy
-Next.js build
-   ↓
-  out
-   ↓
+# Structure
+
+Next.js
+pnpm
+output: export
 Cloudflare Pages
 
 ## 기능
