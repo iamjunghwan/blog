@@ -54,7 +54,7 @@ export async function generateStaticParams() {
     for (let i = 1; i <= pages; i++) {
       totSlugList.push({
         slug: tag,
-        page: [String(i)],
+        page: [`${i}`],
       });
     }
   }

@@ -19,7 +19,7 @@ const CardTagsArea = ({
   return (
     <div className={className}>
       {tags.split(",").map((tag: string, i: number) => (
-        <Link key={i} href={`/post/${tag}`} className={linkClassName}>
+        <Link key={i} href={`/post/${tag}/1`} className={linkClassName}>
           {tag.trim()}
         </Link>
       ))}
