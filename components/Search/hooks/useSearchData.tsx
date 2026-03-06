@@ -11,16 +11,19 @@ const useSearchData = (open: boolean) => {
   useEffect(
     function fetchDataByOpen() {
       if (open) {
-        fetch("/api/search", {
+        fetch("https://api.memexdata.io/memex/api/projects/0e9c148b/models/blog/contents/search/v2", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json" ,
+            "Access-Token": process.env.NEXT_PUBLIC_API_TOKEN || "", // 환경변수 사용
+          },
           body: JSON.stringify({
             size: 20,
             page: 0,
             direction: "DESC",
             orderCond: { type: "DATE_CREATE" },
           }),
-        })
+        }) 
           .then((res) => res.json())
           .then(function (data) {
             let _customData = data.list.map((obj: ApiItem) => {
@@ -34,9 +37,8 @@ const useSearchData = (open: boolean) => {
                 },
               };
             });
-
-            setCustomData(_customData);
-          });
+         setCustomData(_customData);
+       });
       }
     },
     [open]
