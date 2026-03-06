@@ -2,15 +2,23 @@
 
 https://iaman.kr/
 
-# Structure
+## Structure
 
 Next.js
+   ↓
+pnpm build
+   ↓
+정적 HTML 생성
+   ↓
+out/ 폴더 생성
+   ↓
+Cloudflare Pages ( CDN 업로드 )
 
-pnpm
+## Command
 
-output: export
-
-Cloudflare Pages
+pnpm build
+   ↓
+npx serve out
 
 ## Features
 
