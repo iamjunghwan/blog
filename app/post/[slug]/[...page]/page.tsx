@@ -9,7 +9,7 @@ export async function generateStaticParams() {
   const response = await helperCallApi(); 
   
   const posts = response.list;
-  //console.log(posts[0])
+
   if (!Array.isArray(posts)) {
     return [];
   }
