@@ -51,3 +51,25 @@ test("이미지가 없으면 기본 이미지를 쓴다", () => {
   assert.equal(thumbnailOf({ body: "# 제목\n\n이미지 없음" }), DEFAULT_THUMBNAIL);
   assert.equal(DEFAULT_THUMBNAIL, "/iaman.png");
 });
+
+test("코드 펜스 안의 markdown 이미지는 무시한다", () => {
+  const body = [
+    "# 제목",
+    "",
+    "```markdown",
+    "![예시](/uploads/in-code.png)",
+    "```",
+    "",
+    "![실제](/uploads/real.png)",
+  ].join("\n");
+
+  assert.equal(thumbnailOf({ body }), "/uploads/real.png");
+});
+
+test("코드 펜스 안의 raw img도 무시한다", () => {
+  const body = ["# 제목", "", "~~~html", '<img src="/uploads/in-code.png">', "~~~"].join(
+    "\n"
+  );
+
+  assert.equal(thumbnailOf({ body }), DEFAULT_THUMBNAIL);
+});
