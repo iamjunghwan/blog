@@ -35,6 +35,7 @@
 | 파일 | 책임 |
 |---|---|
 | `types.ts` | `PostMeta`, `Post`, `SearchEntry` 타입 |
+| `constants.ts` | `ALL_TAG`. `parse.ts`와 `queries.ts`가 **둘 다 아래로** 의존하는 중립 모듈. 상수를 `queries.ts`에 두면 수집 계층(`parse`)이 조회 계층(`queries`)에 의존하게 되어 파이프라인 방향이 뒤집힌다 |
 | `parse.ts` | md 문자열 → `Post`. frontmatter 검증. **fs를 모르는 순수 함수** |
 | `thumbnail.ts` | `Post` → 대표 이미지 경로. 순수 함수 |
 | `render.ts` | md 본문 → HTML (`markdown-it` → 기존 `processHtml`) |
@@ -260,7 +261,7 @@ export type SearchEntry = Pick<PostMeta, "slug" | "title" | "date" | "tags">;
 ```ts
 import matter from "gray-matter";
 import type { Post } from "@/app/lib/posts/types";
-import { ALL_TAG } from "@/app/lib/posts/queries";
+import { ALL_TAG } from "@/app/lib/posts/constants";
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -1210,6 +1211,12 @@ test("postListParams는 all과 실제 태그만 라우트로 만든다", () => {
   for (const slug of slugs) {
     assert.ok(allowed.has(slug), `허용되지 않은 목록 라우트 slug: ${slug}`);
   }
+
+  // 소속 검사만으로는 중복 라우트를 못 잡는다. 같은 (slug, page)가 두 번 나오면
+  // 사이트맵에 중복 URL이 실린다 — 원래 버그와 같은 부류의 증상이다.
+  const keys = postListParams(POSTS).map(({ slug, page }) => `${slug}/${page[0]}`);
+
+  assert.equal(new Set(keys).size, keys.length, `중복 라우트: ${keys.join(", ")}`);
 });
 
 test("postListUrls는 사이트맵용 경로 문자열을 준다", () => {
@@ -1237,16 +1244,13 @@ Expected: FAIL — `Cannot find module '@/app/lib/posts/queries'`
 
 ```ts
 import type { Post, SearchEntry } from "@/app/lib/posts/types";
+import { ALL_TAG } from "@/app/lib/posts/constants";
 
 /** 목록 한 페이지에 보여줄 글 수. 이 값만 쓴다. */
 export const PAGE_SIZE = 5;
 
-/**
- * 목록 라우트에서 전체를 뜻하는 slug. 예약어다.
- * 글이 이 이름을 태그로 쓰면 그 태그로는 필터가 불가능해지고 라우트도 중복 생성되므로,
- * `parse.ts`가 frontmatter 단계에서 이 값을 태그로 쓰는 것을 거부한다.
- */
-export const ALL_TAG = "all";
+// ALL_TAG는 constants.ts에 있다. parse.ts도 같은 값을 필요로 하는데, 여기에 두면
+// 수집 계층이 조회 계층에 의존하게 되어 파이프라인 방향이 뒤집힌다.
 
 export function postBySlug(posts: Post[], slug: string): Post | undefined {
   return posts.find((post) => post.slug === slug);
