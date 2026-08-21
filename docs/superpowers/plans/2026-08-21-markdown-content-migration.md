@@ -1792,6 +1792,7 @@ git commit -m "feat: 홈과 카드 컴포넌트를 Post 타입으로 전환"
 
 **Files:**
 - Modify: `app/post/[slug]/[...page]/page.tsx` (전체 교체)
+- Modify: `app/[slug]/page.tsx` (404 관용구만 `notFound()`로 통일)
 - Modify: `components/PostPageContent.tsx` (전체 교체)
 - Modify: `components/PostArticle/index.tsx` (전체 교체)
 - Modify: `components/PostArticle/ArticleList.tsx` (전체 교체)
@@ -1818,8 +1819,17 @@ git commit -m "feat: 홈과 카드 컴포넌트를 Post 타입으로 전환"
 
 - [ ] **Step 1: `app/post/[slug]/[...page]/page.tsx` 교체**
 
+**404 관용구 통일:** 기존 코드는 `not-found.tsx`의 컴포넌트를 직접 import해 `return <NotFound />`
+했다. 이건 그 JSX를 **일반 페이지 본문으로 렌더**해서 HTTP 200을 준다. `next/navigation`의
+`notFound()`는 프레임워크가 잡아 가장 가까운 `not-found.tsx`를 **404 상태로** 렌더한다.
+
+`output: "export"`에서는 이 경로가 프로덕션에서 도달 불가능하다 — `generateStaticParams`가
+돌려준 slug만 파일이 되고, 없는 주소는 Cloudflare가 `out/404.html`로 처리한다. 그래도
+`next dev`에서 상태 코드가 맞고 관용구가 하나로 통일되므로 `notFound()`를 쓴다.
+`app/[slug]/page.tsx`(Task 6)도 같은 방식으로 맞춘다.
+
 ```tsx
-import NotFound from "../../../not-found";
+import { notFound } from "next/navigation";
 import PostPageContent from "@/components/PostPageContent";
 import { allPosts } from "@/app/lib/posts/repository";
 import { paginate, postListParams, postsByTag } from "@/app/lib/posts/queries";
@@ -1837,14 +1847,14 @@ export default async function Page({
   const pageNumber = Number(page[0]);
 
   if (!Number.isInteger(pageNumber) || pageNumber < 1) {
-    return <NotFound />;
+    notFound();
   }
 
   const tagged = postsByTag(allPosts(), slug);
   const { items, totalPages } = paginate(tagged, pageNumber);
 
   if (items.length === 0) {
-    return <NotFound />;
+    notFound();
   }
 
   return (
@@ -2376,6 +2386,9 @@ Expected:
 - `<lastmod>`에 각 글 날짜가 들어 있다
 - **콤마가 포함된 URL이 없다**
 - `out/robots.txt`가 `Sitemap: https://iaman.kr/sitemap.xml`을 가리킨다
+- **`out/404.html`이 생성되어 있다.** 정적 export에서 없는 주소의 유일한 404 경로가 이 파일이다
+  (페이지 함수의 `notFound()` 분기는 빌드 타임에 도달하지 않는다 — `generateStaticParams`가
+  돌려준 slug만 렌더되므로). Cloudflare Pages가 이 파일을 404 상태로 서빙한다
 
 ```bash
 grep -c "," out/sitemap.xml
