@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { ApiItem } from "@/type/index";
+import type { SearchEntry } from "@/app/lib/posts/types";
 import useSearchData from "../hooks/useSearchData";
 import useSearchEvent from "../hooks/useSearchEvent";
 import SearchIcon from "../../../public/search.svg";
@@ -10,15 +10,17 @@ import { useRouter } from "next/navigation";
 function SearchModal({
   open,
   onClose,
+  index,
 }: {
   open: boolean;
   onClose: () => void;
+  index: SearchEntry[];
 }) {
   const modalContainerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
-  const { filteredData, setSearchValue } = useSearchData(open);
+  const { filteredData, setSearchValue } = useSearchData(index);
   useSearchEvent(open, modalContainerRef, searchInputRef, onClose);
 
   if (!open) {
@@ -53,19 +55,19 @@ function SearchModal({
           {filteredData &&
           Array.isArray(filteredData) &&
           filteredData.length > 0 ? (
-            filteredData.map((item: ApiItem, idx: number) => (
+            filteredData.map((item: SearchEntry, idx: number) => (
               <div
                 key={idx}
                 className="flex cursor-pointer justify-between px-4 py-2 text-gray-700 dark:text-gray-100 bg-transparent hover:bg-yellow-100"
                 tabIndex={0}
                 onClick={() => {
                   onClose();
-                  router.push(`/${item.data.slug}`);
+                  router.push(`/${item.slug}`);
                 }}
               >
-                <div className="text-gray-400 text-sm">{item.createdAt}</div>
+                <div className="text-gray-400 text-sm">{item.date}</div>
                 <div className="dark:text-gray-500 truncate ml-10 flex-1">
-                  {item.data.title.KO}
+                  {item.title}
                 </div>
               </div>
             ))
@@ -80,7 +82,7 @@ function SearchModal({
   );
 }
 
-const Search = () => {
+const Search = ({ index }: { index: SearchEntry[] }) => {
   const [isSearchPopupOpen, setIsSearchPopupOpen] = useState(false);
 
   const handleSearchPopup = () => {
@@ -102,7 +104,11 @@ const Search = () => {
           <SearchIcon className="w-6 h-6" />
         </button>
       </div>
-      <SearchModal open={isSearchPopupOpen} onClose={handleClose} />
+      <SearchModal
+        open={isSearchPopupOpen}
+        onClose={handleClose}
+        index={index}
+      />
     </>
   );
 };
