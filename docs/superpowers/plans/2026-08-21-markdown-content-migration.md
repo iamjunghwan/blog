@@ -204,7 +204,14 @@ test("tags가 배열이 아니면 에러를 던진다", () => {
 test("tags가 비어 있으면 에러를 던진다", () => {
   const source = VALID.replace("tags: [nextjs, react]", "tags: []");
 
-  assert.throws(() => parsePost(source, "broken.md"), /broken\.md.*tags/);
+  assert.throws(() => parsePost(source, "broken.md"), /broken.md.*tags/);
+});
+
+test("예약어 all은 태그로 쓸 수 없다", () => {
+  // /post/all/1 이 전체 목록 라우트라 태그 이름으로 쓰면 그 태그를 필터할 수 없다.
+  const source = VALID.replace("tags: [nextjs, react]", "tags: [nextjs, all]");
+
+  assert.throws(() => parsePost(source, "broken.md"), /broken.md.*all/);
 });
 ```
 
@@ -253,6 +260,7 @@ export type SearchEntry = Pick<PostMeta, "slug" | "title" | "date" | "tags">;
 ```ts
 import matter from "gray-matter";
 import type { Post } from "@/app/lib/posts/types";
+import { ALL_TAG } from "@/app/lib/posts/queries";
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -317,6 +325,14 @@ function requireTags(value: unknown, fileName: string): string[] {
   if (tags.length === 0) {
     throw new Error(`${fileName}: frontmatter의 'tags'가 비어 있습니다.`);
   }
+
+  // 'all'은 전체 목록 라우트(/post/all/1)가 쓰는 예약어다. 태그로 허용하면 그 태그로는
+  // 필터가 불가능해지고 목록 라우트도 중복 생성된다. 조용히 무시하지 않고 빌드를 세운다.
+  if (tags.includes(ALL_TAG)) {
+    throw new Error(
+      `${fileName}: '${ALL_TAG}'는 전체 목록 라우트가 쓰는 예약어라 태그로 쓸 수 없습니다.`
+    );
+  }
   return tags;
 }
 ```
@@ -327,7 +343,7 @@ function requireTags(value: unknown, fileName: string): string[] {
 pnpm test
 ```
 
-Expected: PASS — 10 tests
+Expected: PASS — 11 tests
 
 - [ ] **Step 9: 커밋**
 
@@ -597,7 +613,7 @@ function stripFencedBlocks(body: string): string {
 pnpm test
 ```
 
-Expected: PASS — 앞선 10개 + 14개 = 24개
+Expected: PASS — 앞선 11개 + 14개 = 25개
 
 - [ ] **Step 5: 커밋**
 
@@ -1151,6 +1167,17 @@ test("paginate는 빈 목록에도 totalPages 1을 준다", () => {
   assert.equal(result.totalPages, 1);
 });
 
+test("paginate는 유효하지 않은 page에 빈 배열을 준다", () => {
+  // 가드가 없으면 slice의 음수 인덱스 때문에 page=-1이 최신 글 2개를 돌려준다.
+  assert.deepEqual(paginate(POSTS, 0).items, []);
+  assert.deepEqual(paginate(POSTS, -1).items, []);
+  assert.deepEqual(paginate(POSTS, 1.5).items, []);
+  assert.deepEqual(paginate(POSTS, Number.NaN).items, []);
+
+  // totalPages는 여전히 알려준다 (전체 개수 정보는 유효하다)
+  assert.equal(paginate(POSTS, -1).totalPages, 2);
+});
+
 test("searchIndex는 본문을 제외한다", () => {
   const [first] = searchIndex(POSTS);
 
@@ -1171,12 +1198,18 @@ test("postListParams는 all과 각 태그의 페이지를 만든다", () => {
   ]);
 });
 
-test("postListParams는 아티클 slug을 목록 라우트로 만들지 않는다", () => {
+test("postListParams는 all과 실제 태그만 라우트로 만든다", () => {
   const slugs = postListParams(POSTS).map((param) => param.slug);
+  const allowed = new Set(["all", ...allTags(POSTS)]);
 
   // 기존 버그: 아티클 slug과 콤마로 이어붙인 태그 문자열이 라우트로 생성됐다.
-  assert.ok(!slugs.includes("a"), "아티클 slug이 목록 라우트에 들어가면 안 된다");
-  assert.ok(!slugs.some((slug) => slug.includes(",")), "콤마가 포함된 라우트가 있으면 안 된다");
+  // 특정 문자열("a", 콤마)이 아니라 허용 집합 소속으로 확인해, 같은 버그가 다른
+  // 모양(다른 slug, 다른 구분자)으로 돌아오는 경우까지 잡는다.
+  assert.ok(slugs.length > 0, "라우트가 하나도 없으면 이 단정은 의미가 없다");
+
+  for (const slug of slugs) {
+    assert.ok(allowed.has(slug), `허용되지 않은 목록 라우트 slug: ${slug}`);
+  }
 });
 
 test("postListUrls는 사이트맵용 경로 문자열을 준다", () => {
@@ -1208,8 +1241,12 @@ import type { Post, SearchEntry } from "@/app/lib/posts/types";
 /** 목록 한 페이지에 보여줄 글 수. 이 값만 쓴다. */
 export const PAGE_SIZE = 5;
 
-/** 목록 라우트에서 전체를 뜻하는 slug */
-const ALL = "all";
+/**
+ * 목록 라우트에서 전체를 뜻하는 slug. 예약어다.
+ * 글이 이 이름을 태그로 쓰면 그 태그로는 필터가 불가능해지고 라우트도 중복 생성되므로,
+ * `parse.ts`가 frontmatter 단계에서 이 값을 태그로 쓰는 것을 거부한다.
+ */
+export const ALL_TAG = "all";
 
 export function postBySlug(posts: Post[], slug: string): Post | undefined {
   return posts.find((post) => post.slug === slug);
@@ -1217,7 +1254,7 @@ export function postBySlug(posts: Post[], slug: string): Post | undefined {
 
 /** 태그는 정확히 비교한다. 부분 문자열 매칭은 js가 nextjs에 걸리는 버그였다. */
 export function postsByTag(posts: Post[], tag: string): Post[] {
-  if (tag === ALL) {
+  if (tag === ALL_TAG) {
     return posts;
   }
   return posts.filter((post) => post.tags.includes(tag));
@@ -1239,6 +1276,14 @@ export function paginate<T>(
   page: number
 ): { items: T[]; totalPages: number } {
   const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
+
+  // 유효하지 않은 page는 빈 결과를 준다. 호출자는 그것으로 404를 판단한다.
+  // 1페이지로 클램프하면 존재하지 않는 주소에 실제 글이 노출된다.
+  // (가드가 없으면 slice의 음수 인덱스 때문에 page=-1이 최신 글 2개를 돌려준다)
+  if (!Number.isInteger(page) || page < 1) {
+    return { items: [], totalPages };
+  }
+
   const start = (page - 1) * PAGE_SIZE;
 
   return { items: items.slice(start, start + PAGE_SIZE), totalPages };
@@ -1260,7 +1305,7 @@ export function postListParams(
 ): { slug: string; page: string[] }[] {
   const params: { slug: string; page: string[] }[] = [];
 
-  for (const slug of [ALL, ...allTags(posts)]) {
+  for (const slug of [ALL_TAG, ...allTags(posts)]) {
     const { totalPages } = paginate(postsByTag(posts, slug), 1);
 
     for (let page = 1; page <= totalPages; page += 1) {
@@ -1284,7 +1329,7 @@ export function postListUrls(posts: Post[]): string[] {
 pnpm test
 ```
 
-Expected: PASS — 13개 추가 (누적 51개)
+Expected: PASS — 14개 추가 (누적 53개)
 
 - [ ] **Step 5: 커밋**
 
@@ -1728,7 +1773,7 @@ pnpm test
 pnpm dev
 ```
 
-Expected: 테스트 51개 PASS. `http://localhost:3000`에서 샘플 글 3개가 최신순(알파 → 베타 → 감마)으로 보인다. 4개 미만이라 아랫줄 2개 영역은 나타나지 않는다. 카드 이미지는 알파가 본문 이미지, 베타가 기본 이미지, 감마가 frontmatter 지정 이미지다. 제목 클릭 시 상세로 이동한다.
+Expected: 테스트 53개 PASS. `http://localhost:3000`에서 샘플 글 3개가 최신순(알파 → 베타 → 감마)으로 보인다. 4개 미만이라 아랫줄 2개 영역은 나타나지 않는다. 카드 이미지는 알파가 본문 이미지, 베타가 기본 이미지, 감마가 frontmatter 지정 이미지다. 제목 클릭 시 상세로 이동한다.
 
 - [ ] **Step 9: 커밋**
 
@@ -2033,7 +2078,7 @@ pnpm test
 pnpm dev
 ```
 
-Expected: 테스트 51개 PASS. 브라우저에서:
+Expected: 테스트 53개 PASS. 브라우저에서:
 - `/post/all/1` — 샘플 3개, 헤더가 `Posts all 3`, 페이지네이션이 `page : 1 of 1 (3)`
 - `/post/javascript/1` — 알파·베타 2개, 헤더 `Posts javascript 2`
 - `/post/react/1` — 감마 1개
@@ -2399,7 +2444,7 @@ pnpm test
 pnpm build
 ```
 
-Expected: 테스트 51개 PASS. 빌드 성공. **빌드 로그에 네트워크 호출이나 `API_TOKEN` 관련 경고가 없어야 한다.**
+Expected: 테스트 53개 PASS. 빌드 성공. **빌드 로그에 네트워크 호출이나 `API_TOKEN` 관련 경고가 없어야 한다.**
 
 - [ ] **Step 7: 정적 산출물 육안 확인**
 
@@ -3005,7 +3050,7 @@ pnpm test
 pnpm build
 ```
 
-Expected: 테스트 51개 PASS. **환경변수 없이** 빌드 성공.
+Expected: 테스트 53개 PASS. **환경변수 없이** 빌드 성공.
 
 - [ ] **Step 2: URL 보존 확인**
 
