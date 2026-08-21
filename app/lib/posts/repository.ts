@@ -28,9 +28,17 @@ export function loadPosts(dir: string, includeDrafts: boolean): Post[] {
     .sort(byDateDescThenSlug);
 }
 
-/** draft는 프로덕션 빌드에서만 숨긴다. dev에서는 미리보기용으로 보여준다. */
-export function shouldIncludeDrafts(): boolean {
-  return process.env.NODE_ENV !== "production";
+/**
+ * draft는 프로덕션 빌드에서만 숨긴다. dev에서는 미리보기용으로 보여준다.
+ *
+ * 환경값을 인자로 받는다. `process.env.NODE_ENV`는 Next 타입 정의에서 읽기 전용이라
+ * 테스트에서 대입할 수 없고, 대입 대신 값을 넘기면 캐스팅도 전역 상태 조작도 없이
+ * 순수 함수로 검증된다.
+ */
+export function shouldIncludeDrafts(
+  nodeEnv: string | undefined = process.env.NODE_ENV
+): boolean {
+  return nodeEnv !== "production";
 }
 
 let cache: Post[] | null = null;
