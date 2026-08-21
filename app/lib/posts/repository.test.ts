@@ -44,18 +44,8 @@ test("slug이 중복되면 두 파일명을 담은 에러를 던진다", () => {
 });
 
 test("draft는 프로덕션에서만 숨긴다", () => {
-  const original = process.env.NODE_ENV;
-
-  try {
-    process.env.NODE_ENV = "production";
-    assert.equal(shouldIncludeDrafts(), false);
-
-    process.env.NODE_ENV = "development";
-    assert.equal(shouldIncludeDrafts(), true);
-
-    delete process.env.NODE_ENV;
-    assert.equal(shouldIncludeDrafts(), true);
-  } finally {
-    process.env.NODE_ENV = original;
-  }
+  assert.equal(shouldIncludeDrafts("production"), false);
+  assert.equal(shouldIncludeDrafts("development"), true);
+  assert.equal(shouldIncludeDrafts("test"), true);
+  assert.equal(shouldIncludeDrafts(undefined), true);
 });
