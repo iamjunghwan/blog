@@ -3,7 +3,7 @@ slug: sample-gamma
 title: "샘플 감마"
 date: 2026-07-30
 tags: [react]
-thumbnail: /iaman.png
+thumbnail: /uploads/2026/05/Deployments.webp
 ---
 
 # 샘플 감마
