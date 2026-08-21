@@ -778,7 +778,7 @@ git commit -m "feat: markdown-it 렌더러를 기존 processHtml에 연결"
   - `POSTS_DIR: string`
   - `loadPosts(dir: string, includeDrafts: boolean): Post[]` — 테스트용 순수 진입점
   - `allPosts(): Post[]` — `POSTS_DIR` + 캐시. 페이지에서 쓰는 함수
-  - `shouldIncludeDrafts(): boolean` — NODE_ENV 기반 draft 표시 여부
+  - `shouldIncludeDrafts(nodeEnv?: string): boolean` — 환경값 기반 draft 표시 여부 (기본값 `process.env.NODE_ENV`)
 
 - [ ] **Step 1: 테스트 픽스처 작성**
 
@@ -911,20 +911,10 @@ test("slug이 중복되면 두 파일명을 담은 에러를 던진다", () => {
 });
 
 test("draft는 프로덕션에서만 숨긴다", () => {
-  const original = process.env.NODE_ENV;
-
-  try {
-    process.env.NODE_ENV = "production";
-    assert.equal(shouldIncludeDrafts(), false);
-
-    process.env.NODE_ENV = "development";
-    assert.equal(shouldIncludeDrafts(), true);
-
-    delete process.env.NODE_ENV;
-    assert.equal(shouldIncludeDrafts(), true);
-  } finally {
-    process.env.NODE_ENV = original;
-  }
+  assert.equal(shouldIncludeDrafts("production"), false);
+  assert.equal(shouldIncludeDrafts("development"), true);
+  assert.equal(shouldIncludeDrafts("test"), true);
+  assert.equal(shouldIncludeDrafts(undefined), true);
 });
 ```
 
@@ -971,9 +961,17 @@ export function loadPosts(dir: string, includeDrafts: boolean): Post[] {
     .sort(byDateDescThenSlug);
 }
 
-/** draft는 프로덕션 빌드에서만 숨긴다. dev에서는 미리보기용으로 보여준다. */
-export function shouldIncludeDrafts(): boolean {
-  return process.env.NODE_ENV !== "production";
+/**
+ * draft는 프로덕션 빌드에서만 숨긴다. dev에서는 미리보기용으로 보여준다.
+ *
+ * 환경값을 인자로 받는다. `process.env.NODE_ENV`는 Next 타입 정의에서 읽기 전용이라
+ * 테스트에서 대입할 수 없고, 대입 대신 값을 넘기면 캐스팅도 전역 상태 조작도 없이
+ * 순수 함수로 검증된다.
+ */
+export function shouldIncludeDrafts(
+  nodeEnv: string | undefined = process.env.NODE_ENV
+): boolean {
+  return nodeEnv !== "production";
 }
 
 let cache: Post[] | null = null;
