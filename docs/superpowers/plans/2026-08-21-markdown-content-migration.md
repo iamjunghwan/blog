@@ -1387,7 +1387,7 @@ tags: [javascript, browser]
 
 본문 **강조**와 [링크](https://iaman.kr)가 있다.
 
-![블로그 로고](/iaman.png)
+![eslint 설정 화면](/uploads/2026/07/eslint.webp)
 
 ### 하위 소제목
 
@@ -1430,7 +1430,7 @@ slug: sample-gamma
 title: "샘플 감마"
 date: 2026-07-30
 tags: [react]
-thumbnail: /iaman.png
+thumbnail: /uploads/2026/05/Deployments.webp
 ---
 
 # 샘플 감마
@@ -1777,7 +1777,18 @@ pnpm test
 pnpm dev
 ```
 
-Expected: 테스트 53개 PASS. `http://localhost:3000`에서 샘플 글 3개가 최신순(알파 → 베타 → 감마)으로 보인다. 4개 미만이라 아랫줄 2개 영역은 나타나지 않는다. 카드 이미지는 알파가 본문 이미지, 베타가 기본 이미지, 감마가 frontmatter 지정 이미지다. 제목 클릭 시 상세로 이동한다.
+Expected: 테스트 53개 PASS. `http://localhost:3000`에서 샘플 글 3개가 최신순(알파 → 베타 → 감마)으로 보인다. 4개 미만이라 아랫줄 2개 영역은 나타나지 않는다. 제목 클릭 시 상세로 이동한다.
+
+**카드 이미지 3개는 서로 다른 경로여야 한다** — 이게 썸네일 결정 로직 세 갈래를 실제로 구분하는 유일한 확인이다:
+
+| 글 | 기대 경로 | 검증하는 갈래 |
+|---|---|---|
+| 알파 | `/uploads/2026/07/eslint.webp` | 본문 첫 이미지 추출 |
+| 베타 | `/iaman.png` | 이미지 없음 → 기본값 |
+| 감마 | `/uploads/2026/05/Deployments.webp` | frontmatter `thumbnail` 우선 |
+
+세 값이 같게 나오면 확인이 통과해도 아무것도 검증하지 못한 것이다. 샘플 글이 서로 다른
+이미지를 쓰는 이유가 이것이다.
 
 - [ ] **Step 9: 커밋**
 
