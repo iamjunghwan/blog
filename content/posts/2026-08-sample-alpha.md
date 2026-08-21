@@ -15,7 +15,7 @@ tags: [javascript, browser]
 
 본문 **강조**와 [링크](https://iaman.kr)가 있다.
 
-![블로그 로고](/iaman.png)
+![eslint 설정 화면](/uploads/2026/07/eslint.webp)
 
 ### 하위 소제목
 
