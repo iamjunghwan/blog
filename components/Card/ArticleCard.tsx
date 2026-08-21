@@ -7,16 +7,15 @@
 import CardDateArea from "./CardDateArea";
 import CardImageArea from "./CardImageArea";
 import CardTitleArea from "./CardTitleArea";
-import { ApiItem } from "@/type/index";
+import { thumbnailOf } from "@/app/lib/posts/thumbnail";
+import type { Post } from "@/app/lib/posts/types";
 
-const ArticleCard = ({ getData }: { getData: ApiItem }) => {
-  const { data, createdAt } = getData;
-
+const ArticleCard = ({ post }: { post: Post }) => {
   return (
     <article className="flex flex-col items-center w-full">
-      <CardDateArea createdAt={createdAt} />
-      <CardImageArea content={data.content} />
-      <CardTitleArea title={data.title.KO} slug={data.slug} />
+      <CardDateArea date={post.date} />
+      <CardImageArea src={thumbnailOf(post)} />
+      <CardTitleArea title={post.title} slug={`/${post.slug}`} />
     </article>
   );
 };

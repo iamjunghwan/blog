@@ -2,16 +2,12 @@
  *
  * CardImageArea : 아티클 이미지 atomic 컴포넌트
  *
- * content에 img태그가 있으면 그 이미지를 대표 이미지로 선정.
- * 이미지가 없으면 기본 이미지 선정.
+ * 대표 이미지 경로는 thumbnailOf가 결정한다.
  *
  ****************************************/
 
-import { imgCheck } from "@/app/utils/common";
-import Image from "next/image";
-
 interface CardImageAreaProps {
-  content: string;
+  src: string;
   className?: string;
   width?: number;
   height?: number;
@@ -19,7 +15,7 @@ interface CardImageAreaProps {
 }
 
 const CardImageArea = ({
-  content,
+  src,
   className = "flex items-center justify-center h-24 w-24 overflow-hidden mb-4 rounded-lg",
   width = 96,
   height = 96,
@@ -28,7 +24,7 @@ const CardImageArea = ({
   return (
     <div className={className}>
       <img
-        src={imgCheck(content)}
+        src={src}
         alt={alt}
         width={width}
         height={height}
