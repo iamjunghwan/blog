@@ -1579,7 +1579,7 @@ git commit -m "feat: 아티클 상세 페이지를 md 기반으로 전환"
 ```tsx
 import InnerHeader from "@/components/Layout/InnerHeader";
 import MainArticleList from "@/components/MainArticleList";
-import { allPosts } from "./lib/posts/repository";
+import { allPosts } from "@/app/lib/posts/repository";
 
 const Page = () => {
   // 메인은 최신 5개만 보여준다 (윗줄 3개 + 아랫줄 2개)
@@ -1616,9 +1616,11 @@ const MainArticleList = ({ posts }: { posts: Post[] }) => {
         </li>
       ))}
 
-      {posts.length > 4 ? (
+      {/* 아랫줄은 남은 글을 보여준다. 기존 코드는 `> 4`로 게이트해서 글이 정확히
+          4개일 때 4번째 글이 어디에도 렌더되지 않고 사라졌다. */}
+      {posts.length > 3 ? (
         <li className="md:col-span-3 flex flex-col md:flex-row gap-2  items-stretch">
-          {posts.slice(3, 5).map((post: Post) => (
+          {posts.slice(3).map((post: Post) => (
             <div key={post.slug} className="flex-1 h-full pt-8 pb-12">
               <ArticleCard post={post} />
             </div>
@@ -1777,7 +1779,15 @@ pnpm test
 pnpm dev
 ```
 
-Expected: 테스트 53개 PASS. `http://localhost:3000`에서 샘플 글 3개가 최신순(알파 → 베타 → 감마)으로 보인다. 4개 미만이라 아랫줄 2개 영역은 나타나지 않는다. 제목 클릭 시 상세로 이동한다.
+Expected: 테스트 53개 PASS. `http://localhost:3000`에서 샘플 글 3개가 최신순(알파 → 베타 → 감마)으로 보인다. 3개뿐이라 아랫줄 영역은 나타나지 않는다. 제목 클릭 시 상세로 이동한다.
+
+글 개수별 레이아웃(실제 글 16개에서는 5개로 잘려 들어오므로 항상 3+2다):
+
+| 글 수 | 윗줄 | 아랫줄 |
+|---|---|---|
+| 3 | 3개 | 없음 |
+| 4 | 3개 | **1개** (기존 코드는 이 글을 잃었다) |
+| 5 이상 | 3개 | 2개 |
 
 **카드 이미지 3개는 서로 다른 경로여야 한다** — 이게 썸네일 결정 로직 세 갈래를 실제로 구분하는 유일한 확인이다:
 
