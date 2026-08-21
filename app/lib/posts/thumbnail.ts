@@ -60,7 +60,9 @@ function stripFencedBlocks(body: string): string {
   const kept: string[] = [];
   let open: { marker: string; length: number } | null = null;
 
-  for (const line of body.split("\n")) {
+  // 줄 분리는 인코딩과 무관해야 한다. "\n"으로만 쪼개면 CRLF 파일에서 각 줄 끝에 \r가
+  // 남고, FENCE_LINE의 `.`는 \r를 매치하지 않아 펜스가 아예 인식되지 않는다.
+  for (const line of body.split(/\r\n|\r|\n/)) {
     const match = FENCE_LINE.exec(line);
 
     if (open === null) {

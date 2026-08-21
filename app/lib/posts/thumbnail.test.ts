@@ -111,3 +111,19 @@ test("닫히지 않은 펜스는 문서 끝까지 코드로 본다", () => {
 
   assert.equal(thumbnailOf({ body }), DEFAULT_THUMBNAIL);
 });
+
+test("CRLF 본문에서도 펜스를 인식한다", () => {
+  // 이 저장소는 core.autocrlf=true라 디스크의 md가 CRLF다.
+  // "\n"으로만 쪼개면 각 줄에 \r가 남아 펜스 인식이 전부 무동작이 된다.
+  const body = [
+    "# 제목",
+    "",
+    "```markdown",
+    "![예시](/uploads/in-code.png)",
+    "```",
+    "",
+    "![실제](/uploads/real.png)",
+  ].join("\r\n");
+
+  assert.equal(thumbnailOf({ body }), "/uploads/real.png");
+});

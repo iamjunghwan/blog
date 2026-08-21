@@ -9,7 +9,9 @@ const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
  * 조용히 넘기면 글이 사이트에서 사라지는데 아무도 알 수 없다.
  */
 export function parsePost(source: string, fileName: string): Post {
-  const { data, content } = matter(source);
+  // 이 저장소는 core.autocrlf=true 라 워킹트리 파일이 CRLF다.
+  // 파싱 경계에서 한 번 정규화해 아래 모듈들이 줄바꿈을 신경 쓰지 않게 한다.
+  const { data, content } = matter(source.replace(/\r\n/g, "\n"));
 
   return {
     slug: requireString(data.slug, "slug", fileName),
