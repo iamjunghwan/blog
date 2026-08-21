@@ -1,6 +1,6 @@
 import matter from "gray-matter";
 import type { Post } from "@/app/lib/posts/types";
-import { ALL_TAG } from "@/app/lib/posts/queries";
+import { ALL_TAG } from "@/app/lib/posts/constants";
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
