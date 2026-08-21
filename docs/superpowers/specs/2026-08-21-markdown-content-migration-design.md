@@ -142,8 +142,9 @@ type Post = PostMeta & { body: string }   // body = 렌더 전 md
 
 ```
 빌드 타임:
-  content/posts/*.md → repository → queries → 각 page.tsx → 정적 HTML
-                          └→ scripts/build-search-index.ts → public/search-index.json
+  content/posts/*.md → repository → queries → 각 page.tsx  → 정적 HTML
+                                        ├→ Header.tsx     → <Search index={...}>
+                                        └→ app/sitemap.ts → out/sitemap.xml
 ```
 
 `fetch`가 완전히 사라진다. 빌드가 네트워크·토큰과 무관해지고 로컬에서 `pnpm build`가 그냥 된다.
@@ -211,15 +212,28 @@ raw HTML `<img>` → `/iaman.png`.
 
 ## 검색
 
-빌드 타임에 정적 인덱스를 생성한다.
+**별도 인덱스 파일도, fetch도 만들지 않는다.** `components/Layout/Header.tsx`는 서버
+컴포넌트이므로 빌드 타임에 글 목록을 읽어 클라이언트 컴포넌트 `<Search>`에 props로 넘긴다.
 
-```
-scripts/build-search-index.ts → public/search-index.json
-[{ slug, title, date, tags }, ...]     // 본문 미포함
+```tsx
+// Header.tsx (서버 컴포넌트)
+const index = searchIndex();          // queries.ts: PostMeta에서 body 제외한 목록
+<Search index={index} />
 ```
 
-`useSearchData.tsx`는 CMS 대신 `/search-index.json`을 fetch한다. 모달을 열 때 가져오는
-현재 동작은 유지 — 초기 번들이 커지지 않는다. **`NEXT_PUBLIC_API_TOKEN` 노출이 여기서 사라진다.**
+16개 × `{ slug, title, date, tags }` ≈ 1.3KB다. `Header`가 데스크톱·모바일 두 곳에서
+렌더되므로 페이지당 약 2.6KB가 RSC 페이로드에 실린다 (gzip 후 훨씬 작다).
+이 비용으로 다음을 모두 없앤다:
+
+- 정적 인덱스 파일과 그것을 만드는 prebuild 스크립트
+- `useSearchData`의 fetch — **모달을 열고 응답을 기다리는 지연이 사라져 검색이 즉시 동작한다**
+- `NEXT_PUBLIC_API_TOKEN` 노출
+
+`useSearchData`는 `open` 대신 `index`를 받아 순수 클라이언트 필터링만 한다.
+디바운스(500ms)는 그대로 유지한다 — 입력마다 리렌더를 막는 역할은 여전히 유효하다.
+
+전문 검색이 필요해지면 이 props에 본문 텍스트를 추가하는 것으로 시작하고, 크기가 문제가
+되는 시점에 비로소 별도 파일로 분리한다. 지금 16개 규모에서는 불필요한 구조다.
 
 `app/api/search/route.ts`는 삭제한다. `output: "export"`에서 route handler는 동작하지 않는
 죽은 코드이며, 실제 검색은 위 클라이언트 훅이 CMS를 직접 호출하고 있었다.
@@ -290,9 +304,9 @@ CJS 설정 파일에서 md를 다시 파싱하는 코드를 짜야 한다.
 
 - `next-sitemap` 의존성, `next-sitemap.config.js`, `postbuild` 스크립트,
   `scripts/callApiForCommonjs.js` 전부 삭제
-- 빌드 스크립트는 `"build": "node scripts/build-search-index.ts && next build"`.
-  `postbuild`가 사라지므로 pnpm 10에서 pre/post 스크립트가 실행되는지에 대한
-  불확실성도 함께 없어진다.
+- 빌드 스크립트는 `"build": "next build"`로 되돌아간다. `postbuild`가 사라지므로
+  pnpm 10에서 pre/post 스크립트가 실행되는지에 대한 불확실성도 함께 없어지고,
+  빌드 경로에 `tsx` 같은 실행 도구가 끼지 않는다.
 - **`public/robots.txt`, `public/sitemap.xml`, `public/sitemap-0.xml` 삭제는 필수다**
   (선택이 아님). `public/`의 파일과 `app/robots.ts` 같은 메타데이터 라우트가 같은 경로를
   차지하면 Next 빌드가 충돌 에러를 낸다. `.gitignore`에 추가할 필요도 없다 —
@@ -334,8 +348,8 @@ CJS 설정 파일에서 md를 다시 파싱하는 코드를 짜야 한다.
 
 추가 (dependencies): `gray-matter`, `markdown-it`, `@types/markdown-it`
 
-추가 (devDependencies): `turndown`, `@types/turndown`, `turndown-plugin-gfm`
-— 마이그레이션 전용
+추가 (devDependencies): `tsx` (테스트·스크립트 실행),
+`turndown`, `@types/turndown`, `turndown-plugin-gfm` (마이그레이션 전용)
 
 제거: `next-sitemap`, `formidable`, `@types/formidable`, `fs-extra`,
 `@next/bundle-analyzer`
@@ -347,12 +361,32 @@ CJS 설정 파일에서 md를 다시 파싱하는 코드를 짜야 한다.
 
 ## 테스트
 
-Node 24 내장 `node:test`를 쓴다. `.ts`를 그대로 실행할 수 있어 **추가 의존성이 0개**다.
-테스트 인프라가 전혀 없는 프로젝트에 순수 함수 몇 개를 검증하려고 vitest 설정을 들여올
-이유가 없다.
+테스트 프레임워크는 Node 내장 `node:test`(+ `node:assert/strict`)를 쓰고,
+실행만 `tsx`로 한다.
+
+```
+"test": "tsx --test \"app/**/*.test.ts\""
+```
+
+**`tsx`가 필요한 이유 (실측으로 확인):** Node 24는 `.ts`를 직접 실행할 수 있지만
+import 지정자가 확장자를 포함해야 한다. 검증 결과:
+
+| import 형태 | `node file.ts` |
+|---|---|
+| `from "./b"` | 실패 (ERR_MODULE_NOT_FOUND) |
+| `from "./b.js"` | 실패 |
+| `from "./b.ts"` | 성공 |
+
+또한 Node는 `tsconfig.json`의 `paths`를 읽지 않으므로 이 프로젝트가 쓰는 `@/` 별칭이
+동작하지 않는다. 즉 내장 러너만 쓰려면 **프로덕션 코드의 import 스타일을 전부 바꾸고**
+`allowImportingTsExtensions`를 켜야 하며, 그 형태가 Next 빌드에서도 문제없는지 추가로
+검증해야 한다. `tsx` devDependency 하나가 이 셋을 모두 없애고 기존 관례(`@/` 별칭,
+extensionless)를 그대로 유지시킨다. (`tsx --test`로 별칭 + extensionless 동작 확인)
+
+`tsx`는 마이그레이션·검증 스크립트 실행에도 같이 쓴다. **빌드 경로에는 들어가지 않는다** —
+devDependency이며 `next build`는 `tsx`를 거치지 않는다.
 
 테스트 파일은 대상 모듈 옆에 `*.test.ts`로 둔다 (`app/lib/posts/parse.test.ts` 등).
-`package.json`에 `"test": "node --test \"app/**/*.test.ts\""`를 추가한다.
 
 | 대상 | 검증 내용 |
 |---|---|
@@ -370,10 +404,10 @@ Node 24 내장 `node:test`를 쓴다. `.ts`를 그대로 실행할 수 있어 **
 
 손으로 작성한 **픽스처 md 2~3개**를 상대로 개발한다.
 
-1. 의존성 정리 (추가·제거) + `node:test` 러너 설정
+1. 의존성 정리 (추가·제거) + `tsx --test` 러너 설정
 2. `types` / `parse` / `render` / `repository` / `queries` — TDD로
 3. 픽스처 md로 페이지·컴포넌트를 `Post` 타입으로 전환
-4. 검색 인덱스 생성 스크립트 + `useSearchData` 전환
+4. `Header` → `<Search index={...}>` props 전달로 검색 전환
 5. `app/sitemap.ts` + `app/robots.ts` 추가, `next-sitemap` 제거,
    `public/`의 사이트맵·robots 산출물 삭제, 빌드 스크립트 단순화
 6. CMS 코드 제거
