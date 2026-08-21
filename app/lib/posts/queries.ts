@@ -1,14 +1,11 @@
 import type { Post, SearchEntry } from "@/app/lib/posts/types";
+import { ALL_TAG } from "@/app/lib/posts/constants";
 
 /** 목록 한 페이지에 보여줄 글 수. 이 값만 쓴다. */
 export const PAGE_SIZE = 5;
 
-/**
- * 목록 라우트에서 전체를 뜻하는 slug. 예약어다.
- * 글이 이 이름을 태그로 쓰면 그 태그로는 필터가 불가능해지고 라우트도 중복 생성되므로,
- * `parse.ts`가 frontmatter 단계에서 이 값을 태그로 쓰는 것을 거부한다.
- */
-export const ALL_TAG = "all";
+// ALL_TAG는 constants.ts에 있다. parse.ts도 같은 값을 필요로 하는데, 여기에 두면
+// 수집 계층이 조회 계층에 의존하게 되어 파이프라인 방향이 뒤집힌다.
 
 export function postBySlug(posts: Post[], slug: string): Post | undefined {
   return posts.find((post) => post.slug === slug);

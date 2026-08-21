@@ -124,6 +124,12 @@ test("postListParams는 all과 실제 태그만 라우트로 만든다", () => {
   for (const slug of slugs) {
     assert.ok(allowed.has(slug), `허용되지 않은 목록 라우트 slug: ${slug}`);
   }
+
+  // 소속 검사만으로는 중복 라우트를 못 잡는다. 같은 (slug, page)가 두 번 나오면
+  // 사이트맵에 중복 URL이 실린다 — 원래 버그와 같은 부류의 증상이다.
+  const keys = postListParams(POSTS).map(({ slug, page }) => `${slug}/${page[0]}`);
+
+  assert.equal(new Set(keys).size, keys.length, `중복 라우트: ${keys.join(", ")}`);
 });
 
 test("postListUrls는 사이트맵용 경로 문자열을 준다", () => {
