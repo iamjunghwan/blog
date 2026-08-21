@@ -2,7 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { TagListProps } from "@/type/index";
+
+interface TagListProps {
+  currTag: string;
+  tagNames: string[];
+}
 
 export default function TagList({ currTag, tagNames }: TagListProps) {
   const [activeTag, setActiveTag] = useState(currTag);

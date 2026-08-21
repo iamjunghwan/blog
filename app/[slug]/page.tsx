@@ -1,7 +1,7 @@
+import { notFound } from "next/navigation";
 import { allPosts } from "@/app/lib/posts/repository";
 import { postBySlug } from "@/app/lib/posts/queries";
 import { renderPostBody } from "@/app/lib/posts/render";
-import NotFound from "../not-found";
 import ArticleContent from "./components/ArticleContent";
 
 export function generateStaticParams() {
@@ -17,7 +17,7 @@ export default async function SlugPage({
   const post = postBySlug(allPosts(), slug);
 
   if (post === undefined) {
-    return NotFound();
+    notFound();
   }
 
   return <ArticleContent content={renderPostBody(post.body)} />;
