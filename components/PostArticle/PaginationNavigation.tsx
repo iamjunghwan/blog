@@ -1,16 +1,15 @@
 // 페이지네이션 네비게이션 컴포넌트
 export const PaginationNavigation = ({
   currPage,
-  totalItems,
+  totalPages,
+  totalCount,
   slug,
-  pageSize = 5,
 }: {
   currPage: number;
-  totalItems: number;
+  totalPages: number;
+  totalCount: number;
   slug: string;
-  pageSize?: number;
 }) => {
-  const totalPages = Math.ceil(totalItems / pageSize);
   const hasPrevPage = currPage > 1;
   const hasNextPage = currPage < totalPages;
 
@@ -25,7 +24,7 @@ export const PaginationNavigation = ({
         </a>
       )}
 
-      <span>{`page : ${currPage} of ${totalPages} (${totalItems})`}</span>
+      <span>{`page : ${currPage} of ${totalPages} (${totalCount})`}</span>
 
       {hasNextPage && (
         <a

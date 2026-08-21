@@ -1,36 +1,33 @@
 import InnerHeader from "@/components/Layout/InnerHeader";
 import Tags from "@/components/Tags/Tags";
 import PostArticle from "@/components/PostArticle/index";
-import { ApiResponse } from "@/type/index";
+import type { Post } from "@/app/lib/posts/types";
 
 interface PostPageContentProps {
   slug: string;
-  page: string;
-  postData: ApiResponse;
-  displayData: ApiResponse;
-  startIndex: number;
-  endIndex: number;
+  page: number;
+  totalPages: number;
+  totalCount: number;
+  posts: Post[];
 }
 
 const PostPageContent = ({
   slug,
   page,
-  postData,
-  displayData,
-  startIndex,
-  endIndex,
+  totalPages,
+  totalCount,
+  posts,
 }: PostPageContentProps) => {
   return (
     <>
-      <InnerHeader title={`Posts ${slug} ${postData.list.length}`} />
+      <InnerHeader title={`Posts ${slug} ${totalCount}`} />
       <Tags currTag={slug} />
       <PostArticle
-        data={postData}
+        posts={posts}
         page={page}
         slug={slug}
-        startIndex={startIndex}
-        endIndex={endIndex}
-        displayData={displayData}
+        totalPages={totalPages}
+        totalCount={totalCount}
       />
     </>
   );
