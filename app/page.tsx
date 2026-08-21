@@ -1,21 +1,15 @@
 import InnerHeader from "@/components/Layout/InnerHeader";
-import { ApiResponse } from "@/type/index";
-import NotFound from "./not-found";
-import { helperCallApi } from "./utils/helperCallApi";
 import MainArticleList from "@/components/MainArticleList";
+import { allPosts } from "./lib/posts/repository";
 
-const Page = async () => {
-  let postData: ApiResponse = { list: [] };
-  try {
-    postData = await helperCallApi();
-  } catch (error) {
-    return <NotFound />;
-  }
+const Page = () => {
+  // 메인은 최신 5개만 보여준다 (윗줄 3개 + 아랫줄 2개)
+  const posts = allPosts().slice(0, 5);
 
   return (
     <>
       <InnerHeader title={`The Latest Article`} />
-      <MainArticleList postData={postData} />
+      <MainArticleList posts={posts} />
     </>
   );
 };

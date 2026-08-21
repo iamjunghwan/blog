@@ -6,7 +6,7 @@
 import Link from "next/link";
 
 interface CardTagsAreaProps {
-  tags: string;
+  tags: string[];
   className?: string;
   linkClassName?: string;
 }
@@ -18,9 +18,9 @@ const CardTagsArea = ({
 }: CardTagsAreaProps) => {
   return (
     <div className={className}>
-      {tags.split(",").map((tag: string, i: number) => (
+      {tags.map((tag: string, i: number) => (
         <Link key={i} href={`/post/${tag}/1`} className={linkClassName}>
-          {tag.trim()}
+          {tag}
         </Link>
       ))}
     </div>
