@@ -2381,6 +2381,12 @@ export default function robots(): MetadataRoute.Robots {
 
 `scripts`에서 `postbuild`를 삭제한다. `build`는 `"next build"`로 그대로 둔다.
 
+**Task 9 시점 실측으로 확인된 사실:** `postbuild`는 pnpm 10에서 **실제로 실행된다** (계획
+초기에 불확실하다고 적었던 부분이 해소됐다). `next build` 자체는 환경변수 없이 성공하는데,
+그 뒤 `postbuild`가 `next-sitemap`을 돌리고 `next-sitemap.config.js`가 CMS를 호출해
+`result.list`가 undefined가 되어 `TypeError: Cannot read properties of undefined (reading 'map')`로
+죽는다. 즉 이 단계 전까지 `pnpm build`는 **0이 아닌 코드로 종료된다.** 이 작업이 그것을 끝낸다.
+
 ```bash
 pnpm remove next-sitemap
 ```
