@@ -1,6 +1,6 @@
 import InnerHeader from "@/components/Layout/InnerHeader";
 import MainArticleList from "@/components/MainArticleList";
-import { allPosts } from "./lib/posts/repository";
+import { allPosts } from "@/app/lib/posts/repository";
 
 const Page = () => {
   // 메인은 최신 5개만 보여준다 (윗줄 3개 + 아랫줄 2개)
