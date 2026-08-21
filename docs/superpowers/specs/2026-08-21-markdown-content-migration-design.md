@@ -178,7 +178,14 @@ raw HTML `<img>` → `/iaman.png`.
      (`imgCheck`가 `"/" + srcValue`를 하는 것이 근거). md에서는 절대경로 `/uploads/...`로 통일한다.
    - **보존 태그 명시**: `iframe`, `style` 속성이 붙은 요소 등 md로 표현 불가한 것은
      turndown `keep()`으로 raw HTML 유지한다. 조용히 버려지는 것보다 남는 것이 낫다.
-3. frontmatter 생성 — `tags`는 `split(",")` 후 trim·빈값 제거하여 YAML 배열로
+3. frontmatter 생성
+   - `tags`는 `split(",")` 후 trim·빈값 제거하여 YAML 배열로
+   - **`date`는 두 후보가 있다.** 카드는 `createdAt`(최상위)을 렌더하고, 기존 사이트맵은
+     `data.date`를 `lastmod`로 썼다. `data.date`는 `ApiItem` 타입에 선언되어 있지 않지만
+     배포된 사이트맵에 실제 날짜가 들어 있으므로 존재한다. 두 값이 다를 수 있으므로
+     스크립트가 **글별로 둘 다 출력하고 불일치를 리포트**한다.
+     기본값은 `createdAt`(현재 화면에 보이는 날짜를 보존) — 불일치가 있으면 실제 값을
+     보고 판단한다.
 4. `content/posts/YYYY-MM-<slug>.md` 기록
 5. **변환 리포트 출력** — 글별 경고 (언어 없는 코드블록, 보존된 raw HTML, 변환 실패 요소)
 
@@ -217,25 +224,82 @@ scripts/build-search-index.ts → public/search-index.json
 `app/api/search/route.ts`는 삭제한다. `output: "export"`에서 route handler는 동작하지 않는
 죽은 코드이며, 실제 검색은 위 클라이언트 훅이 CMS를 직접 호출하고 있었다.
 
-## 사이트맵 (기존 버그 수정 포함)
+## 사이트맵: `next-sitemap` 제거, Next 내장 메타데이터 라우트로 전환
 
-`next-sitemap`의 `outDir` 기본값은 `public/`인데 이 프로젝트는 `output: "export"`라
-실제 배포물은 `out/`이다. `public/`은 **빌드 중에 이미 `out/`으로 복사되므로**, 빌드 후에
-`next-sitemap`이 `public/`에 쓰는 사이트맵은 `out/`에 반영되지 않는다.
-현재 배포되는 사이트맵은 저장소에 커밋된 이전 빌드 산출물이다.
+### 현재 상태 (배포된 사이트맵에서 확인한 실측)
 
-수정:
+`public/sitemap-0.xml`을 열어 확인한 사실:
 
-- `next-sitemap.config.js`에 `outDir: "out"` 지정 → 배포물에 직접 기록
-- `additionalPaths`가 `public/search-index.json`을 읽도록 변경 (`lastmod` ← `date`)
-- 커밋된 `public/sitemap.xml`, `public/sitemap-0.xml`, `public/robots.txt`는 생성물이므로
-  git에서 제거하고 `.gitignore`에 추가
-- **빌드 스크립트를 명시화한다:**
-  ```
-  "build": "node scripts/build-search-index.ts && next build && next-sitemap"
-  ```
-  `postbuild`를 제거한다. `.npmrc`가 없어 pnpm 10에서 pre/post 스크립트가 실제로 실행되는지
-  불확실했는데, 명시하면 그 모호함이 사라지고 어떤 패키지 매니저로 돌려도 동일하게 동작한다.
+- **아티클이 12개만 등재되어 있다** (현재 16개). 최근 4개 글은 구글에 제출되지 않고 있다.
+- **존재하지 않는 태그 페이지가 등재되어 있다** — `/post/javascript,browser/1`,
+  `/post/react,javascript/1`. `generateStaticParams`의 콤마 문자열 버그가 실제 정적 페이지를
+  만들고, `next-sitemap`이 `out/`을 스캔해 그것까지 사이트맵에 넣었다.
+- `lastmod`에 실제 날짜가 들어 있다 → CMS에 **`data.date` 필드가 존재한다.**
+  `type/index.ts`의 `ApiItem`에는 선언되어 있지 않고, 카드는 `createdAt`을 렌더한다.
+  두 날짜는 다를 수 있다 (아래 "마이그레이션" 참조).
+
+원인은 `next-sitemap`의 `outDir` 기본값이 `public/`인데 이 프로젝트는 `output: "export"`라
+실제 배포물이 `out/`이라는 점이다. `public/`은 **빌드 중에 이미 `out/`으로 복사되므로**,
+빌드 후에 `public/`에 쓰인 사이트맵은 그 빌드의 배포물에 반영되지 않는다.
+지금 배포되는 사이트맵은 저장소에 커밋된 이전 빌드 산출물이다.
+
+### 전환 방식
+
+`next-sitemap`을 제거하고 Next 내장 메타데이터 라우트를 쓴다.
+
+```ts
+// app/sitemap.ts
+import type { MetadataRoute } from "next";
+import { allPosts, tagPageUrls } from "@/app/lib/posts/queries";
+
+const BASE = "https://iaman.kr";
+
+export default function sitemap(): MetadataRoute.Sitemap {
+  const posts = allPosts();
+  return [
+    { url: BASE, lastModified: posts[0].date },
+    { url: `${BASE}/about` },
+    ...posts.map((p) => ({ url: `${BASE}/${p.slug}`, lastModified: p.date })),
+    ...tagPageUrls(),   // /post/all/N, /post/<tag>/N — queries가 계산
+  ];
+}
+```
+
+```ts
+// app/robots.ts
+export default function robots(): MetadataRoute.Robots {
+  return {
+    rules: [{ userAgent: "*", allow: "/" }],
+    sitemap: `${BASE}/sitemap.xml`,
+    host: BASE,
+  };
+}
+```
+
+| | `next-sitemap` 유지 | `app/sitemap.ts` |
+|---|---|---|
+| 출력 위치 | 빌드 **후** `public/`에 씀 → 배포물에 미반영 (`outDir`로 우회해야 함) | Next 빌드의 일부 → `out/sitemap.xml`로 정확히 생성. **버그가 사라진다** |
+| 데이터 소스 | CJS 설정 파일이라 TS `queries.ts`를 쓸 수 없음 → 파싱 로직 중복 | `queries.ts`를 그대로 import |
+| URL 목록 | `out/` 폴더 스캔 → 쓰레기 라우트까지 등재 | `queries.ts`가 계산 → **쓰레기 URL이 생길 수 없다** |
+| 의존성 | `next-sitemap` + `postbuild` + `scripts/callApiForCommonjs.js` | 없음 |
+
+즉 사이트맵은 md 전환에서 **코드가 줄어드는 쪽**이다. `next-sitemap`을 남기면 오히려
+CJS 설정 파일에서 md를 다시 파싱하는 코드를 짜야 한다.
+
+### 연쇄 정리
+
+- `next-sitemap` 의존성, `next-sitemap.config.js`, `postbuild` 스크립트,
+  `scripts/callApiForCommonjs.js` 전부 삭제
+- 빌드 스크립트는 `"build": "node scripts/build-search-index.ts && next build"`.
+  `postbuild`가 사라지므로 pnpm 10에서 pre/post 스크립트가 실행되는지에 대한
+  불확실성도 함께 없어진다.
+- **`public/robots.txt`, `public/sitemap.xml`, `public/sitemap-0.xml` 삭제는 필수다**
+  (선택이 아님). `public/`의 파일과 `app/robots.ts` 같은 메타데이터 라우트가 같은 경로를
+  차지하면 Next 빌드가 충돌 에러를 낸다. `.gitignore`에 추가할 필요도 없다 —
+  생성물이 `out/`에만 존재하게 된다.
+- `sitemap-0.xml`은 없어지지만 **`/sitemap.xml` 경로는 유지되므로** Search Console에
+  등록된 URL은 변경하지 않아도 된다.
+- `changefreq` / `priority`는 넣지 않는다 — 구글이 둘 다 무시한다.
 
 ## 함께 수정되는 기존 버그
 
@@ -245,9 +309,12 @@ scripts/build-search-index.ts → public/search-index.json
    쓰고 있어 `js`가 `nextjs`에 매칭된다. `tags: string[]` 정확 비교로 해소.
 2. **쓰레기 라우트 생성** — `app/post/[slug]/[...page]/page.tsx`의 `generateStaticParams`가
    `slug: post.data.tags`로 **콤마 문자열 전체를 slug로** 넣어 존재하지 않는 라우트를 만든다.
+   이 페이지들이 실제로 생성되어 **구글에 제출되는 사이트맵에까지 들어가 있다**
+   (`/post/javascript,browser/1` 등). 404 URL을 사이트맵에 넣는 것은 SEO에 해롭다.
 3. **`size: 20` 상한** — 파일 시스템 기반이 되어 상한이 사라진다.
 4. **CMS 토큰 공개 노출** — 위 "검색" 참조.
-5. **사이트맵이 배포물에 반영되지 않음** — 위 "사이트맵" 참조.
+5. **사이트맵이 배포물에 반영되지 않음** — 배포된 사이트맵에 아티클이 12개만 들어 있다
+   (현재 16개). 위 "사이트맵" 참조.
 
 ## 제거 대상
 
@@ -255,7 +322,9 @@ scripts/build-search-index.ts → public/search-index.json
 |---|---|
 | `app/utils/callApi.ts`, `app/utils/helperCallApi.ts` | CMS 호출 |
 | `app/api/search/` | 정적 export에서 동작하지 않는 죽은 코드 |
-| `scripts/callApiForCommonjs.js` | 사이트맵이 검색 인덱스를 읽는다 |
+| `scripts/callApiForCommonjs.js` | `next-sitemap`이 제거된다 |
+| `next-sitemap.config.js`, `next-sitemap` 의존성, `postbuild` 스크립트 | `app/sitemap.ts`로 대체 |
+| `public/robots.txt`, `public/sitemap.xml`, `public/sitemap-0.xml` | 메타데이터 라우트와 경로 충돌. 삭제 필수 |
 | `app/lib/posts.ts` | `queries.ts` 기반으로 재작성 |
 | `type/index.ts`의 `ApiItem` / `ApiResponse` / `ApiResponseError` | CMS 응답 스키마 |
 | `API_TOKEN`, `NEXT_PUBLIC_API_TOKEN` | Cloudflare 환경변수에서도 제거 |
@@ -268,7 +337,13 @@ scripts/build-search-index.ts → public/search-index.json
 추가 (devDependencies): `turndown`, `@types/turndown`, `turndown-plugin-gfm`
 — 마이그레이션 전용
 
+제거: `next-sitemap`, `formidable`, `@types/formidable`, `fs-extra`,
+`@next/bundle-analyzer`
+
 유지: `cheerio` (`processHtml`과 검증 스크립트에서 사용)
+
+`@types/markdown-it`은 devDependencies로 옮겨도 되지만, 기존 `package.json`이 이미
+`@types/*`를 dependencies에 두는 방식이라 그 관례를 따른다.
 
 ## 테스트
 
@@ -299,7 +374,8 @@ Node 24 내장 `node:test`를 쓴다. `.ts`를 그대로 실행할 수 있어 **
 2. `types` / `parse` / `render` / `repository` / `queries` — TDD로
 3. 픽스처 md로 페이지·컴포넌트를 `Post` 타입으로 전환
 4. 검색 인덱스 생성 스크립트 + `useSearchData` 전환
-5. 사이트맵 설정 + 빌드 스크립트 명시화
+5. `app/sitemap.ts` + `app/robots.ts` 추가, `next-sitemap` 제거,
+   `public/`의 사이트맵·robots 산출물 삭제, 빌드 스크립트 단순화
 6. CMS 코드 제거
 7. `scripts/migrate-from-cms.ts` / `scripts/verify-migration.ts` 작성
    (실행은 못 하지만 코드는 미리 준비)
@@ -321,3 +397,8 @@ Node 24 내장 `node:test`를 쓴다. `.ts`를 그대로 실행할 수 있어 **
 - 기존 URL 16개가 전부 200 응답
 - 태그 페이지·페이지네이션·검색·TOC·다크모드가 육안으로 정상
 - `out/sitemap.xml`(배포물)에 16개 slug가 각 글의 `date`를 `lastmod`로 하여 포함
+- `out/sitemap.xml`에 **콤마가 포함된 URL이 없음** (`/post/javascript,browser/1` 같은
+  쓰레기 라우트가 사라졌는지 확인)
+- `out/robots.txt`가 생성되고 `Sitemap: https://iaman.kr/sitemap.xml`을 가리킴
+- `out/`에 생성되지 않은 정적 라우트가 없는지 — 태그 페이지 목록을 기존 배포물과 비교
+  (콤마 라우트를 제외하면 동일해야 한다)
