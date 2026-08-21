@@ -38,6 +38,15 @@ test("date를 따옴표로 감싼 문자열도 허용한다", () => {
   assert.equal(parsePost(source, "f.md").date, "2026-07-14");
 });
 
+test("CRLF 파일을 읽어도 본문은 LF만 담는다", () => {
+  // 디스크에서 읽은 문자열은 템플릿 리터럴과 달리 CRLF가 그대로 들어온다.
+  const post = parsePost(VALID.replace(/\n/g, "\r\n"), "crlf.md");
+
+  assert.equal(post.body.includes("\r"), false);
+  assert.equal(post.body, "# Next.js 16 업그레이드\n\n본문이다.");
+  assert.equal(post.date, "2026-07-14");
+});
+
 test("thumbnail과 draft를 읽는다", () => {
   const source = VALID.replace(
     "tags: [nextjs, react]",
