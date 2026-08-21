@@ -778,6 +778,7 @@ git commit -m "feat: markdown-it 렌더러를 기존 processHtml에 연결"
   - `POSTS_DIR: string`
   - `loadPosts(dir: string, includeDrafts: boolean): Post[]` — 테스트용 순수 진입점
   - `allPosts(): Post[]` — `POSTS_DIR` + 캐시. 페이지에서 쓰는 함수
+  - `shouldIncludeDrafts(): boolean` — NODE_ENV 기반 draft 표시 여부
 
 - [ ] **Step 1: 테스트 픽스처 작성**
 
@@ -867,7 +868,7 @@ tags: [javascript]
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import path from "node:path";
-import { loadPosts } from "@/app/lib/posts/repository";
+import { loadPosts, shouldIncludeDrafts } from "@/app/lib/posts/repository";
 
 const FIXTURES = path.join(process.cwd(), "app", "lib", "posts", "__fixtures__");
 const POSTS = path.join(FIXTURES, "posts");
@@ -907,6 +908,23 @@ test("slug이 중복되면 두 파일명을 담은 에러를 던진다", () => {
   const duplicateDir = path.join(FIXTURES, "duplicate");
 
   assert.throws(() => loadPosts(duplicateDir, true), /same-slug.*a\.md.*b\.md/);
+});
+
+test("draft는 프로덕션에서만 숨긴다", () => {
+  const original = process.env.NODE_ENV;
+
+  try {
+    process.env.NODE_ENV = "production";
+    assert.equal(shouldIncludeDrafts(), false);
+
+    process.env.NODE_ENV = "development";
+    assert.equal(shouldIncludeDrafts(), true);
+
+    delete process.env.NODE_ENV;
+    assert.equal(shouldIncludeDrafts(), true);
+  } finally {
+    process.env.NODE_ENV = original;
+  }
 });
 ```
 
@@ -953,20 +971,38 @@ export function loadPosts(dir: string, includeDrafts: boolean): Post[] {
     .sort(byDateDescThenSlug);
 }
 
+/** draft는 프로덕션 빌드에서만 숨긴다. dev에서는 미리보기용으로 보여준다. */
+export function shouldIncludeDrafts(): boolean {
+  return process.env.NODE_ENV !== "production";
+}
+
 let cache: Post[] | null = null;
 
 /**
- * content/posts의 글 목록. 빌드 중 반복 파싱을 막기 위해 캐시한다.
- * draft는 프로덕션 빌드에서만 제외한다 (dev에서는 미리보기).
+ * content/posts의 글 목록.
+ *
+ * 캐시는 **프로덕션 빌드에서만** 쓴다. dev에서 캐시하면 md를 고쳐도 서버를
+ * 재시작해야 반영된다 — 콘텐츠 파일은 webpack 모듈 그래프에 없어서 Fast Refresh가
+ * 이 모듈을 다시 평가하지 않기 때문이다. 글을 쓰면서 바로 확인하는 게 md 전환의
+ * 핵심이므로 dev에서는 매번 읽는다. 파일 16개 파싱은 충분히 싸다.
  */
 export function allPosts(): Post[] {
-  if (cache === null) {
-    cache = loadPosts(POSTS_DIR, process.env.NODE_ENV !== "production");
+  if (cache !== null) {
+    return cache;
   }
-  return cache;
+
+  const posts = loadPosts(POSTS_DIR, shouldIncludeDrafts());
+
+  if (process.env.NODE_ENV === "production") {
+    cache = posts;
+  }
+  return posts;
 }
 
-/** 날짜가 같으면 slug으로 갈라 정적 빌드 순서를 안정시킨다. */
+/**
+ * 날짜가 같으면 slug으로 갈라 정적 빌드 순서를 안정시킨다.
+ * slug이 같은 경우는 없다 — assertUniqueSlugs가 이 비교자보다 먼저 돌아 빌드를 세운다.
+ */
 function byDateDescThenSlug(a: Post, b: Post): number {
   if (a.date !== b.date) {
     return a.date < b.date ? 1 : -1;
@@ -996,7 +1032,7 @@ function assertUniqueSlugs(entries: { file: string; post: Post }[]): void {
 pnpm test
 ```
 
-Expected: PASS — 5개 추가
+Expected: PASS — 6개 추가
 
 - [ ] **Step 6: 커밋**
 
@@ -1248,7 +1284,7 @@ export function postListUrls(posts: Post[]): string[] {
 pnpm test
 ```
 
-Expected: PASS — 13개 추가 (누적 50개)
+Expected: PASS — 13개 추가 (누적 51개)
 
 - [ ] **Step 5: 커밋**
 
@@ -1681,7 +1717,7 @@ pnpm test
 pnpm dev
 ```
 
-Expected: 테스트 50개 PASS. `http://localhost:3000`에서 샘플 글 3개가 최신순(알파 → 베타 → 감마)으로 보인다. 4개 미만이라 아랫줄 2개 영역은 나타나지 않는다. 카드 이미지는 알파가 본문 이미지, 베타가 기본 이미지, 감마가 frontmatter 지정 이미지다. 제목 클릭 시 상세로 이동한다.
+Expected: 테스트 51개 PASS. `http://localhost:3000`에서 샘플 글 3개가 최신순(알파 → 베타 → 감마)으로 보인다. 4개 미만이라 아랫줄 2개 영역은 나타나지 않는다. 카드 이미지는 알파가 본문 이미지, 베타가 기본 이미지, 감마가 frontmatter 지정 이미지다. 제목 클릭 시 상세로 이동한다.
 
 - [ ] **Step 9: 커밋**
 
@@ -1986,7 +2022,7 @@ pnpm test
 pnpm dev
 ```
 
-Expected: 테스트 50개 PASS. 브라우저에서:
+Expected: 테스트 51개 PASS. 브라우저에서:
 - `/post/all/1` — 샘플 3개, 헤더가 `Posts all 3`, 페이지네이션이 `page : 1 of 1 (3)`
 - `/post/javascript/1` — 알파·베타 2개, 헤더 `Posts javascript 2`
 - `/post/react/1` — 감마 1개
@@ -2352,7 +2388,7 @@ pnpm test
 pnpm build
 ```
 
-Expected: 테스트 50개 PASS. 빌드 성공. **빌드 로그에 네트워크 호출이나 `API_TOKEN` 관련 경고가 없어야 한다.**
+Expected: 테스트 51개 PASS. 빌드 성공. **빌드 로그에 네트워크 호출이나 `API_TOKEN` 관련 경고가 없어야 한다.**
 
 - [ ] **Step 7: 정적 산출물 육안 확인**
 
@@ -2958,7 +2994,7 @@ pnpm test
 pnpm build
 ```
 
-Expected: 테스트 50개 PASS. **환경변수 없이** 빌드 성공.
+Expected: 테스트 51개 PASS. **환경변수 없이** 빌드 성공.
 
 - [ ] **Step 2: URL 보존 확인**
 
