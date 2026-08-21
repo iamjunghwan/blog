@@ -991,7 +991,9 @@ export function allPosts(): Post[] {
 
   const posts = loadPosts(POSTS_DIR, shouldIncludeDrafts());
 
-  if (process.env.NODE_ENV === "production") {
+  // 캐시 여부를 NODE_ENV로 다시 판단하지 않는다. 같은 개념을 두 곳에서 각자 비교하면
+  // 한쪽만 바뀌었을 때 캐싱과 draft 표시가 조용히 어긋난다.
+  if (!shouldIncludeDrafts()) {
     cache = posts;
   }
   return posts;
@@ -1478,6 +1480,17 @@ pnpm dev
 - TOC의 소제목 링크를 클릭하면 해당 위치로 스크롤된다
 - h2를 클릭해도 스크롤된다 (`ArticleClientActions`)
 - `http://localhost:3000/없는-슬러그` — 404 페이지
+
+**dev 캐시 무효화 확인 (이 단계를 건너뛰지 말 것):** 서버를 켠 상태로
+`content/posts/2026-08-sample-beta.md`의 본문 한 줄을 고치고 저장한 뒤,
+`http://localhost:3000/sample-beta`를 새로고침한다. **서버를 재시작하지 않고** 변경이
+보여야 한다.
+
+`allPosts()`의 캐시는 프로덕션에서만 동작하도록 되어 있는데 그 분기 자체에는 자동
+테스트가 없다 (`content/posts`가 없으면 `allPosts()`가 ENOENT로 던지고, `NODE_ENV`는
+Next 타입에서 읽기 전용이라 테스트에서 프로덕션을 흉내낼 수 없다). 이 수동 확인이
+그 분기를 검증하는 유일한 지점이므로 반드시 수행한다. 변경이 보이지 않으면 캐시가
+dev에서도 동작하고 있다는 뜻이다.
 
 확인 후 서버를 종료한다.
 
