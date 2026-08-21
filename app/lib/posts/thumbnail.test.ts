@@ -73,3 +73,41 @@ test("코드 펜스 안의 raw img도 무시한다", () => {
 
   assert.equal(thumbnailOf({ body }), DEFAULT_THUMBNAIL);
 });
+
+test("리스트 안에 들여쓴 펜스도 무시한다", () => {
+  const body = [
+    "# 제목",
+    "",
+    "1. 먼저 이렇게 쓴다",
+    "",
+    "   ```markdown",
+    "   ![예시](/uploads/in-code.png)",
+    "   ```",
+    "",
+    "![실제](/uploads/real.png)",
+  ].join("\n");
+
+  assert.equal(thumbnailOf({ body }), "/uploads/real.png");
+});
+
+test("긴 펜스로 감싼 안쪽 펜스가 블록을 조기에 닫지 않는다", () => {
+  const body = [
+    "# 제목",
+    "",
+    "````markdown",
+    "```",
+    "![예시](/uploads/in-code.png)",
+    "```",
+    "````",
+    "",
+    "![실제](/uploads/real.png)",
+  ].join("\n");
+
+  assert.equal(thumbnailOf({ body }), "/uploads/real.png");
+});
+
+test("닫히지 않은 펜스는 문서 끝까지 코드로 본다", () => {
+  const body = ["# 제목", "", "```", "![예시](/uploads/in-code.png)"].join("\n");
+
+  assert.equal(thumbnailOf({ body }), DEFAULT_THUMBNAIL);
+});
