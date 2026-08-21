@@ -54,30 +54,30 @@ test("slug이 없으면 파일명을 포함한 에러를 던진다", () => {
 
   assert.throws(
     () => parsePost(source, "2026-07-broken.md"),
-    /2026-07-broken\.md.*slug/s
+    /2026-07-broken\.md.*slug/
   );
 });
 
 test("title이 없으면 파일명을 포함한 에러를 던진다", () => {
   const source = VALID.replace('title: "Next.js 16 업그레이드"\n', "");
 
-  assert.throws(() => parsePost(source, "broken.md"), /broken\.md.*title/s);
+  assert.throws(() => parsePost(source, "broken.md"), /broken\.md.*title/);
 });
 
 test("date 형식이 틀리면 에러를 던진다", () => {
   const source = VALID.replace("date: 2026-07-14", "date: 2026년 7월");
 
-  assert.throws(() => parsePost(source, "broken.md"), /broken\.md.*date/s);
+  assert.throws(() => parsePost(source, "broken.md"), /broken\.md.*date/);
 });
 
 test("tags가 배열이 아니면 에러를 던진다", () => {
   const source = VALID.replace("tags: [nextjs, react]", "tags: nextjs,react");
 
-  assert.throws(() => parsePost(source, "broken.md"), /broken\.md.*tags/s);
+  assert.throws(() => parsePost(source, "broken.md"), /broken\.md.*tags/);
 });
 
 test("tags가 비어 있으면 에러를 던진다", () => {
   const source = VALID.replace("tags: [nextjs, react]", "tags: []");
 
-  assert.throws(() => parsePost(source, "broken.md"), /broken\.md.*tags/s);
+  assert.throws(() => parsePost(source, "broken.md"), /broken\.md.*tags/);
 });
