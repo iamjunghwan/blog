@@ -58,7 +58,9 @@ export function allPosts(): Post[] {
 
   const posts = loadPosts(POSTS_DIR, shouldIncludeDrafts());
 
-  if (process.env.NODE_ENV === "production") {
+  // 캐시 여부를 NODE_ENV로 다시 판단하지 않는다. 같은 개념을 두 곳에서 각자 비교하면
+  // 한쪽만 바뀌었을 때 캐싱과 draft 표시가 조용히 어긋난다.
+  if (!shouldIncludeDrafts()) {
     cache = posts;
   }
   return posts;
