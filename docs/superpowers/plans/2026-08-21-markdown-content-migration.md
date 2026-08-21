@@ -20,6 +20,7 @@
 - Tailwind 클래스 문자열은 **한 글자도 바꾸지 않는다.** 기존 파일에서 그대로 복사한다. (원본의 중복 클래스 `w-full max-w-xl ... w-full max-w-md`도 그대로 둔다)
 - 주석은 한국어로, 기존 파일의 밀도를 따른다. 기존 파일의 `/**** ... ****/` 배너 주석은 유지한다.
 - 페이지 크기는 `queries.ts`의 `PAGE_SIZE = 5` 하나만 쓴다. 다른 파일에 5를 하드코딩하지 않는다.
+- **줄바꿈:** 이 저장소는 `core.autocrlf=true`이고 `.gitattributes`가 없어 워킹트리 파일이 **CRLF**다. JS 템플릿 리터럴은 CRLF를 LF로 정규화하지만 `fs.readFileSync`는 하지 않는다. `parsePost`가 파싱 경계에서 `\r\n` → `\n`으로 정규화하므로, 그 아래 모듈(`thumbnail`, `render`, `queries`)은 LF만 가정해도 된다. 새로 만드는 모듈에서 줄바꿈 방어 코드를 중복해 넣지 않는다.
 - **이 브랜치(`markdown-migration`)는 2부가 끝나기 전에 배포하지 않는다.** 1부 완료 시점에는 사이트에 임시 샘플 글 3개만 존재한다.
 - 테스트 픽스처(`app/lib/posts/__fixtures__/`)와 임시 샘플 글(`content/posts/sample-*.md`)은 서로 다른 것이다. 픽스처는 영구, 샘플은 2부에서 삭제한다.
 
@@ -149,6 +150,15 @@ test("date를 따옴표로 감싼 문자열도 허용한다", () => {
   assert.equal(parsePost(source, "f.md").date, "2026-07-14");
 });
 
+test("CRLF 파일을 읽어도 본문은 LF만 담는다", () => {
+  // 디스크에서 읽은 문자열은 템플릿 리터럴과 달리 CRLF가 그대로 들어온다.
+  const post = parsePost(VALID.replace(/\n/g, "\r\n"), "crlf.md");
+
+  assert.equal(post.body.includes("\r"), false);
+  assert.equal(post.body, "# Next.js 16 업그레이드\n\n본문이다.");
+  assert.equal(post.date, "2026-07-14");
+});
+
 test("thumbnail과 draft를 읽는다", () => {
   const source = VALID.replace(
     "tags: [nextjs, react]",
@@ -248,7 +258,9 @@ const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
  * 조용히 넘기면 글이 사이트에서 사라지는데 아무도 알 수 없다.
  */
 export function parsePost(source: string, fileName: string): Post {
-  const { data, content } = matter(source);
+  // 이 저장소는 core.autocrlf=true 라 워킹트리 파일이 CRLF다.
+  // 파싱 경계에서 한 번 정규화해 아래 모듈들이 줄바꿈을 신경 쓰지 않게 한다.
+  const { data, content } = matter(source.replace(/\r\n/g, "\n"));
 
   return {
     slug: requireString(data.slug, "slug", fileName),
@@ -311,7 +323,7 @@ function requireTags(value: unknown, fileName: string): string[] {
 pnpm test
 ```
 
-Expected: PASS — 9 tests
+Expected: PASS — 10 tests
 
 - [ ] **Step 9: 커밋**
 
@@ -416,6 +428,44 @@ test("코드 펜스 안의 raw img도 무시한다", () => {
 
   assert.equal(thumbnailOf({ body }), DEFAULT_THUMBNAIL);
 });
+
+test("리스트 안에 들여쓴 펜스도 무시한다", () => {
+  const body = [
+    "# 제목",
+    "",
+    "1. 먼저 이렇게 쓴다",
+    "",
+    "   ```markdown",
+    "   ![예시](/uploads/in-code.png)",
+    "   ```",
+    "",
+    "![실제](/uploads/real.png)",
+  ].join("\n");
+
+  assert.equal(thumbnailOf({ body }), "/uploads/real.png");
+});
+
+test("긴 펜스로 감싼 안쪽 펜스가 블록을 조기에 닫지 않는다", () => {
+  const body = [
+    "# 제목",
+    "",
+    "````markdown",
+    "```",
+    "![예시](/uploads/in-code.png)",
+    "```",
+    "````",
+    "",
+    "![실제](/uploads/real.png)",
+  ].join("\n");
+
+  assert.equal(thumbnailOf({ body }), "/uploads/real.png");
+});
+
+test("닫히지 않은 펜스는 문서 끝까지 코드로 본다", () => {
+  const body = ["# 제목", "", "```", "![예시](/uploads/in-code.png)"].join("\n");
+
+  assert.equal(thumbnailOf({ body }), DEFAULT_THUMBNAIL);
+});
 ```
 
 - [ ] **Step 2: 테스트가 실패하는지 확인**
@@ -438,8 +488,8 @@ export const DEFAULT_THUMBNAIL = "/iaman.png";
 // ![alt](경로 "title") 에서 경로만 잡는다. 공백/닫는 괄호/> 앞에서 멈춘다.
 const MARKDOWN_IMAGE = /!\[[^\]]*\]\(\s*<?([^\s)>]+)>?/;
 const HTML_IMAGE = /<img[^>]+src\s*=\s*["']([^"']+)["']/i;
-// 펜스로 감싼 코드블록. 여는 줄의 info string(```markdown 등)까지 함께 삼킨다.
-const FENCED_BLOCK = /^(```|~~~)[\s\S]*?^\1[ \t]*$/gm;
+// 펜스 줄: 최대 3칸 들여쓰기 + ` 또는 ~ 3개 이상 + 나머지(info string 또는 빈 문자열)
+const FENCE_LINE = /^ {0,3}(`{3,}|~{3,})(.*)$/;
 
 /**
  * 대표 이미지를 결정한다.
@@ -454,7 +504,7 @@ export function thumbnailOf(post: Pick<Post, "thumbnail" | "body">): string {
   }
 
   // 두 정규식을 같은 문자열에 돌리므로 펜스를 지워도 등장 순서 비교는 유효하다.
-  const body = post.body.replace(FENCED_BLOCK, "");
+  const body = stripFencedBlocks(post.body);
 
   const markdownMatch = MARKDOWN_IMAGE.exec(body);
   const htmlMatch = HTML_IMAGE.exec(body);
@@ -479,6 +529,44 @@ function normalize(src: string): string {
   }
   return src.startsWith("/") ? src : `/${src}`;
 }
+
+/**
+ * 코드 펜스 구간을 지운다. 정규식 하나로는 부족해서 줄 단위로 훑는다.
+ * CommonMark 규칙을 따른다:
+ *  - 여는 펜스는 들여쓰기 최대 3칸, 마커는 ` 또는 ~ 3개 이상
+ *  - 닫는 펜스는 같은 문자로 여는 펜스 이상 길이여야 하고 뒤에 내용이 없어야 한다
+ *    (그래서 ````로 감싼 안쪽 ```가 블록을 조기에 닫지 않는다)
+ *  - 닫는 펜스가 없으면 문서 끝까지 코드로 본다
+ */
+function stripFencedBlocks(body: string): string {
+  const kept: string[] = [];
+  let open: { marker: string; length: number } | null = null;
+
+  for (const line of body.split("\n")) {
+    const match = FENCE_LINE.exec(line);
+
+    if (open === null) {
+      if (match) {
+        open = { marker: match[1][0], length: match[1].length };
+        continue;
+      }
+      kept.push(line);
+      continue;
+    }
+
+    const closes =
+      match !== null &&
+      match[1][0] === open.marker &&
+      match[1].length >= open.length &&
+      match[2].trim() === "";
+
+    if (closes) {
+      open = null;
+    }
+  }
+
+  return kept.join("\n");
+}
 ```
 
 - [ ] **Step 4: 테스트 통과 확인**
@@ -487,7 +575,7 @@ function normalize(src: string): string {
 pnpm test
 ```
 
-Expected: PASS — 앞선 9개 + 10개 = 19개
+Expected: PASS — 앞선 10개 + 13개 = 23개
 
 - [ ] **Step 5: 커밋**
 
@@ -1126,7 +1214,7 @@ export function postListUrls(posts: Post[]): string[] {
 pnpm test
 ```
 
-Expected: PASS — 13개 추가 (누적 45개)
+Expected: PASS — 13개 추가 (누적 49개)
 
 - [ ] **Step 5: 커밋**
 
@@ -1559,7 +1647,7 @@ pnpm test
 pnpm dev
 ```
 
-Expected: 테스트 45개 PASS. `http://localhost:3000`에서 샘플 글 3개가 최신순(알파 → 베타 → 감마)으로 보인다. 4개 미만이라 아랫줄 2개 영역은 나타나지 않는다. 카드 이미지는 알파가 본문 이미지, 베타가 기본 이미지, 감마가 frontmatter 지정 이미지다. 제목 클릭 시 상세로 이동한다.
+Expected: 테스트 49개 PASS. `http://localhost:3000`에서 샘플 글 3개가 최신순(알파 → 베타 → 감마)으로 보인다. 4개 미만이라 아랫줄 2개 영역은 나타나지 않는다. 카드 이미지는 알파가 본문 이미지, 베타가 기본 이미지, 감마가 frontmatter 지정 이미지다. 제목 클릭 시 상세로 이동한다.
 
 - [ ] **Step 9: 커밋**
 
@@ -1864,7 +1952,7 @@ pnpm test
 pnpm dev
 ```
 
-Expected: 테스트 45개 PASS. 브라우저에서:
+Expected: 테스트 49개 PASS. 브라우저에서:
 - `/post/all/1` — 샘플 3개, 헤더가 `Posts all 3`, 페이지네이션이 `page : 1 of 1 (3)`
 - `/post/javascript/1` — 알파·베타 2개, 헤더 `Posts javascript 2`
 - `/post/react/1` — 감마 1개
@@ -2230,7 +2318,7 @@ pnpm test
 pnpm build
 ```
 
-Expected: 테스트 45개 PASS. 빌드 성공. **빌드 로그에 네트워크 호출이나 `API_TOKEN` 관련 경고가 없어야 한다.**
+Expected: 테스트 49개 PASS. 빌드 성공. **빌드 로그에 네트워크 호출이나 `API_TOKEN` 관련 경고가 없어야 한다.**
 
 - [ ] **Step 7: 정적 산출물 육안 확인**
 
@@ -2836,7 +2924,7 @@ pnpm test
 pnpm build
 ```
 
-Expected: 테스트 45개 PASS. **환경변수 없이** 빌드 성공.
+Expected: 테스트 49개 PASS. **환경변수 없이** 빌드 성공.
 
 - [ ] **Step 2: URL 보존 확인**
 
