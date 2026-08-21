@@ -1,54 +1,23 @@
-import { useState, useEffect } from "react";
-import { ApiItem } from "@/type/index";
-import dayjs from "dayjs";
+import { useState } from "react";
 import { useDebounce } from "./useDebounce";
+import type { SearchEntry } from "@/app/lib/posts/types";
 
-const useSearchData = (open: boolean) => {
-  const [customData, setCustomData] = useState<ApiItem[]>([]);
+/**
+ * 빌드 타임에 받은 인덱스를 제목으로 필터링한다.
+ * 디바운스는 입력마다 리렌더가 도는 것을 막기 위해 유지한다.
+ */
+const useSearchData = (index: SearchEntry[]) => {
   const [searchValue, setSearchValue] = useState<string>("");
   const debouncedSearchValue = useDebounce(searchValue, 500);
 
-  useEffect(
-    function fetchDataByOpen() {
-      if (open) {
-        fetch("https://api.memexdata.io/memex/api/projects/0e9c148b/models/blog/contents/search/v2", {
-          method: "POST",
-          headers: { 
-            "Content-Type": "application/json" ,
-            "Access-Token": process.env.NEXT_PUBLIC_API_TOKEN || "", // 환경변수 사용
-          },
-          body: JSON.stringify({
-            size: 20,
-            page: 0,
-            direction: "DESC",
-            orderCond: { type: "DATE_CREATE" },
-          }),
-        }) 
-          .then((res) => res.json())
-          .then(function (data) {
-            let _customData = data.list.map((obj: ApiItem) => {
-              return {
-                createdAt: dayjs(obj.createdAt).format("YYYY-MM-DD"),
-                data: {
-                  slug: obj.data.slug,
-                  title: {
-                    KO: obj.data.title.KO,
-                  },
-                },
-              };
-            });
-         setCustomData(_customData);
-       });
-      }
-    },
-    [open]
-  );
+  const keyword = debouncedSearchValue.trim().toLowerCase();
 
-  const filteredData = customData.filter((item: ApiItem) =>
-    item.data.title.KO.toLowerCase().includes(
-      debouncedSearchValue.toLowerCase()
-    )
-  );
+  const filteredData =
+    keyword === ""
+      ? index
+      : index.filter((entry: SearchEntry) =>
+          entry.title.toLowerCase().includes(keyword)
+        );
 
   return {
     setSearchValue,

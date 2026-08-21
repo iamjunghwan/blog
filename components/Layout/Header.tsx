@@ -3,8 +3,14 @@ import Link from "next/link";
 import Theme from "../Button/Theme";
 import Search from "../Search/components/Search";
 import MenuToggleButton from "../Button/MenuToggleButton";
+import { allPosts } from "@/app/lib/posts/repository";
+import { searchIndex } from "@/app/lib/posts/queries";
 
 export default function Header() {
+  // 빌드 타임에 만든 검색 인덱스를 클라이언트 컴포넌트에 넘긴다.
+  // 별도 JSON 파일과 fetch가 필요 없고, 모달을 열면 즉시 검색된다.
+  const index = searchIndex(allPosts());
+
   return (
     <header className="pt-10 pb-10 flex justify-between items-center">
       <Link href="/">
@@ -31,11 +37,11 @@ export default function Header() {
           <Link className="p-4" href="/about">
             {"About"}
           </Link>
-          <Search />
+          <Search index={index} />
           <Theme />
         </div>
         <div className="sm:hidden flex items-center">
-          <Search />
+          <Search index={index} />
           <Theme />
           <MenuToggleButton />
         </div>
