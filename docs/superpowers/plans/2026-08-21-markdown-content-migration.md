@@ -20,7 +20,11 @@
 - Tailwind 클래스 문자열은 **한 글자도 바꾸지 않는다.** 기존 파일에서 그대로 복사한다. (원본의 중복 클래스 `w-full max-w-xl ... w-full max-w-md`도 그대로 둔다)
 - 주석은 한국어로, 기존 파일의 밀도를 따른다. 기존 파일의 `/**** ... ****/` 배너 주석은 유지한다.
 - 페이지 크기는 `queries.ts`의 `PAGE_SIZE = 5` 하나만 쓴다. 다른 파일에 5를 하드코딩하지 않는다.
-- **줄바꿈:** 이 저장소는 `core.autocrlf=true`이고 `.gitattributes`가 없어 워킹트리 파일이 **CRLF**다. JS 템플릿 리터럴은 CRLF를 LF로 정규화하지만 `fs.readFileSync`는 하지 않는다. `parsePost`가 파싱 경계에서 `\r\n` → `\n`으로 정규화하므로, 그 아래 모듈(`thumbnail`, `render`, `queries`)은 LF만 가정해도 된다. 새로 만드는 모듈에서 줄바꿈 방어 코드를 중복해 넣지 않는다.
+- **줄바꿈:** 이 저장소는 `core.autocrlf=true`이고 `.gitattributes`가 없어 워킹트리 파일이 **CRLF**다. JS 템플릿 리터럴은 CRLF를 LF로 정규화하지만 `fs.readFileSync`는 하지 않는다. 규칙은 둘이다:
+  1. `parsePost`가 파싱 경계에서 `\r\n` → `\n`으로 정규화한다. 그래서 `Post.body`는 항상 LF다.
+  2. **줄 단위로 문자열을 훑는 함수는 줄 분리를 인코딩 독립적으로 한다** (`split(/\r\n|\r|\n/)`). 방어 코드 중복이 아니라 그 함수가 자기 전제를 책임지는 것이다. `"\n"`으로만 쪼개면 각 줄 끝에 `\r`가 남고, JS 정규식의 `.`는 `\r`를 매치하지 않으며 `$`는 `/m` 없이 문자열 끝만 보므로 `^...(.*)$` 형태의 줄 패턴이 **전부 무동작**이 된다. 실측으로 확인된 실패 모드다.
+
+  그 외의 곳에서는 LF를 가정하고 줄바꿈 방어 코드를 넣지 않는다.
 - **이 브랜치(`markdown-migration`)는 2부가 끝나기 전에 배포하지 않는다.** 1부 완료 시점에는 사이트에 임시 샘플 글 3개만 존재한다.
 - 테스트 픽스처(`app/lib/posts/__fixtures__/`)와 임시 샘플 글(`content/posts/sample-*.md`)은 서로 다른 것이다. 픽스처는 영구, 샘플은 2부에서 삭제한다.
 
@@ -466,6 +470,22 @@ test("닫히지 않은 펜스는 문서 끝까지 코드로 본다", () => {
 
   assert.equal(thumbnailOf({ body }), DEFAULT_THUMBNAIL);
 });
+
+test("CRLF 본문에서도 펜스를 인식한다", () => {
+  // 이 저장소는 core.autocrlf=true라 디스크의 md가 CRLF다.
+  // "\n"으로만 쪼개면 각 줄에 \r가 남아 펜스 인식이 전부 무동작이 된다.
+  const body = [
+    "# 제목",
+    "",
+    "```markdown",
+    "![예시](/uploads/in-code.png)",
+    "```",
+    "",
+    "![실제](/uploads/real.png)",
+  ].join("\r\n");
+
+  assert.equal(thumbnailOf({ body }), "/uploads/real.png");
+});
 ```
 
 - [ ] **Step 2: 테스트가 실패하는지 확인**
@@ -542,7 +562,9 @@ function stripFencedBlocks(body: string): string {
   const kept: string[] = [];
   let open: { marker: string; length: number } | null = null;
 
-  for (const line of body.split("\n")) {
+  // 줄 분리는 인코딩과 무관해야 한다. "\n"으로만 쪼개면 CRLF 파일에서 각 줄 끝에 \r가
+  // 남고, FENCE_LINE의 `.`는 \r를 매치하지 않아 펜스가 아예 인식되지 않는다.
+  for (const line of body.split(/\r\n|\r|\n/)) {
     const match = FENCE_LINE.exec(line);
 
     if (open === null) {
@@ -575,7 +597,7 @@ function stripFencedBlocks(body: string): string {
 pnpm test
 ```
 
-Expected: PASS — 앞선 10개 + 13개 = 23개
+Expected: PASS — 앞선 10개 + 14개 = 24개
 
 - [ ] **Step 5: 커밋**
 
@@ -711,11 +733,23 @@ pnpm test
 
 Expected: PASS — 8개 추가
 
-테스트가 실패하면 실제 출력을 먼저 확인한다. `markdown-it`의 태그 속성 순서나 자기닫힘 표기가 기대와 다를 수 있다. 그럴 때는 **기대값을 실제 출력에 맞춘다** (렌더러 동작이 기준이다). 단 `id` 부여·TOC 삽입·raw HTML 통과·코드블록 언어 유지, 이 4가지는 반드시 만족해야 하며 실패하면 원인을 찾는다.
+**위 기대값 8개는 실측으로 확인된 것이다** (`markdown-it` 15 + 현재 `processHtml`). 실제 출력:
 
-```bash
-npx tsx -e "import('./app/lib/posts/render').then(m => console.log(m.renderPostBody('# T\n\n## A\n\n![x](/a.png)')))"
-```
+| 검증 | 실제 출력 |
+|---|---|
+| h2 id | `<h2 id="소제목">` |
+| 공백 heading id | `<h2 id="hello-world">` |
+| 이미지 | `<img src="/uploads/a.png" alt="대체텍스트">` (src 먼저, 자기닫힘 아님) |
+| 코드펜스 | `<code class="language-ts">` |
+| raw HTML | `<iframe src="https://example.com">` 통과 |
+| hr / TOC 순서 | hr(37) → toc(46) |
+| TOC 링크 | `<a href="#첫째">첫째</a>` |
+
+따라서 **테스트가 실패하면 기대값이 아니라 구현을 의심한다.** 기대값을 실제 출력에 맞춰 고치지 말 것.
+
+참고: `processHtml`이 삽입하는 TOC 자체의 제목은 `<h2 id=toc>`로 **속성에 따옴표가 없다**
+(`processHtml.ts`의 하드코딩 문자열). h2를 세는 단정에서는 이걸 감안해야 하므로 위 테스트는
+`assert.match`로 특정 h2만 확인한다.
 
 - [ ] **Step 5: 커밋**
 
@@ -1214,7 +1248,7 @@ export function postListUrls(posts: Post[]): string[] {
 pnpm test
 ```
 
-Expected: PASS — 13개 추가 (누적 49개)
+Expected: PASS — 13개 추가 (누적 50개)
 
 - [ ] **Step 5: 커밋**
 
@@ -1647,7 +1681,7 @@ pnpm test
 pnpm dev
 ```
 
-Expected: 테스트 49개 PASS. `http://localhost:3000`에서 샘플 글 3개가 최신순(알파 → 베타 → 감마)으로 보인다. 4개 미만이라 아랫줄 2개 영역은 나타나지 않는다. 카드 이미지는 알파가 본문 이미지, 베타가 기본 이미지, 감마가 frontmatter 지정 이미지다. 제목 클릭 시 상세로 이동한다.
+Expected: 테스트 50개 PASS. `http://localhost:3000`에서 샘플 글 3개가 최신순(알파 → 베타 → 감마)으로 보인다. 4개 미만이라 아랫줄 2개 영역은 나타나지 않는다. 카드 이미지는 알파가 본문 이미지, 베타가 기본 이미지, 감마가 frontmatter 지정 이미지다. 제목 클릭 시 상세로 이동한다.
 
 - [ ] **Step 9: 커밋**
 
@@ -1952,7 +1986,7 @@ pnpm test
 pnpm dev
 ```
 
-Expected: 테스트 49개 PASS. 브라우저에서:
+Expected: 테스트 50개 PASS. 브라우저에서:
 - `/post/all/1` — 샘플 3개, 헤더가 `Posts all 3`, 페이지네이션이 `page : 1 of 1 (3)`
 - `/post/javascript/1` — 알파·베타 2개, 헤더 `Posts javascript 2`
 - `/post/react/1` — 감마 1개
@@ -2318,7 +2352,7 @@ pnpm test
 pnpm build
 ```
 
-Expected: 테스트 49개 PASS. 빌드 성공. **빌드 로그에 네트워크 호출이나 `API_TOKEN` 관련 경고가 없어야 한다.**
+Expected: 테스트 50개 PASS. 빌드 성공. **빌드 로그에 네트워크 호출이나 `API_TOKEN` 관련 경고가 없어야 한다.**
 
 - [ ] **Step 7: 정적 산출물 육안 확인**
 
@@ -2924,7 +2958,7 @@ pnpm test
 pnpm build
 ```
 
-Expected: 테스트 49개 PASS. **환경변수 없이** 빌드 성공.
+Expected: 테스트 50개 PASS. **환경변수 없이** 빌드 성공.
 
 - [ ] **Step 2: URL 보존 확인**
 
