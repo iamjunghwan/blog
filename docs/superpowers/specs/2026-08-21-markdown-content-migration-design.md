@@ -346,7 +346,11 @@ CJS 설정 파일에서 md를 다시 파싱하는 코드를 짜야 한다.
 
 ## 의존성
 
-추가 (dependencies): `gray-matter`, `markdown-it`, `@types/markdown-it`
+추가 (dependencies): `gray-matter`, `markdown-it`
+
+`@types/markdown-it`은 추가하지 않는다. `markdown-it` 15는 `dist/markdown-it.d.mts`로
+자체 타입을 제공하고, TypeScript는 패키지 자체 타입을 `@types/*`보다 먼저 해석한다.
+`@types/markdown-it`의 최신 버전은 14.x라 버전도 어긋난다. (구현 중 실측으로 확인)
 
 추가 (devDependencies): `tsx` (테스트·스크립트 실행),
 `turndown`, `@types/turndown`, `turndown-plugin-gfm` (마이그레이션 전용)
