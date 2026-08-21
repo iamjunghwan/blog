@@ -1,5 +1,6 @@
 import matter from "gray-matter";
 import type { Post } from "@/app/lib/posts/types";
+import { ALL_TAG } from "@/app/lib/posts/queries";
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
 
@@ -64,5 +65,14 @@ function requireTags(value: unknown, fileName: string): string[] {
   if (tags.length === 0) {
     throw new Error(`${fileName}: frontmatter의 'tags'가 비어 있습니다.`);
   }
+
+  // 'all'은 전체 목록 라우트(/post/all/1)가 쓰는 예약어다. 태그로 허용하면 그 태그로는
+  // 필터가 불가능해지고 목록 라우트도 중복 생성된다. 조용히 무시하지 않고 빌드를 세운다.
+  if (tags.includes(ALL_TAG)) {
+    throw new Error(
+      `${fileName}: '${ALL_TAG}'는 전체 목록 라우트가 쓰는 예약어라 태그로 쓸 수 없습니다.`
+    );
+  }
+
   return tags;
 }
