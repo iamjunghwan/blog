@@ -84,6 +84,10 @@ pnpm add gray-matter markdown-it @types/markdown-it
 pnpm add -D tsx turndown @types/turndown turndown-plugin-gfm
 ```
 
+> **사후 정정:** `@types/markdown-it`은 불필요하다. `markdown-it` 15는 자체 타입을
+> 내장한다(`dist/markdown-it.d.mts`). Task 3에서 제거한다. 위 명령은 실제로 실행된
+> 이력이라 그대로 남긴다.
+
 - [ ] **Step 2: 미사용 의존성 제거**
 
 `formidable`, `@types/formidable`, `fs-extra`, `@next/bundle-analyzer`는 저장소 어디서도 import되지 않는다 (이미지 업로드 기능을 만들다 남은 흔적).
@@ -161,32 +165,32 @@ test("slug이 없으면 파일명을 포함한 에러를 던진다", () => {
 
   assert.throws(
     () => parsePost(source, "2026-07-broken.md"),
-    /2026-07-broken\.md.*slug/s
+    /2026-07-broken\.md.*slug/
   );
 });
 
 test("title이 없으면 파일명을 포함한 에러를 던진다", () => {
   const source = VALID.replace('title: "Next.js 16 업그레이드"\n', "");
 
-  assert.throws(() => parsePost(source, "broken.md"), /broken\.md.*title/s);
+  assert.throws(() => parsePost(source, "broken.md"), /broken\.md.*title/);
 });
 
 test("date 형식이 틀리면 에러를 던진다", () => {
   const source = VALID.replace("date: 2026-07-14", "date: 2026년 7월");
 
-  assert.throws(() => parsePost(source, "broken.md"), /broken\.md.*date/s);
+  assert.throws(() => parsePost(source, "broken.md"), /broken\.md.*date/);
 });
 
 test("tags가 배열이 아니면 에러를 던진다", () => {
   const source = VALID.replace("tags: [nextjs, react]", "tags: nextjs,react");
 
-  assert.throws(() => parsePost(source, "broken.md"), /broken\.md.*tags/s);
+  assert.throws(() => parsePost(source, "broken.md"), /broken\.md.*tags/);
 });
 
 test("tags가 비어 있으면 에러를 던진다", () => {
   const source = VALID.replace("tags: [nextjs, react]", "tags: []");
 
-  assert.throws(() => parsePost(source, "broken.md"), /broken\.md.*tags/s);
+  assert.throws(() => parsePost(source, "broken.md"), /broken\.md.*tags/);
 });
 ```
 
@@ -390,6 +394,28 @@ test("이미지가 없으면 기본 이미지를 쓴다", () => {
   assert.equal(thumbnailOf({ body: "# 제목\n\n이미지 없음" }), DEFAULT_THUMBNAIL);
   assert.equal(DEFAULT_THUMBNAIL, "/iaman.png");
 });
+
+test("코드 펜스 안의 markdown 이미지는 무시한다", () => {
+  const body = [
+    "# 제목",
+    "",
+    "```markdown",
+    "![예시](/uploads/in-code.png)",
+    "```",
+    "",
+    "![실제](/uploads/real.png)",
+  ].join("\n");
+
+  assert.equal(thumbnailOf({ body }), "/uploads/real.png");
+});
+
+test("코드 펜스 안의 raw img도 무시한다", () => {
+  const body = ["# 제목", "", "~~~html", '<img src="/uploads/in-code.png">', "~~~"].join(
+    "\n"
+  );
+
+  assert.equal(thumbnailOf({ body }), DEFAULT_THUMBNAIL);
+});
 ```
 
 - [ ] **Step 2: 테스트가 실패하는지 확인**
@@ -412,18 +438,26 @@ export const DEFAULT_THUMBNAIL = "/iaman.png";
 // ![alt](경로 "title") 에서 경로만 잡는다. 공백/닫는 괄호/> 앞에서 멈춘다.
 const MARKDOWN_IMAGE = /!\[[^\]]*\]\(\s*<?([^\s)>]+)>?/;
 const HTML_IMAGE = /<img[^>]+src\s*=\s*["']([^"']+)["']/i;
+// 펜스로 감싼 코드블록. 여는 줄의 info string(```markdown 등)까지 함께 삼킨다.
+const FENCED_BLOCK = /^(```|~~~)[\s\S]*?^\1[ \t]*$/gm;
 
 /**
  * 대표 이미지를 결정한다.
  * frontmatter thumbnail → 본문 첫 이미지(markdown 문법과 raw img 중 먼저 나온 것) → 기본 이미지
+ *
+ * 코드블록 안의 이미지는 예시 코드이므로 후보에서 뺀다. markdown-it도 펜스 안을
+ * 이미지로 렌더하지 않으므로, 빼지 않으면 화면에 없는 이미지가 썸네일이 된다.
  */
 export function thumbnailOf(post: Pick<Post, "thumbnail" | "body">): string {
   if (post.thumbnail) {
     return normalize(post.thumbnail);
   }
 
-  const markdownMatch = MARKDOWN_IMAGE.exec(post.body);
-  const htmlMatch = HTML_IMAGE.exec(post.body);
+  // 두 정규식을 같은 문자열에 돌리므로 펜스를 지워도 등장 순서 비교는 유효하다.
+  const body = post.body.replace(FENCED_BLOCK, "");
+
+  const markdownMatch = MARKDOWN_IMAGE.exec(body);
+  const htmlMatch = HTML_IMAGE.exec(body);
 
   if (markdownMatch && htmlMatch) {
     return normalize(
@@ -453,7 +487,7 @@ function normalize(src: string): string {
 pnpm test
 ```
 
-Expected: PASS — 앞선 9개 + 8개
+Expected: PASS — 앞선 9개 + 10개 = 19개
 
 - [ ] **Step 5: 커밋**
 
@@ -473,6 +507,18 @@ git commit -m "feat: md 본문에서 대표 이미지를 뽑는 thumbnailOf 추�
 **Interfaces:**
 - Consumes: 기존 `processHtml(html: string): { headings: any[]; html: string }` (`app/lib/processHtml.ts`)
 - Produces: `renderPostBody(body: string): string`
+
+**부수 정리:** `@types/markdown-it`을 제거한다.
+
+```bash
+pnpm remove @types/markdown-it
+```
+
+`markdown-it` 15는 `dist/markdown-it.d.mts`로 자체 타입을 제공하고 TypeScript가 그것을
+`@types/*`보다 먼저 해석하므로, `@types/markdown-it`(최신 14.x)은 동작에 관여하지 않는
+죽은 의존성이다. 제거 후에도 `npx tsc --noEmit`이 깨끗해야 한다 —
+`tsconfig.json`은 `esModuleInterop: true`, `moduleResolution: "bundler"`라
+`import MarkdownIt from "markdown-it"` 기본 import가 정상 동작한다 (실측 확인).
 
 **주의:** `app/lib/processHtml.ts`는 **수정하지 않는다.** 잘 동작하는 코드이고 이번 전환의 검증 기준선이다. `processHtml`은 cheerio `$.html()`을 반환하므로 결과에 `<html><head><body>` 래퍼가 붙는데, 이는 현재 프로덕션 동작과 동일하다 (브라우저가 innerHTML 파싱 시 무시한다). **바꾸지 않는다.**
 
@@ -738,7 +784,7 @@ test("본문을 함께 읽는다", () => {
 test("slug이 중복되면 두 파일명을 담은 에러를 던진다", () => {
   const duplicateDir = path.join(FIXTURES, "duplicate");
 
-  assert.throws(() => loadPosts(duplicateDir, true), /same-slug.*a\.md.*b\.md/s);
+  assert.throws(() => loadPosts(duplicateDir, true), /same-slug.*a\.md.*b\.md/);
 });
 ```
 
@@ -1080,7 +1126,7 @@ export function postListUrls(posts: Post[]): string[] {
 pnpm test
 ```
 
-Expected: PASS — 13개 추가 (누적 43개)
+Expected: PASS — 13개 추가 (누적 45개)
 
 - [ ] **Step 5: 커밋**
 
@@ -1513,7 +1559,7 @@ pnpm test
 pnpm dev
 ```
 
-Expected: 테스트 43개 PASS. `http://localhost:3000`에서 샘플 글 3개가 최신순(알파 → 베타 → 감마)으로 보인다. 4개 미만이라 아랫줄 2개 영역은 나타나지 않는다. 카드 이미지는 알파가 본문 이미지, 베타가 기본 이미지, 감마가 frontmatter 지정 이미지다. 제목 클릭 시 상세로 이동한다.
+Expected: 테스트 45개 PASS. `http://localhost:3000`에서 샘플 글 3개가 최신순(알파 → 베타 → 감마)으로 보인다. 4개 미만이라 아랫줄 2개 영역은 나타나지 않는다. 카드 이미지는 알파가 본문 이미지, 베타가 기본 이미지, 감마가 frontmatter 지정 이미지다. 제목 클릭 시 상세로 이동한다.
 
 - [ ] **Step 9: 커밋**
 
@@ -1818,7 +1864,7 @@ pnpm test
 pnpm dev
 ```
 
-Expected: 테스트 43개 PASS. 브라우저에서:
+Expected: 테스트 45개 PASS. 브라우저에서:
 - `/post/all/1` — 샘플 3개, 헤더가 `Posts all 3`, 페이지네이션이 `page : 1 of 1 (3)`
 - `/post/javascript/1` — 알파·베타 2개, 헤더 `Posts javascript 2`
 - `/post/react/1` — 감마 1개
@@ -2184,7 +2230,7 @@ pnpm test
 pnpm build
 ```
 
-Expected: 테스트 43개 PASS. 빌드 성공. **빌드 로그에 네트워크 호출이나 `API_TOKEN` 관련 경고가 없어야 한다.**
+Expected: 테스트 45개 PASS. 빌드 성공. **빌드 로그에 네트워크 호출이나 `API_TOKEN` 관련 경고가 없어야 한다.**
 
 - [ ] **Step 7: 정적 산출물 육안 확인**
 
@@ -2790,7 +2836,7 @@ pnpm test
 pnpm build
 ```
 
-Expected: 테스트 43개 PASS. **환경변수 없이** 빌드 성공.
+Expected: 테스트 45개 PASS. **환경변수 없이** 빌드 성공.
 
 - [ ] **Step 2: URL 보존 확인**
 
