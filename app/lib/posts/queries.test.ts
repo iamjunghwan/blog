@@ -81,6 +81,17 @@ test("paginate는 빈 목록에도 totalPages 1을 준다", () => {
   assert.equal(result.totalPages, 1);
 });
 
+test("paginate는 유효하지 않은 page에 빈 배열을 준다", () => {
+  // 가드가 없으면 slice의 음수 인덱스 때문에 page=-1이 최신 글 2개를 돌려준다.
+  assert.deepEqual(paginate(POSTS, 0).items, []);
+  assert.deepEqual(paginate(POSTS, -1).items, []);
+  assert.deepEqual(paginate(POSTS, 1.5).items, []);
+  assert.deepEqual(paginate(POSTS, Number.NaN).items, []);
+
+  // totalPages는 여전히 알려준다 (전체 개수 정보는 유효하다)
+  assert.equal(paginate(POSTS, -1).totalPages, 2);
+});
+
 test("searchIndex는 본문을 제외한다", () => {
   const [first] = searchIndex(POSTS);
 
@@ -101,12 +112,18 @@ test("postListParams는 all과 각 태그의 페이지를 만든다", () => {
   ]);
 });
 
-test("postListParams는 아티클 slug을 목록 라우트로 만들지 않는다", () => {
+test("postListParams는 all과 실제 태그만 라우트로 만든다", () => {
   const slugs = postListParams(POSTS).map((param) => param.slug);
+  const allowed = new Set(["all", ...allTags(POSTS)]);
 
   // 기존 버그: 아티클 slug과 콤마로 이어붙인 태그 문자열이 라우트로 생성됐다.
-  assert.ok(!slugs.includes("a"), "아티클 slug이 목록 라우트에 들어가면 안 된다");
-  assert.ok(!slugs.some((slug) => slug.includes(",")), "콤마가 포함된 라우트가 있으면 안 된다");
+  // 특정 문자열("a", 콤마)이 아니라 허용 집합 소속으로 확인해, 같은 버그가 다른
+  // 모양(다른 slug, 다른 구분자)으로 돌아오는 경우까지 잡는다.
+  assert.ok(slugs.length > 0, "라우트가 하나도 없으면 이 단정은 의미가 없다");
+
+  for (const slug of slugs) {
+    assert.ok(allowed.has(slug), `허용되지 않은 목록 라우트 slug: ${slug}`);
+  }
 });
 
 test("postListUrls는 사이트맵용 경로 문자열을 준다", () => {

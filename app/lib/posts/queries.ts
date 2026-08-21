@@ -3,8 +3,12 @@ import type { Post, SearchEntry } from "@/app/lib/posts/types";
 /** 목록 한 페이지에 보여줄 글 수. 이 값만 쓴다. */
 export const PAGE_SIZE = 5;
 
-/** 목록 라우트에서 전체를 뜻하는 slug */
-const ALL = "all";
+/**
+ * 목록 라우트에서 전체를 뜻하는 slug. 예약어다.
+ * 글이 이 이름을 태그로 쓰면 그 태그로는 필터가 불가능해지고 라우트도 중복 생성되므로,
+ * `parse.ts`가 frontmatter 단계에서 이 값을 태그로 쓰는 것을 거부한다.
+ */
+export const ALL_TAG = "all";
 
 export function postBySlug(posts: Post[], slug: string): Post | undefined {
   return posts.find((post) => post.slug === slug);
@@ -12,7 +16,7 @@ export function postBySlug(posts: Post[], slug: string): Post | undefined {
 
 /** 태그는 정확히 비교한다. 부분 문자열 매칭은 js가 nextjs에 걸리는 버그였다. */
 export function postsByTag(posts: Post[], tag: string): Post[] {
-  if (tag === ALL) {
+  if (tag === ALL_TAG) {
     return posts;
   }
   return posts.filter((post) => post.tags.includes(tag));
@@ -34,6 +38,14 @@ export function paginate<T>(
   page: number
 ): { items: T[]; totalPages: number } {
   const totalPages = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
+
+  // 유효하지 않은 page는 빈 결과를 준다. 호출자는 그것으로 404를 판단한다.
+  // 1페이지로 클램프하면 존재하지 않는 주소에 실제 글이 노출된다.
+  // (가드가 없으면 slice의 음수 인덱스 때문에 page=-1이 최신 글 2개를 돌려준다)
+  if (!Number.isInteger(page) || page < 1) {
+    return { items: [], totalPages };
+  }
+
   const start = (page - 1) * PAGE_SIZE;
 
   return { items: items.slice(start, start + PAGE_SIZE), totalPages };
@@ -55,7 +67,7 @@ export function postListParams(
 ): { slug: string; page: string[] }[] {
   const params: { slug: string; page: string[] }[] = [];
 
-  for (const slug of [ALL, ...allTags(posts)]) {
+  for (const slug of [ALL_TAG, ...allTags(posts)]) {
     const { totalPages } = paginate(postsByTag(posts, slug), 1);
 
     for (let page = 1; page <= totalPages; page += 1) {

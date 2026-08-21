@@ -90,3 +90,10 @@ test("tags가 비어 있으면 에러를 던진다", () => {
 
   assert.throws(() => parsePost(source, "broken.md"), /broken\.md.*tags/);
 });
+
+test("예약어 all은 태그로 쓸 수 없다", () => {
+  // /post/all/1 이 전체 목록 라우트라 태그 이름으로 쓰면 그 태그를 필터할 수 없다.
+  const source = VALID.replace("tags: [nextjs, react]", "tags: [nextjs, all]");
+
+  assert.throws(() => parsePost(source, "broken.md"), /broken\.md.*all/);
+});
