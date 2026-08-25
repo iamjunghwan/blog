@@ -81,6 +81,20 @@ async function loadDump(): Promise<CmsItem[]> {
 }
 
 /**
+ * <span>을 벗긴다 (내용은 남긴다).
+ *
+ * 덤프에 3186개가 있는데 전부 style/class만 들고 있고 turndown은 그 스타일을 어차피
+ * 버린다. 그런데 TinyMCE가 강조마다 </strong><span class="s1"><strong> 처럼 감싸놔서
+ * 인접 강조 병합을 가로막는다. 특정 래퍼 깊이를 정규식으로 봐주는 대신 구조에서 없앤다.
+ *
+ * 주의: <video>를 감싼 mce-preview-object span도 함께 벗겨지지만 <video>는 그대로
+ * 남으므로 keep() 처리에 영향이 없다.
+ */
+function unwrapSpans(html: string): string {
+  return html.replace(/<\/?span\b[^>]*>/gi, "");
+}
+
+/**
  * 인접한 같은 강조 태그를 병합한다.
  *
  * TinyMCE가 단어마다 개별 <strong>을 씌워놔서, 변환하면 닫는 `**` 뒤에 여는 `**`가
@@ -375,7 +389,7 @@ async function main(): Promise<void> {
     const tags = parseTags(item.data.tags);
     const body = normalizeAssetPaths(
       fixUnparsableEmphasis(
-        turndown.turndown(mergeAdjacentEmphasis(item.data.content))
+        turndown.turndown(mergeAdjacentEmphasis(unwrapSpans(item.data.content)))
       )
     );
     const fileName = `${date.slice(0, 7)}-${item.data.slug}.md`;
