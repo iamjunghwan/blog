@@ -117,6 +117,18 @@ function createTurndown(): TurndownService {
     },
   });
 
+  // 제목 안의 <br>은 제목을 쪼갠다. 원본에 <h2><span><br>참고<br></span></h2> 같은 것이 있어
+  // 그대로 두면 빈 `##` 한 줄과 떠도는 문단이 만들어진다. 내부 개행을 공백으로 접는다.
+  service.addRule("headingWithoutBreaks", {
+    filter: ["h1", "h2", "h3", "h4", "h5", "h6"],
+    replacement: (content, node) => {
+      const level = Number(node.nodeName.charAt(1));
+      const text = content.replace(/\s+/g, " ").trim();
+
+      return text === "" ? "" : `\n\n${"#".repeat(level)} ${text}\n\n`;
+    },
+  });
+
   // 산문 속 꺾쇠를 다시 엔티티로 만든다.
   //
   // 원본에는 `&lt;iframe&gt;` 처럼 **글자로 보여주려는** 태그 이름이 있다. turndown이
@@ -148,6 +160,72 @@ function normalizeAssetPaths(markdown: string): string {
         "$1/uploads/"
       )
   );
+}
+
+/**
+ * CommonMark 플랭킹 규칙상 파싱되지 않을 강조를 raw HTML로 바꾼다.
+ *
+ * `**...( ... )**입니다` 처럼 닫는 구분자가 구두점 뒤이면서 글자 앞이면 강조로 해석되지
+ * 않아 화면에 `**`가 그대로 보인다. markdown-it이 html: true이므로 <strong>/<em>은
+ * 안전하게 렌더된다. 코드블록 안은 건드리지 않는다.
+ *
+ * 코드블록 밖 각 줄에서 `**X**`, `*X*` 쌍을 찾아, X의 마지막 글자가 구두점/기호이고
+ * 닫는 구분자 바로 다음 글자가 공백도 구두점도 아니면 (= 오른쪽 플랭킹 실패) HTML로 바꾼다.
+ * 그 외에는 그대로 마크다운으로 둔다.
+ */
+function fixUnparsableEmphasis(markdown: string): string {
+  const punctOrSymbol = /[\p{P}\p{S}]/u;
+  const punct = /\p{P}/u;
+  const space = /\s/u;
+
+  const wouldFailToClose = (inner: string, nextChar: string): boolean => {
+    if (inner === "" || nextChar === "") {
+      return false;
+    }
+    const lastChar = inner.charAt(inner.length - 1);
+    return (
+      punctOrSymbol.test(lastChar) && !space.test(nextChar) && !punct.test(nextChar)
+    );
+  };
+
+  const fixLine = (line: string): string => {
+    // ** 부터 처리한다 (단일 *보다 먼저 소비해야 남는 단일 * 검사가 꼬이지 않는다).
+    let result = line.replace(
+      /\*\*([^\n]+?)\*\*/g,
+      (match: string, inner: string, offset: number, whole: string) => {
+        const nextChar = whole.charAt(offset + match.length);
+        return wouldFailToClose(inner, nextChar)
+          ? `<strong>${inner}</strong>`
+          : match;
+      }
+    );
+
+    // 남은 단일 *만 잡는다 (앞뒤에 *가 더 붙어 있으면 **의 잔재이므로 건너뛴다).
+    result = result.replace(
+      /(?<!\*)\*(?!\*)([^\n*]+?)(?<!\*)\*(?!\*)/g,
+      (match: string, inner: string, offset: number, whole: string) => {
+        const nextChar = whole.charAt(offset + match.length);
+        return wouldFailToClose(inner, nextChar) ? `<em>${inner}</em>` : match;
+      }
+    );
+
+    return result;
+  };
+
+  // 펜스 안은 건드리지 않는다. 리스트 안에 들여쓰인 펜스도 있으므로 공백을 허용한다.
+  const kept: string[] = [];
+  let inFence = false;
+
+  for (const line of markdown.split(/\r\n|\r|\n/)) {
+    if (/^[ \t]*```/.test(line)) {
+      inFence = !inFence;
+      kept.push(line);
+      continue;
+    }
+    kept.push(inFence ? line : fixLine(line));
+  }
+
+  return kept.join("\n");
 }
 
 function toDateOnly(value: string): string {
@@ -271,7 +349,9 @@ async function main(): Promise<void> {
   for (const item of items) {
     const date = toDateOnly(item.createdAt);
     const tags = parseTags(item.data.tags);
-    const body = normalizeAssetPaths(turndown.turndown(item.data.content));
+    const body = normalizeAssetPaths(
+      fixUnparsableEmphasis(turndown.turndown(item.data.content))
+    );
     const fileName = `${date.slice(0, 7)}-${item.data.slug}.md`;
 
     fs.writeFileSync(

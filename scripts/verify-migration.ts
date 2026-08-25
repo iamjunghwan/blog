@@ -39,17 +39,22 @@ function shapeOf(html: string): Shape {
   const $ = cheerio.load(html);
 
   return {
-    text: $.root().text().replace(/\s+/g, " ").trim(),
+    // 원본은 인접한 블록 태그 사이에 공백이 전혀 없을 수 있는데, markdown-it이 직렬화하면
+    // 항상 개행이 끼어든다. 그 왕복 아티팩트를 허용하려고 공백을 아예 지운다 (축약이 아니다).
+    text: $.root().text().replace(/\s+/g, "").trim(),
     headings: $("h1, h2, h3, h4, h5, h6")
       .map((_, el) => `${el.tagName.toLowerCase()}:${$(el).text().trim()}`)
       .get(),
     links: $("a[href]")
       .map((_, el) => $(el).attr("href") ?? "")
       .get(),
-    images: $("img[src]")
+    // <video>의 <source src>도 자산이므로 이미지와 함께 검사한다.
+    images: $("img[src], source[src]")
       .map((_, el) => normalizeSrc($(el).attr("src") ?? ""))
       .get(),
-    codeBlocks: $("pre code")
+    // 원본 <pre>는 <code> 자식을 갖지 않는다 (TinyMCE + Prism). before 쪽에서 "pre code"로
+    // 찾으면 항상 0건이라 비교가 무의미해진다 — 양쪽 다 <pre>의 텍스트로 비교한다.
+    codeBlocks: $("pre")
       .map((_, el) => $(el).text().trim())
       .get(),
   };
@@ -78,13 +83,17 @@ function diffList(label: string, before: string[], after: string[]): string[] {
 }
 
 function firstTextDifference(before: string, after: string): string {
+  // text는 공백이 전부 제거된 문자열이라 같은 글자 수라도 단어 경계가 안 보인다.
+  // 창을 넓혀 앞뒤 맥락(단어 여러 개 분량)이 충분히 드러나게 한다.
+  const WINDOW = 60;
+
   for (let i = 0; i < Math.max(before.length, after.length); i += 1) {
     if (before[i] !== after[i]) {
-      const from = Math.max(0, i - 40);
+      const from = Math.max(0, i - WINDOW);
       return [
         `  위치 ${i}`,
-        `  원본: ...${before.slice(from, i + 40)}...`,
-        `  변환: ...${after.slice(from, i + 40)}...`,
+        `  원본: ...${before.slice(from, i + WINDOW)}...`,
+        `  변환: ...${after.slice(from, i + WINDOW)}...`,
       ].join("\n");
     }
   }
