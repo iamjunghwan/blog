@@ -1090,6 +1090,7 @@ import assert from "node:assert/strict";
 import {
   PAGE_SIZE,
   allTags,
+  filterByTitle,
   paginate,
   postBySlug,
   postListParams,
@@ -1177,6 +1178,31 @@ test("paginate는 유효하지 않은 page에 빈 배열을 준다", () => {
 
   // totalPages는 여전히 알려준다 (전체 개수 정보는 유효하다)
   assert.equal(paginate(POSTS, -1).totalPages, 2);
+});
+
+test("filterByTitle은 대소문자를 무시하고 부분 일치로 거른다", () => {
+  const entries = searchIndex(POSTS);
+
+  assert.deepEqual(
+    filterByTitle(entries, "g").map((e) => e.slug),
+    ["g"]
+  );
+  // makePost가 title을 대문자로 만들므로 소문자 검색이 매칭되어야 한다
+  assert.deepEqual(
+    filterByTitle(entries, "B").map((e) => e.slug),
+    ["b"]
+  );
+});
+
+test("filterByTitle은 빈 검색어와 공백만 있는 검색어에 전체를 준다", () => {
+  const entries = searchIndex(POSTS);
+
+  assert.equal(filterByTitle(entries, "").length, entries.length);
+  assert.equal(filterByTitle(entries, "   ").length, entries.length);
+});
+
+test("filterByTitle은 일치하는 게 없으면 빈 배열을 준다", () => {
+  assert.deepEqual(filterByTitle(searchIndex(POSTS), "없는제목"), []);
 });
 
 test("searchIndex는 본문을 제외한다", () => {
@@ -1293,6 +1319,27 @@ export function paginate<T>(
   return { items: items.slice(start, start + PAGE_SIZE), totalPages };
 }
 
+/**
+ * 검색어로 제목을 거른다. 대소문자를 무시하고 부분 일치를 본다.
+ * 검색어가 비었거나 공백뿐이면 전체를 준다 (모달을 열었을 때 목록이 보이는 동작).
+ *
+ * 훅이 아니라 여기에 두는 이유: 순수 함수라 컴포넌트 테스트 인프라 없이
+ * node:test로 그대로 검증된다. 검색 동작이 사용자에게 보이는 계약이므로 고정한다.
+ */
+export function filterByTitle(
+  entries: SearchEntry[],
+  query: string
+): SearchEntry[] {
+  const keyword = query.trim().toLowerCase();
+
+  if (keyword === "") {
+    return entries;
+  }
+  return entries.filter((entry) =>
+    entry.title.toLowerCase().includes(keyword)
+  );
+}
+
 /** 검색 모달에 넘길 최소 정보. 본문을 빼서 페이로드를 작게 유지한다. */
 export function searchIndex(posts: Post[]): SearchEntry[] {
   return posts.map((post) => ({
@@ -1333,7 +1380,7 @@ export function postListUrls(posts: Post[]): string[] {
 pnpm test
 ```
 
-Expected: PASS — 14개 추가 (누적 53개)
+Expected: PASS — 18개 추가 (누적 57개)
 
 - [ ] **Step 5: 커밋**
 
@@ -1781,7 +1828,7 @@ pnpm test
 pnpm dev
 ```
 
-Expected: 테스트 53개 PASS. `http://localhost:3000`에서 샘플 글 3개가 최신순(알파 → 베타 → 감마)으로 보인다. 3개뿐이라 아랫줄 영역은 나타나지 않는다. 제목 클릭 시 상세로 이동한다.
+Expected: 테스트 57개 PASS. `http://localhost:3000`에서 샘플 글 3개가 최신순(알파 → 베타 → 감마)으로 보인다. 3개뿐이라 아랫줄 영역은 나타나지 않는다. 제목 클릭 시 상세로 이동한다.
 
 글 개수별 레이아웃(실제 글 16개에서는 5개로 잘려 들어오므로 항상 3+2다):
 
@@ -2115,7 +2162,7 @@ pnpm test
 pnpm dev
 ```
 
-Expected: 테스트 53개 PASS. 브라우저에서:
+Expected: 테스트 57개 PASS. 브라우저에서:
 - `/post/all/1` — 샘플 3개, 헤더가 `Posts all 3`, 페이지네이션이 `page : 1 of 1 (3)`
 - `/post/javascript/1` — 알파·베타 2개, 헤더 `Posts javascript 2`
 - `/post/react/1` — 감마 1개
@@ -2175,29 +2222,22 @@ export default function Header() {
 
 ```tsx
 import { useState } from "react";
-import { useDebounce } from "./useDebounce";
+import { filterByTitle } from "@/app/lib/posts/queries";
 import type { SearchEntry } from "@/app/lib/posts/types";
 
 /**
  * 빌드 타임에 받은 인덱스를 제목으로 필터링한다.
- * 디바운스는 입력마다 리렌더가 도는 것을 막기 위해 유지한다.
+ *
+ * 디바운스는 쓰지 않는다. 원래는 키 입력마다 CMS를 호출하는 것을 막으려던 것인데
+ * 이제 필터링이 로컬 배열 연산이라 500ms를 기다릴 이유가 없다. 즉시 반응한다.
+ * 필터 규칙 자체는 queries.ts의 filterByTitle에 있어 단위 테스트로 고정된다.
  */
 const useSearchData = (index: SearchEntry[]) => {
   const [searchValue, setSearchValue] = useState<string>("");
-  const debouncedSearchValue = useDebounce(searchValue, 500);
-
-  const keyword = debouncedSearchValue.trim().toLowerCase();
-
-  const filteredData =
-    keyword === ""
-      ? index
-      : index.filter((entry: SearchEntry) =>
-          entry.title.toLowerCase().includes(keyword)
-        );
 
   return {
     setSearchValue,
-    filteredData,
+    filteredData: filterByTitle(index, searchValue),
   };
 };
 export default useSearchData;
@@ -2490,7 +2530,7 @@ pnpm test
 pnpm build
 ```
 
-Expected: 테스트 53개 PASS. 빌드 성공. **빌드 로그에 네트워크 호출이나 `API_TOKEN` 관련 경고가 없어야 한다.**
+Expected: 테스트 57개 PASS. 빌드 성공. **빌드 로그에 네트워크 호출이나 `API_TOKEN` 관련 경고가 없어야 한다.**
 
 - [ ] **Step 7: 정적 산출물 육안 확인**
 
@@ -3151,7 +3191,7 @@ pnpm test
 pnpm build
 ```
 
-Expected: 테스트 53개 PASS. **환경변수 없이** 빌드 성공.
+Expected: 테스트 57개 PASS. **환경변수 없이** 빌드 성공.
 
 - [ ] **Step 2: URL 보존 확인**
 
