@@ -412,16 +412,22 @@ async function main(): Promise<void> {
         )
       )
     );
-    const fileName = `${date.slice(0, 7)}-${item.data.slug}.md`;
+    // 폴더가 연/월을 나타내므로 파일명은 slug만으로 충분하다.
+    const [year, month] = date.split("-");
+    const relativePath = path.join(year, month, `${item.data.slug}.md`);
+    const outPath = path.join(OUT_DIR, relativePath);
 
+    fs.mkdirSync(path.dirname(outPath), { recursive: true });
     fs.writeFileSync(
-      path.join(OUT_DIR, fileName),
+      outPath,
       `${buildFrontmatter(item, date, tags)}\n\n${body.trim()}\n`,
       "utf8"
     );
 
     warnings.push(...collectWarnings(item, body, date));
-    console.log(`작성: ${fileName} (태그 ${tags.length}개)`);
+    console.log(
+      `작성: ${relativePath.split(path.sep).join("/")} (태그 ${tags.length}개)`
+    );
   }
 
   console.log(`\n총 ${items.length}건 변환 완료 -> ${OUT_DIR}`);

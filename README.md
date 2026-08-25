@@ -22,7 +22,7 @@ npx serve out
 
 ## Writing
 
-- 글은 `content/posts/`에 `YYYY-MM-<slug>.md` 파일로 둔다.
+- 글은 `content/posts/<year>/<month>/<slug>.md` 파일로 둔다. `<year>`/`<month>`는 그 글의 `date` frontmatter에서 나온다 (파일명이 아니라 폴더가 날짜를 나타낸다).
 - frontmatter 필수값: `slug`, `title`, `date` (`YYYY-MM-DD`), `tags` (YAML 배열).
 - 선택값: `thumbnail` (없으면 본문 첫 이미지, 그마저 없으면 `/iaman.png`), `draft`.
 - `all`은 예약어다 — 전체 글 목록 라우트 이름이라 태그로 쓸 수 없다.
