@@ -1380,7 +1380,7 @@ export function postListUrls(posts: Post[]): string[] {
 pnpm test
 ```
 
-Expected: PASS — 18개 추가 (누적 57개)
+Expected: PASS — 17개 추가 (누적 56개)
 
 - [ ] **Step 5: 커밋**
 
@@ -1828,7 +1828,7 @@ pnpm test
 pnpm dev
 ```
 
-Expected: 테스트 57개 PASS. `http://localhost:3000`에서 샘플 글 3개가 최신순(알파 → 베타 → 감마)으로 보인다. 3개뿐이라 아랫줄 영역은 나타나지 않는다. 제목 클릭 시 상세로 이동한다.
+Expected: 테스트 56개 PASS. `http://localhost:3000`에서 샘플 글 3개가 최신순(알파 → 베타 → 감마)으로 보인다. 3개뿐이라 아랫줄 영역은 나타나지 않는다. 제목 클릭 시 상세로 이동한다.
 
 글 개수별 레이아웃(실제 글 16개에서는 5개로 잘려 들어오므로 항상 3+2다):
 
@@ -2162,7 +2162,7 @@ pnpm test
 pnpm dev
 ```
 
-Expected: 테스트 57개 PASS. 브라우저에서:
+Expected: 테스트 56개 PASS. 브라우저에서:
 - `/post/all/1` — 샘플 3개, 헤더가 `Posts all 3`, 페이지네이션이 `page : 1 of 1 (3)`
 - `/post/javascript/1` — 알파·베타 2개, 헤더 `Posts javascript 2`
 - `/post/react/1` — 감마 1개
@@ -2530,7 +2530,7 @@ pnpm test
 pnpm build
 ```
 
-Expected: 테스트 57개 PASS. 빌드 성공. **빌드 로그에 네트워크 호출이나 `API_TOKEN` 관련 경고가 없어야 한다.**
+Expected: 테스트 56개 PASS. 빌드 성공. **빌드 로그에 네트워크 호출이나 `API_TOKEN` 관련 경고가 없어야 한다.**
 
 - [ ] **Step 7: 정적 산출물 육안 확인**
 
@@ -3191,7 +3191,7 @@ pnpm test
 pnpm build
 ```
 
-Expected: 테스트 57개 PASS. **환경변수 없이** 빌드 성공.
+Expected: 테스트 56개 PASS. **환경변수 없이** 빌드 성공.
 
 - [ ] **Step 2: URL 보존 확인**
 
