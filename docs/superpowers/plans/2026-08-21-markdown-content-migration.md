@@ -2382,6 +2382,10 @@ import { postListUrls } from "@/app/lib/posts/queries";
 
 const BASE_URL = "https://iaman.kr";
 
+// output: "export"에서 메타데이터 라우트는 정적으로 고정되어야 한다.
+// 이 줄이 없으면 Next 16 빌드가 거부한다.
+export const dynamic = "force-static";
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const posts = allPosts();
   const latestDate = posts[0]?.date;
@@ -2407,6 +2411,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
 import type { MetadataRoute } from "next";
 
 const BASE_URL = "https://iaman.kr";
+
+export const dynamic = "force-static";
 
 export default function robots(): MetadataRoute.Robots {
   return {
