@@ -2591,8 +2591,9 @@ git commit -m "refactor: CMS 호출 코드와 타입, dayjs 제거"
 | 특성 | 수량 | 대응 |
 |---|---|---|
 | `span` | 3186 | 대부분 스타일 span. turndown이 벗기고 내용은 보존된다 |
-| `pre` / `code` | 46 / 43 | 클래스에 `language-javascript`, `language-markup` 존재 → 펜스 언어 복원 대상 |
-| `table` + `colgroup`/`col` | 4 | `turndown-plugin-gfm`이 처리한다. **`keep`에 넣지 말 것** |
+| `pre` | 46 | **`<code>` 자식이 하나도 없다.** Prism이 `<pre class="language-*">` 안에 `<span class="token ...">`를 직접 넣었다. `pre > code`를 전제한 규칙은 발동하지 않는다 |
+| `code` | 43 | 전부 인라인 코드. turndown 기본 규칙이 처리한다 |
+| `table` + `colgroup`/`col` | 4 | **gfm은 첫 행이 전부 `<th>`인 표만 변환한다.** 이 표들은 `<td>`만 써서 변환되지 않고 raw HTML로 남는다 — 무손실이고 markdown-it이 그대로 렌더하므로 허용한다 |
 | `blockquote` | 12 | turndown 기본 처리 |
 | `video` + `source` | 1 | `keep` 대상. 아래 경로 문제 참조 |
 | `<br data-mce-bogus="1">`, `class="p1"`, `data-mce-*` | 다수 | 변환 시 자연히 사라진다 |
@@ -2708,15 +2709,23 @@ function createTurndown(): TurndownService {
   // table은 넣지 않는다 — gfm 플러그인이 md 표로 변환하므로 keep하면 그 변환을 막는다.
   service.keep(["iframe", "video", "source", "figure"]);
 
-  // 언어 클래스를 펜스에 복원한다. turndown 기본 규칙은 이를 버린다.
-  service.addRule("fencedCodeWithLanguage", {
-    filter: (node) =>
-      node.nodeName === "PRE" && node.firstChild?.nodeName === "CODE",
+  // 코드블록 규칙. **`pre > code`를 전제하면 안 된다.**
+  //
+  // 실측: 이 CMS의 <pre> 46개 중 <code>를 가진 것은 0개다. TinyMCE가 Prism으로
+  // 하이라이팅해서 <pre class="language-javascript"> 안에 <span class="token ..."> 들이
+  // 직접 들어 있다. turndown 내장 규칙도 pre>code를 요구하므로 함께 발동하지 않아,
+  // 규칙이 없으면 코드가 일반 블록으로 떨어져 마크다운 이스케이프(\[, \-)를 먹고 깨진다.
+  //
+  // 언어는 <pre>의 class에 있고, textContent가 Prism span들을 원래 코드로 되돌린다.
+  service.addRule("fencedCodeBlock", {
+    filter: (node) => node.nodeName === "PRE",
     replacement: (_content, node) => {
-      const code = (node as HTMLElement).firstChild as HTMLElement;
-      const className = code.getAttribute?.("class") ?? "";
-      const language = /language-(\S+)/.exec(className)?.[1] ?? "";
-      const text = (code.textContent ?? "").replace(/\n+$/, "");
+      const element = node as HTMLElement;
+      const className = element.getAttribute?.("class") ?? "";
+      const raw = /language-(\S+)/.exec(className)?.[1] ?? "";
+      // Prism은 HTML을 'markup'이라 부른다. 펜스에는 통용되는 이름을 쓴다.
+      const language = raw === "markup" ? "html" : raw;
+      const text = (element.textContent ?? "").replace(/\n+$/, "");
 
       return `\n\n\`\`\`${language}\n${text}\n\`\`\`\n\n`;
     },
@@ -2775,13 +2784,28 @@ function collectWarnings(
   const warnings: Warning[] = [];
   const slug = item.data.slug;
 
-  // 언어 없는 코드 펜스
-  const fenceCount = (markdown.match(/^```\s*$/gm) ?? []).length;
-  if (fenceCount > 0) {
+  // 코드블록이 통째로 유실되지 않았는지 먼저 본다.
+  // "언어 없는 펜스"만 세면 펜스가 아예 안 만들어진 경우를 못 잡는다 — 실제로 그 함정에 빠졌었다.
+  const sourcePreCount = (item.data.content.match(/<pre[\s>]/g) ?? []).length;
+  const fenceLineCount = (markdown.match(/^```/gm) ?? []).length;
+  const blockCount = fenceLineCount / 2;
+
+  if (sourcePreCount !== blockCount) {
+    warnings.push({
+      slug,
+      kind: "코드블록 개수 불일치",
+      detail: `원본 <pre> ${sourcePreCount}개 -> 펜스 ${blockCount}개. 변환 규칙이 발동하지 않았을 수 있다`,
+    });
+  }
+
+  // 언어가 붙은 여는 펜스만 센다. `^```\s*$`로 세면 닫는 펜스까지 세어 항상 경고가 뜬다.
+  const withLanguageCount = (markdown.match(/^```\S/gm) ?? []).length;
+
+  if (blockCount !== withLanguageCount) {
     warnings.push({
       slug,
       kind: "코드블록 언어 없음",
-      detail: `언어 지정이 없는 펜스 ${fenceCount}개 - 수동 보정 필요`,
+      detail: `펜스 ${blockCount}개 중 언어가 붙은 것은 ${withLanguageCount}개 - 확인 필요`,
     });
   }
 
