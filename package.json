@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "tsx --test \"app/**/*.test.ts\""
+    "test": "tsx --test \"app/**/*.test.ts\"",
+    "migrate": "tsx scripts/migrate-from-cms.ts",
+    "verify-migration": "tsx scripts/verify-migration.ts"
   },
   "packageManager": "pnpm@10.28.2",
   "engines": {
