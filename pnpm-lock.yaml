@@ -26,6 +26,9 @@ importers:
       '@types/react-dom':
         specifier: ^19
         version: 19.1.6(@types/react@19.1.8)
+      '@types/turndown':
+        specifier: ^5.0.6
+        version: 5.0.6
       cheerio:
         specifier: ^1.2.0
         version: 1.2.0
@@ -59,22 +62,19 @@ importers:
       tailwindcss:
         specifier: ^3.4.1
         version: 3.4.17
-      typescript:
-        specifier: ^5
-        version: 5.8.3
-    devDependencies:
-      '@types/turndown':
-        specifier: ^5.0.6
-        version: 5.0.6
-      tsx:
-        specifier: ^4.23.12
-        version: 4.23.12
       turndown:
         specifier: ^7.2.4
         version: 7.2.4
       turndown-plugin-gfm:
         specifier: ^1.0.2
         version: 1.0.2
+      typescript:
+        specifier: ^5
+        version: 5.8.3
+    devDependencies:
+      tsx:
+        specifier: ^4.23.12
+        version: 4.23.12
 
 packages:
 
