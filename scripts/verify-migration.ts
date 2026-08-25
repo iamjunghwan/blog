@@ -42,8 +42,15 @@ function shapeOf(html: string): Shape {
     // 원본은 인접한 블록 태그 사이에 공백이 전혀 없을 수 있는데, markdown-it이 직렬화하면
     // 항상 개행이 끼어든다. 그 왕복 아티팩트를 허용하려고 공백을 아예 지운다 (축약이 아니다).
     text: $.root().text().replace(/\s+/g, "").trim(),
+    // 헤딩 규칙이 NBSP를 포함한 공백을 전부 일반 공백 하나로 접으므로(변환 쪽), 원본과
+    // 비교할 때도 같은 기준으로 접는다 — body-text 체크가 이미 공백을 무의미하게 취급하는
+    // 것과 일관되게 맞춘다. 완전히 지우지 않고 하나로만 접는 이유는 제목은 짧아서 단어
+    // 구분이 여전히 의미가 있고(예: "h2:참고" -> "h2:" 같은 유실은 여전히 잡아야 한다), 그
+    // 신호를 죽이지 않기 위해서다.
     headings: $("h1, h2, h3, h4, h5, h6")
-      .map((_, el) => `${el.tagName.toLowerCase()}:${$(el).text().trim()}`)
+      .map(
+        (_, el) => `${el.tagName.toLowerCase()}:${$(el).text().replace(/\s+/g, " ").trim()}`
+      )
       .get(),
     links: $("a[href]")
       .map((_, el) => $(el).attr("href") ?? "")

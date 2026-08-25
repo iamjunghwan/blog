@@ -80,6 +80,30 @@ async function loadDump(): Promise<CmsItem[]> {
   return json.list;
 }
 
+/**
+ * 인접한 같은 강조 태그를 병합한다.
+ *
+ * TinyMCE가 단어마다 개별 <strong>을 씌워놔서, 변환하면 닫는 `**` 뒤에 여는 `**`가
+ * 바로 붙어 `****`가 되고 markdown-it이 파싱하지 못한다. 출력에서 정규식으로 고치는 대신
+ * 변환 전에 구조를 합친다 — 원본 HTML이 실제로 렌더되는 모습과 같은 결과다.
+ *
+ * 사이의 공백은 보존해 병합된 강조 안으로 넣는다. 중첩이 풀리면서 새 인접 쌍이 생길 수
+ * 있으므로 더 이상 변화가 없을 때까지 반복한다.
+ */
+function mergeAdjacentEmphasis(html: string): string {
+  let previous: string;
+  let result = html;
+
+  do {
+    previous = result;
+    result = result
+      .replace(/<\/(strong|b)>(\s*)<\1\b[^>]*>/gi, "$2")
+      .replace(/<\/(em|i)>(\s*)<\1\b[^>]*>/gi, "$2");
+  } while (result !== previous);
+
+  return result;
+}
+
 function createTurndown(): TurndownService {
   const service = new TurndownService({
     headingStyle: "atx",
@@ -350,7 +374,9 @@ async function main(): Promise<void> {
     const date = toDateOnly(item.createdAt);
     const tags = parseTags(item.data.tags);
     const body = normalizeAssetPaths(
-      fixUnparsableEmphasis(turndown.turndown(item.data.content))
+      fixUnparsableEmphasis(
+        turndown.turndown(mergeAdjacentEmphasis(item.data.content))
+      )
     );
     const fileName = `${date.slice(0, 7)}-${item.data.slug}.md`;
 
