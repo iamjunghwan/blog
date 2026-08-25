@@ -7,7 +7,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postbuild": "next-sitemap",
     "test": "tsx --test \"app/**/*.test.ts\""
   },
   "packageManager": "pnpm@10.28.2",
@@ -29,7 +28,6 @@
     "gray-matter": "^4.0.3",
     "markdown-it": "^15.0.0",
     "next": "16.1.6",
-    "next-sitemap": "^4.2.3",
     "next-themes": "^0.4.4",
     "postcss": "^8",
     "react": "^19.2.4",
