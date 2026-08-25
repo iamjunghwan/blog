@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   PAGE_SIZE,
   allTags,
+  filterByTitle,
   paginate,
   postBySlug,
   postListParams,
@@ -90,6 +91,31 @@ test("paginate는 유효하지 않은 page에 빈 배열을 준다", () => {
 
   // totalPages는 여전히 알려준다 (전체 개수 정보는 유효하다)
   assert.equal(paginate(POSTS, -1).totalPages, 2);
+});
+
+test("filterByTitle은 대소문자를 무시하고 부분 일치로 거른다", () => {
+  const entries = searchIndex(POSTS);
+
+  assert.deepEqual(
+    filterByTitle(entries, "g").map((e) => e.slug),
+    ["g"]
+  );
+  // makePost가 title을 대문자로 만들므로 소문자 검색이 매칭되어야 한다
+  assert.deepEqual(
+    filterByTitle(entries, "B").map((e) => e.slug),
+    ["b"]
+  );
+});
+
+test("filterByTitle은 빈 검색어와 공백만 있는 검색어에 전체를 준다", () => {
+  const entries = searchIndex(POSTS);
+
+  assert.equal(filterByTitle(entries, "").length, entries.length);
+  assert.equal(filterByTitle(entries, "   ").length, entries.length);
+});
+
+test("filterByTitle은 일치하는 게 없으면 빈 배열을 준다", () => {
+  assert.deepEqual(filterByTitle(searchIndex(POSTS), "없는제목"), []);
 });
 
 test("searchIndex는 본문을 제외한다", () => {
