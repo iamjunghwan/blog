@@ -20,6 +20,26 @@ pnpm build
    ↓
 npx serve out
 
+## Writing
+
+- 글은 `content/posts/`에 `YYYY-MM-<slug>.md` 파일로 둔다.
+- frontmatter 필수값: `slug`, `title`, `date` (`YYYY-MM-DD`), `tags` (YAML 배열).
+- 선택값: `thumbnail` (없으면 본문 첫 이미지, 그마저 없으면 `/iaman.png`), `draft`.
+- `all`은 예약어다 — 전체 글 목록 라우트 이름이라 태그로 쓸 수 없다.
+- `draft: true`면 프로덕션 빌드에서는 숨고 `pnpm dev`에서는 보인다.
+- `slug`이 공개 URL을 결정한다. 파일명과 별개라 파일명을 바꿔도 URL은 안 바뀌지만, `slug`을 바꾸면 URL이 바뀐다.
+- 이미지는 `public/uploads/YYYY/MM/`에 넣고 본문에서 `/uploads/...`로 참조한다.
+
+```md
+---
+slug: graphql-study
+title: "GraphQL 공부해보기"
+date: 2025-06-10
+tags: ["graphql"]
+draft: false
+---
+```
+
 ## Features
 
 - 반응형 웹
