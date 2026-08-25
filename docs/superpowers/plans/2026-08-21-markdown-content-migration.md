@@ -2522,7 +2522,50 @@ git commit -m "refactor: CMS 호출 코드와 타입, dayjs 제거"
   - `content/posts/YYYY-MM-<slug>.md` — 변환된 글
   - stdout 변환 리포트
 
-이 작업에서는 스크립트를 **작성만** 한다. 실행은 `API_TOKEN`이 있는 2부(Task 14)에서 한다.
+**덤프는 2026-08-25에 이미 확보해 커밋했다** (`migration/cms-dump.json`, 16건, 216KB).
+따라서 이 스크립트는 `API_TOKEN` 없이 덤프만 읽어 동작해야 하며, 변환을 몇 번이든 다시
+돌릴 수 있다. CMS 호출 경로는 남겨두되 실제로는 타지 않는다.
+
+### 실측된 원본 데이터 특성 (덤프 분석 결과)
+
+아래는 추측이 아니라 확인된 사실이다. 스크립트는 이것을 전제로 작성한다.
+
+**해소된 미지수**
+
+- **`createdAt`과 `data.date`가 16건 전부 동일하다.** 날짜 출처를 고민할 필요가 없고, 불일치 리포트도 실제로는 아무것도 출력하지 않을 것이다.
+- **`data.thumbnail`은 16건 전부 빈 배열 `[]`** — 쓰이지 않는 필드다. 본문에서 대표 이미지를 뽑는 방식이 맞다.
+- **`data.desc` / `data.keywords` / `data.author`는 16건 전부 리터럴 `"string text"`** — CMS 스키마 기본값이 그대로인 미입력 필드다. **frontmatter에 넣지 않는다. 데이터 유실이 아니다.**
+- `data.tags`는 콤마 구분 문자열이 맞다. 전체 태그: `browser`, `cloudflare`, `graphql`, `javascript`, `nextjs`, `react`.
+- **글마다 `h1` 정확히 1개, `hr` 정확히 1개** — `processHtml`의 TOC 삽입 전제가 실제 데이터와 일치한다.
+- 참조 자산 13개가 `public/`에 **전부 존재한다** (누락 0).
+- 제목에 이모지(⚛️, 🙊)와 후행 공백이 있다 (`"Number & parseInt "`). `parsePost`가 trim한다.
+
+**본문은 TinyMCE 산출물이다**
+
+| 특성 | 수량 | 대응 |
+|---|---|---|
+| `span` | 3186 | 대부분 스타일 span. turndown이 벗기고 내용은 보존된다 |
+| `pre` / `code` | 46 / 43 | 클래스에 `language-javascript`, `language-markup` 존재 → 펜스 언어 복원 대상 |
+| `table` + `colgroup`/`col` | 4 | `turndown-plugin-gfm`이 처리한다. **`keep`에 넣지 말 것** |
+| `blockquote` | 12 | turndown 기본 처리 |
+| `video` + `source` | 1 | `keep` 대상. 아래 경로 문제 참조 |
+| `<br data-mce-bogus="1">`, `class="p1"`, `data-mce-*` | 다수 | 변환 시 자연히 사라진다 |
+| `&nbsp;` | 다수 | ` `로 남는다. 검증의 `\s+` 정규화가 이를 포함하므로 비교에 영향 없다 |
+
+**h2에 이미 id가 있고 그 값이 깨져 있다** — 예: `id="h2-&lt;br data-mce-bogus=&quot;1&quot;&gt;"`.
+현재 사이트가 멀쩡한 이유는 `processHtml`이 h2/h3의 id를 텍스트 기반으로 **덮어쓰기** 때문이다.
+md로 옮기면 쓰레기 id가 사라지고 깨끗한 id가 생성된다 — 전환이 오히려 정리한다.
+
+**경로 형식이 섞여 있다 (정규화에서 가장 조심할 지점)**
+
+- `2026/05`, `2026/07` 이미지: `src="/uploads/..."` — **앞 슬래시 있음**
+- `2025` 이미지와 `.mov`: `src="uploads/..."` — **앞 슬래시 없음**
+- `.mov` 파일명에 `&`가 있어 HTML에서 `&amp;`로 인코딩되어 있다 (`NDJSON&amp;JSON.mov`). 실제 파일명은 `NDJSON&JSON.mov`다.
+- 각 `<img>`에 `src`와 `data-mce-src`가 **둘 다** 있고 값이 다르다. `src`가 정답이다.
+  `[^>]*src=` 형태의 정규식은 greedy 매칭 때문에 `data-mce-src=`를 잡는다.
+  앞에 하이픈이 오지 않도록 `(?:^|[^-])\bsrc=` 처럼 써야 한다.
+- **`<source src="uploads/...">`도 정규화 대상이다.** 초안의 `normalizeImagePaths`는
+  md 이미지 문법과 `<img>`만 다뤄 이 경우를 놓친다.
 
 - [ ] **Step 1: `scripts/migrate-from-cms.ts` 작성**
 
@@ -2617,7 +2660,7 @@ function createTurndown(): TurndownService {
 
   // md로 표현할 수 없는 것은 조용히 버리지 않고 raw HTML로 남긴다.
   // table은 넣지 않는다 — gfm 플러그인이 md 표로 변환하므로 keep하면 그 변환을 막는다.
-  service.keep(["iframe", "video", "figure"]);
+  service.keep(["iframe", "video", "source", "figure"]);
 
   // 언어 클래스를 펜스에 복원한다. turndown 기본 규칙은 이를 버린다.
   service.addRule("fencedCodeWithLanguage", {
@@ -2636,11 +2679,23 @@ function createTurndown(): TurndownService {
   return service;
 }
 
-/** CMS는 이미지 src를 상대경로(uploads/...)로 저장했다. 절대경로로 통일한다. */
-function normalizeImagePaths(markdown: string): string {
-  return markdown
-    .replace(/\]\((?:\.\/)?uploads\//g, "](/uploads/")
-    .replace(/(<img[^>]+src=["'])(?:\.\/)?uploads\//gi, "$1/uploads/");
+/**
+ * 자산 경로를 절대경로로 통일한다.
+ * 원본은 형식이 섞여 있다: 2026년 이미지는 /uploads/..., 2025년 이미지와 .mov는 uploads/...
+ * <img> 뿐 아니라 <source>(동영상)도 대상이다.
+ */
+function normalizeAssetPaths(markdown: string): string {
+  return (
+    markdown
+      // md 이미지 문법: ![alt](uploads/...) -> ![alt](/uploads/...)
+      .replace(/\]\((?:\.\/)?uploads\//g, "](/uploads/")
+      // 남은 raw HTML의 <img>, <video>의 <source>
+      // 주의: `data-mce-src`가 아니라 `src`만 잡아야 한다 (앞에 하이픈이 오면 안 됨)
+      .replace(
+        /((?:^|[^-])\bsrc=["'])(?:\.\/)?uploads\//gi,
+        "$1/uploads/"
+      )
+  );
 }
 
 function toDateOnly(value: string): string {
@@ -2727,7 +2782,7 @@ async function main(): Promise<void> {
   for (const item of items) {
     const date = toDateOnly(item.createdAt);
     const tags = parseTags(item.data.tags);
-    const body = normalizeImagePaths(turndown.turndown(item.data.content));
+    const body = normalizeAssetPaths(turndown.turndown(item.data.content));
     const fileName = `${date.slice(0, 7)}-${item.data.slug}.md`;
 
     fs.writeFileSync(
