@@ -2565,7 +2565,9 @@ git commit -m "refactor: CMS 호출 코드와 타입, dayjs 제거"
 - Consumes: 없음 (독립 실행 스크립트)
 - Produces:
   - `migration/cms-dump.json` — CMS 원본 응답
-  - `content/posts/YYYY-MM-<slug>.md` — 변환된 글
+  - `content/posts/YYYY-MM-<slug>.md` — 변환된 글 (2026-08-25 수정: 사용자 요청으로
+    `content/posts/<year>/<month>/<slug>.md`로 바뀜. 연/월은 파일명이 아니라 폴더가
+    나타내며 `date` frontmatter에서 유도한다. 자세한 배경은 설계 문서의 해당 각주 참고)
   - stdout 변환 리포트
 
 **덤프는 2026-08-25에 이미 확보해 커밋했다** (`migration/cms-dump.json`, 16건, 216KB).

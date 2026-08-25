@@ -107,6 +107,28 @@ function firstTextDifference(before: string, after: string): string {
   return "";
 }
 
+/**
+ * POSTS_DIR 아래를 재귀적으로 훑어 .md 파일을 POSTS_DIR 기준 상대경로로 모은다.
+ * 글이 연도/월 폴더 아래 중첩되어 있으므로 최상위만 읽으면 16건을 다 찾지 못한다.
+ */
+function collectMarkdownFiles(dir: string): string[] {
+  const result: string[] = [];
+
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const fullPath = path.join(dir, entry.name);
+
+    if (entry.isDirectory()) {
+      for (const nested of collectMarkdownFiles(fullPath)) {
+        result.push(path.join(entry.name, nested));
+      }
+    } else if (entry.isFile() && entry.name.endsWith(".md")) {
+      result.push(entry.name);
+    }
+  }
+
+  return result;
+}
+
 function checkImageFiles(images: string[]): string[] {
   const problems: string[] = [];
 
@@ -130,7 +152,7 @@ function main(): void {
   }
 
   const items = JSON.parse(fs.readFileSync(DUMP_PATH, "utf8")).list;
-  const files = fs.readdirSync(POSTS_DIR).filter((f) => f.endsWith(".md"));
+  const files = collectMarkdownFiles(POSTS_DIR);
 
   const bySlug = new Map<string, string>();
   for (const file of files) {

@@ -98,6 +98,12 @@ draft: false
 파일명은 `YYYY-MM-<slug>.md`. 연도별 폴더 중첩은 하지 않는다 — 16개 규모에서는
 평면이 편하고 파일명 접두 날짜로 정렬이 해결된다.
 
+> **2026-08-25 수정:** 사용자 요청으로 위 결정을 뒤집었다. 이제
+> `content/posts/<year>/<month>/<slug>.md` — 파일명은 slug만 쓰고 연/월은
+> 폴더가 나타내며, 그 폴더는 `date` frontmatter에서 유도한다(파일명 접두사가
+> 아니다). `loadPosts`(`app/lib/posts/repository.ts`)가 재귀 탐색으로 바뀌었다.
+> 위 문단은 당시의 결정 기록으로 남겨둔다.
+
 ## 아키텍처
 
 ```

@@ -8,12 +8,11 @@ export const POSTS_DIR = path.join(process.cwd(), "content", "posts");
 /**
  * 폴더에서 글을 읽어 date 내림차순으로 정렬한다.
  * dir을 인자로 받아 테스트에서 픽스처를 쓸 수 있게 한다.
+ *
+ * 글이 연도/월 폴더 아래 중첩되어 있으므로 재귀적으로 훑는다.
  */
 export function loadPosts(dir: string, includeDrafts: boolean): Post[] {
-  const files = fs
-    .readdirSync(dir)
-    .filter((file) => file.endsWith(".md"))
-    .sort();
+  const files = collectMarkdownFiles(dir).sort();
 
   const entries = files.map((file) => ({
     file,
@@ -64,6 +63,37 @@ export function allPosts(): Post[] {
     cache = posts;
   }
   return posts;
+}
+
+/**
+ * dir 아래를 재귀적으로 훑어 .md 파일을 dir 기준 상대경로로 모은다.
+ *
+ * 각 단계에서 디렉터리 항목을 이름순으로 정렬해 순회 순서를 결정적으로 만든다 —
+ * assertUniqueSlugs의 에러 메시지가 항상 같은 순서로 파일을 가리키게 하기 위해서다.
+ * 상대경로는 Windows에서도 슬래시(`/`)로 통일한다 — 에러 메시지가 OS에 따라
+ * 달라지지 않게 하기 위해서다.
+ */
+function collectMarkdownFiles(dir: string): string[] {
+  const result: string[] = [];
+
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) =>
+    a.name < b.name ? -1 : a.name > b.name ? 1 : 0
+  )) {
+    const fullPath = path.join(dir, entry.name);
+
+    if (entry.isDirectory()) {
+      for (const nested of collectMarkdownFiles(fullPath)) {
+        result.push(`${entry.name}/${nested}`);
+      }
+      continue;
+    }
+
+    if (entry.isFile() && entry.name.endsWith(".md")) {
+      result.push(entry.name);
+    }
+  }
+
+  return result;
 }
 
 /**

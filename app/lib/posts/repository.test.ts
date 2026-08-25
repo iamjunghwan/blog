@@ -30,6 +30,15 @@ test("md가 아닌 파일은 무시한다", () => {
   assert.equal(posts.length, 3);
 });
 
+test("하위 폴더에 중첩된 글도 찾는다", () => {
+  const posts = loadPosts(POSTS, true);
+
+  // beta.md는 __fixtures__/posts/2026/02/beta.md에 중첩되어 있다.
+  // 평면 파일(alpha, gamma)과 함께 발견되어야 재귀 탐색이 검증된다.
+  const beta = posts.find((post) => post.slug === "beta");
+  assert.ok(beta !== undefined, "중첩된 beta.md를 찾지 못했다");
+});
+
 test("본문을 함께 읽는다", () => {
   const [, beta] = loadPosts(POSTS, true);
 
