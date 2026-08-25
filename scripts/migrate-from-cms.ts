@@ -117,6 +117,17 @@ function createTurndown(): TurndownService {
     },
   });
 
+  // 산문 속 꺾쇠를 다시 엔티티로 만든다.
+  //
+  // 원본에는 `&lt;iframe&gt;` 처럼 **글자로 보여주려는** 태그 이름이 있다. turndown이
+  // 엔티티를 디코드해 `<iframe>`로 되돌리는데, markdown-it은 html: true라 그것을 진짜
+  // 태그로 파싱해버린다 — 화면에서 그 문구가 사라진다.
+  //
+  // escape는 텍스트 노드에만 적용된다. keep()으로 남긴 표·video와 코드블록은 이 경로를
+  // 타지 않으므로, 의도적으로 보존한 HTML은 그대로 두고 산문만 안전해진다.
+  const escapeMarkdown = service.escape.bind(service);
+  service.escape = (text: string) => escapeMarkdown(text).replace(/</g, "&lt;");
+
   return service;
 }
 
@@ -170,6 +181,23 @@ function collectWarnings(
   const warnings: Warning[] = [];
   const slug = item.data.slug;
 
+  /** 펜스로 감싼 코드블록을 지운다. 리스트 안의 펜스는 들여쓰여 있으므로 공백을 허용한다. */
+  const stripFences = (source: string): string => {
+    const kept: string[] = [];
+    let inFence = false;
+
+    for (const line of source.split(/\r\n|\r|\n/)) {
+      if (/^[ \t]*```/.test(line)) {
+        inFence = !inFence;
+        continue;
+      }
+      if (!inFence) {
+        kept.push(line);
+      }
+    }
+    return kept.join("\n");
+  };
+
   // 코드블록이 통째로 유실되지 않았는지 먼저 본다.
   // "언어 없는 펜스"만 세면 펜스가 아예 안 만들어진 경우를 못 잡는다 — 실제로 그 함정에 빠졌었다.
   // 펜스가 리스트 항목 안에 있으면 turndown이 4칸씩 들여쓰므로 줄 앞 공백을 허용해야 한다
@@ -197,8 +225,11 @@ function collectWarnings(
     });
   }
 
-  // 남아 있는 raw HTML
-  const rawTags = [...markdown.matchAll(/<([a-z][a-z0-9]*)\b/gi)].map(
+  // 남아 있는 raw HTML.
+  // 코드블록 안은 보지 않는다. TypeScript 제네릭(`reduce<Record<string, User>>`)이나
+  // JSX 예시가 태그로 오인되어 `record`, `string` 같은 가짜 경고를 만든다.
+  // 경고가 오탐으로 시끄러워지면 진짜 경고를 놓치게 된다.
+  const rawTags = [...stripFences(markdown).matchAll(/<([a-z][a-z0-9]*)\b/gi)].map(
     (match) => match[1].toLowerCase()
   );
   const uniqueRawTags = [...new Set(rawTags)];
