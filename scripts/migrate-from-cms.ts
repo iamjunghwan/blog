@@ -95,6 +95,22 @@ function unwrapSpans(html: string): string {
 }
 
 /**
+ * TinyMCE 전용 속성을 지운다.
+ *
+ * keep()으로 남기는 표와 <video>에는 편집기 부산물(`data-mce-style`, `data-mce-src`,
+ * `contenteditable`, `mce-*` 클래스)이 그대로 따라온다. 이제 그 편집기를 쓰지 않고
+ * 이 md 파일들을 손으로 고칠 것이므로 남겨둘 이유가 없다.
+ *
+ * `style`은 건드리지 않는다 — 표 너비 같은 실제 표현이 담겨 있어 지우면 모양이 바뀐다.
+ */
+function stripEditorAttributes(html: string): string {
+  return html
+    .replace(/\s+data-mce-[a-z-]+="[^"]*"/gi, "")
+    .replace(/\s+contenteditable="[^"]*"/gi, "")
+    .replace(/\s+class="(?:mce-|p\d|s\d)[^"]*"/gi, "");
+}
+
+/**
  * 인접한 같은 강조 태그를 병합한다.
  *
  * TinyMCE가 단어마다 개별 <strong>을 씌워놔서, 변환하면 닫는 `**` 뒤에 여는 `**`가
@@ -389,7 +405,11 @@ async function main(): Promise<void> {
     const tags = parseTags(item.data.tags);
     const body = normalizeAssetPaths(
       fixUnparsableEmphasis(
-        turndown.turndown(mergeAdjacentEmphasis(unwrapSpans(item.data.content)))
+        turndown.turndown(
+          mergeAdjacentEmphasis(
+            unwrapSpans(stripEditorAttributes(item.data.content))
+          )
+        )
       )
     );
     const fileName = `${date.slice(0, 7)}-${item.data.slug}.md`;
