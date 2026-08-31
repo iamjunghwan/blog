@@ -1,5 +1,13 @@
 import MarkdownIt from "markdown-it";
 import Prism from "prismjs";
+// Prism 기본 번들은 markup(html)·css·javascript만 안다. 이 블로그가 실제로 쓸 만한
+// 언어를 미리 등록해둔다 — 없으면 색칠이 조용히 안 될 뿐 에러가 나지 않아 눈치채기 어렵다.
+// 순서가 의존성을 따른다: tsx는 jsx와 typescript를 필요로 한다.
+import "prismjs/components/prism-typescript";
+import "prismjs/components/prism-jsx";
+import "prismjs/components/prism-tsx";
+import "prismjs/components/prism-json";
+import "prismjs/components/prism-bash";
 import { processHtml } from "@/app/lib/processHtml";
 
 const HTML_ESCAPES: Record<string, string> = {

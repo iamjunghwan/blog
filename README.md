@@ -59,6 +59,8 @@ draft: false
 - **본문 첫 줄의 `# 제목`을 지우지 말 것.** 페이지가 제목을 따로 렌더하지 않고, TOC 삽입 위치도 이 h1을 기준으로 잡는다.
 - 이미지는 `public/uploads/YYYY/MM/`에 넣고 `/uploads/...`로 참조한다.
 
+쓸 수 있는 문법, 색칠되는 코드 언어, 막힐 때 볼 것은 [docs/writing-posts.md](docs/writing-posts.md).
+
 ## Command
 
 ```

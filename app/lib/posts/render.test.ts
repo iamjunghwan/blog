@@ -48,7 +48,8 @@ test("펜스 코드블록의 언어를 class로 유지한다", () => {
   const html = renderPostBody("# 제목\n\n```ts\nconst a = 1;\n```");
 
   assert.match(html, /<code class="language-ts">/);
-  assert.match(html, /const a = 1;/);
+  // 색칠되면 코드가 token span으로 쪼개지므로 태그를 걷어내고 내용을 본다.
+  assert.match(html.replace(/<[^>]+>/g, ""), /const a = 1;/);
 });
 
 test("pre에도 언어 class를 붙인다", () => {
@@ -67,6 +68,26 @@ test("코드블록에 구문 색을 입힌다", () => {
   assert.match(html, /<span class="token keyword">const<\/span>/);
   assert.match(html, /<span class="token number">1<\/span>/);
   assert.match(html, /<span class="token comment">\/\/ 주석<\/span>/);
+});
+
+test("이 블로그가 쓸 언어들이 색칠된다", () => {
+  // Prism 기본 번들은 markup·css·javascript만 안다. 나머지는 명시적으로 등록해야
+  // 하는데, 빠뜨려도 에러 없이 색칠만 조용히 안 되므로 테스트로 고정한다.
+  const cases: [string, string][] = [
+    ["javascript", "const a = 1;"],
+    ["ts", "const a: number = 1;"],
+    ["tsx", "const C = () => <div>x</div>;"],
+    ["json", '{ "a": 1 }'],
+    ["bash", "pnpm build"],
+    ["html", '<div class="x">텍스트</div>'],
+    ["css", ".a { color: red; }"],
+  ];
+
+  for (const [language, code] of cases) {
+    const html = renderPostBody(`# 제목\n\n\`\`\`${language}\n${code}\n\`\`\``);
+
+    assert.match(html, /class="token/, `${language}가 색칠되지 않았다`);
+  }
 });
 
 test("모르는 언어는 색칠 없이 그대로 둔다", () => {
