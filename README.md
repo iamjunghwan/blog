@@ -20,7 +20,14 @@ Cloudflare Pages ( CDN 업로드 )
 
 ## Writing
 
-`content/posts/<year>/<month>/<slug>.md` 로 둔다. 연/월 폴더는 그 글의 `date`에서 나온다 (파일명이 아니라 폴더가 날짜를 나타낸다).
+```
+pnpm new-post <slug> "<제목>" <태그,태그>
+pnpm new-post use-hook "React 19의 use 훅" react,javascript
+```
+
+오늘 날짜로 `content/posts/<year>/<month>/<slug>.md`를 만들고 frontmatter를 채운 뒤 `draft: true`로 열어둔다. slug 중복과 예약어는 미리 막는다.
+
+직접 만들어도 된다. `content/posts/<year>/<month>/<slug>.md` 로 두면 되고, 연/월 폴더는 그 글의 `date`에서 나온다 (파일명이 아니라 폴더가 날짜를 나타낸다).
 
 ```md
 ---
@@ -55,6 +62,7 @@ draft: false
 ## Command
 
 ```
+pnpm new-post ...   새 글 뼈대 만들기 (Writing 참고)
 pnpm dev            글 쓰면서 확인. md를 고치면 새로고침만으로 반영된다
 pnpm test           콘텐츠 계층 단위 테스트
 pnpm build          정적 빌드 -> out/
