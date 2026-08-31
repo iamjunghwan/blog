@@ -51,6 +51,40 @@ test("펜스 코드블록의 언어를 class로 유지한다", () => {
   assert.match(html, /const a = 1;/);
 });
 
+test("pre에도 언어 class를 붙인다", () => {
+  // globals.css의 배경·패딩 규칙이 pre[class*="language-"]를 본다.
+  // code에만 붙이면 코드블록이 배경 없이 본문에 섞여 보인다.
+  const html = renderPostBody("# 제목\n\n```javascript\nconst a = 1;\n```");
+
+  assert.match(html, /<pre class="language-javascript">/);
+});
+
+test("코드블록에 구문 색을 입힌다", () => {
+  const html = renderPostBody(
+    '# 제목\n\n```javascript\nconst a = 1; // 주석\n```'
+  );
+
+  assert.match(html, /<span class="token keyword">const<\/span>/);
+  assert.match(html, /<span class="token number">1<\/span>/);
+  assert.match(html, /<span class="token comment">\/\/ 주석<\/span>/);
+});
+
+test("모르는 언어는 색칠 없이 그대로 둔다", () => {
+  const html = renderPostBody("# 제목\n\n```rust\nfn main() {}\n```");
+
+  assert.match(html, /<pre class="language-rust">/);
+  assert.match(html, /fn main\(\) \{\}/);
+  assert.ok(!/class="token/.test(html), "모르는 언어에 토큰이 생기면 안 된다");
+});
+
+test("언어 없는 코드블록의 꺾쇠를 이스케이프한다", () => {
+  // 색칠 경로를 타지 않으므로 직접 이스케이프해야 한다. 빠뜨리면 코드 예시가
+  // 진짜 태그로 파싱되어 화면에서 사라진다.
+  const html = renderPostBody("# 제목\n\n```\n<b>태그 예시</b>\n```");
+
+  assert.match(html, /&lt;b&gt;태그 예시&lt;\/b&gt;/);
+});
+
 test("markdown 이미지를 img 태그로 렌더한다", () => {
   const html = renderPostBody("# 제목\n\n![대체텍스트](/uploads/a.png)");
 
