@@ -1,58 +1,20 @@
-import { useState, useEffect } from "react";
-import { ApiItem } from "@/type/index";
-import dayjs from "dayjs";
-import { useDebounce } from "./useDebounce";
+import { useState } from "react";
+import { filterByTitle } from "@/app/lib/posts/queries";
+import type { SearchEntry } from "@/app/lib/posts/types";
 
-const useSearchData = (open: boolean) => {
-  const [customData, setCustomData] = useState<ApiItem[]>([]);
+/**
+ * 빌드 타임에 받은 인덱스를 제목으로 필터링한다.
+ *
+ * 디바운스는 쓰지 않는다. 원래는 키 입력마다 CMS를 호출하는 것을 막으려던 것인데
+ * 이제 필터링이 로컬 배열 연산이라 500ms를 기다릴 이유가 없다. 즉시 반응한다.
+ * 필터 규칙 자체는 queries.ts의 filterByTitle에 있어 단위 테스트로 고정된다.
+ */
+const useSearchData = (index: SearchEntry[]) => {
   const [searchValue, setSearchValue] = useState<string>("");
-  const debouncedSearchValue = useDebounce(searchValue, 500);
-
-  useEffect(
-    function fetchDataByOpen() {
-      if (open) {
-        fetch("https://api.memexdata.io/memex/api/projects/0e9c148b/models/blog/contents/search/v2", {
-          method: "POST",
-          headers: { 
-            "Content-Type": "application/json" ,
-            "Access-Token": process.env.NEXT_PUBLIC_API_TOKEN || "", // 환경변수 사용
-          },
-          body: JSON.stringify({
-            size: 20,
-            page: 0,
-            direction: "DESC",
-            orderCond: { type: "DATE_CREATE" },
-          }),
-        }) 
-          .then((res) => res.json())
-          .then(function (data) {
-            let _customData = data.list.map((obj: ApiItem) => {
-              return {
-                createdAt: dayjs(obj.createdAt).format("YYYY-MM-DD"),
-                data: {
-                  slug: obj.data.slug,
-                  title: {
-                    KO: obj.data.title.KO,
-                  },
-                },
-              };
-            });
-         setCustomData(_customData);
-       });
-      }
-    },
-    [open]
-  );
-
-  const filteredData = customData.filter((item: ApiItem) =>
-    item.data.title.KO.toLowerCase().includes(
-      debouncedSearchValue.toLowerCase()
-    )
-  );
 
   return {
     setSearchValue,
-    filteredData,
+    filteredData: filterByTitle(index, searchValue),
   };
 };
 export default useSearchData;

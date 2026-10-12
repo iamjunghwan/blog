@@ -1,13 +1,12 @@
-import { generateStaticParams } from "../lib/posts";
-import { processHtml } from "../lib/processHtml";
-import NotFound from "../not-found";
+import { notFound } from "next/navigation";
+import { allPosts } from "@/app/lib/posts/repository";
+import { postBySlug } from "@/app/lib/posts/queries";
+import { renderPostBody } from "@/app/lib/posts/render";
 import ArticleContent from "./components/ArticleContent";
-import { getArticleContent } from "./services/articleService";
 
-export const revalidate = 3600;
-export const dynamic = "force-static";
-
-export { generateStaticParams };
+export function generateStaticParams() {
+  return allPosts().map((post) => ({ slug: post.slug }));
+}
 
 export default async function SlugPage({
   params,
@@ -15,23 +14,11 @@ export default async function SlugPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+  const post = postBySlug(allPosts(), slug);
 
-  let articleContent: string = "";
-
-  let html = "";
-  try {
-    articleContent = await getArticleContent(slug);
-
-    const result = processHtml(articleContent);
-    html = result.html;
-
-  } catch (error) {
-    return NotFound();
+  if (post === undefined) {
+    notFound();
   }
 
-  return (
-      <ArticleContent
-         content={html}  
-       />
-    )
+  return <ArticleContent content={renderPostBody(post.body)} />;
 }

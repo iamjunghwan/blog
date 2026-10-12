@@ -2,7 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { TagListProps } from "@/type/index";
+import { ALL_TAG } from "@/app/lib/posts/constants";
+
+interface TagListProps {
+  currTag: string;
+  tagNames: string[];
+}
 
 export default function TagList({ currTag, tagNames }: TagListProps) {
   const [activeTag, setActiveTag] = useState(currTag);
@@ -17,7 +22,7 @@ export default function TagList({ currTag, tagNames }: TagListProps) {
 
   return (
     <div className="w-full flex overflow-x-auto space-x-1 whitespace-nowrap mt-4 pb-2 px-2">
-      {["all", ...tagNames].map((tag, index) => (
+      {[ALL_TAG, ...tagNames].map((tag, index) => (
         <div
           key={index}
           onClick={() => handleClick(tag)}

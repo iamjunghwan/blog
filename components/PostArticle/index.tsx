@@ -1,37 +1,30 @@
-"use client";
-
-import { ApiItem, ApiResponse } from "@/type/index";
-import { usePaginationState } from "./hooks/usePaginationState";
 import { ArticleList } from "./ArticleList";
 import { PaginationNavigation } from "./PaginationNavigation";
+import type { Post } from "@/app/lib/posts/types";
 
 export default function PostArticle({
-  data,
+  posts,
   page,
   slug,
-  displayData,
+  totalPages,
+  totalCount,
 }: {
-  data: ApiResponse;
-  page: string;
+  posts: Post[];
+  page: number;
   slug: string;
-  startIndex: number;
-  endIndex: number;
-  displayData: ApiResponse;
+  totalPages: number;
+  totalCount: number;
 }) {
-  const { currPage, currArticlePageList } = usePaginationState(
-    Number(page),
-    displayData.list
-  );
-
   return (
     <div className="flex flex-col min-h-full">
       <div className="flex-1">
-        <ArticleList articles={currArticlePageList} />
+        <ArticleList articles={posts} />
       </div>
 
       <PaginationNavigation
-        currPage={currPage}
-        totalItems={data.list.length}
+        currPage={page}
+        totalPages={totalPages}
+        totalCount={totalCount}
         slug={slug}
       />
     </div>

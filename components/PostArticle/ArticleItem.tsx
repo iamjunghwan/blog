@@ -1,23 +1,24 @@
-import { ApiItem } from "@/type/index";
+import type { Post } from "@/app/lib/posts/types";
+import { thumbnailOf } from "@/app/lib/posts/thumbnail";
 import CardDateArea from "../Card/CardDateArea";
 import CardTitleArea from "../Card/CardTitleArea";
 import CardTagsArea from "../Card/CardTagsArea";
 import CardImageArea from "../Card/CardImageArea";
 
-export const ArticleItem = ({ item }: { item: ApiItem }) => (
+export const ArticleItem = ({ item }: { item: Post }) => (
   <li>
     <article className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
       <div className="w-[400px]">
         <CardTitleArea
-          title={item.data.title.KO}
-          slug={`/${item.data.slug}`}
+          title={item.title}
+          slug={`/${item.slug}`}
           className="flex"
         />
-        <CardTagsArea tags={item.data.tags} />
-        <CardDateArea createdAt={item.createdAt} />
+        <CardTagsArea tags={item.tags} />
+        <CardDateArea date={item.date} />
       </div>
       <CardImageArea
-        content={item.data.content}
+        src={thumbnailOf(item)}
         className="w-24 h-24 flex-shrink-0 overflow-hidden rounded-lg flex items-center"
       />
     </article>
