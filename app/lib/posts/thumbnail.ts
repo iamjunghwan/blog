@@ -1,13 +1,11 @@
 import type { Post } from "@/app/lib/posts/types";
+import { stripFencedBlocks } from "@/app/lib/posts/markdown";
 
 export const DEFAULT_THUMBNAIL = "/iaman.png";
 
 // ![alt](경로 "title") 에서 경로만 잡는다. 공백/닫는 괄호/> 앞에서 멈춘다.
 const MARKDOWN_IMAGE = /!\[[^\]]*\]\(\s*<?([^\s)>]+)>?/;
 const HTML_IMAGE = /<img[^>]+src\s*=\s*["']([^"']+)["']/i;
-
-// 펜스 줄: 최대 3칸 들여쓰기 + ` 또는 ~ 3개 이상 + 나머지(info string 또는 빈 문자열)
-const FENCE_LINE = /^ {0,3}(`{3,}|~{3,})(.*)$/;
 
 /**
  * 대표 이미지를 결정한다.
@@ -48,42 +46,3 @@ function normalize(src: string): string {
   return src.startsWith("/") ? src : `/${src}`;
 }
 
-/**
- * 코드 펜스 구간을 지운다. 정규식 하나로는 부족해서 줄 단위로 훑는다.
- * CommonMark 규칙을 따른다:
- *  - 여는 펜스는 들여쓰기 최대 3칸, 마커는 ` 또는 ~ 3개 이상
- *  - 닫는 펜스는 같은 문자로 여는 펜스 이상 길이여야 하고 뒤에 내용이 없어야 한다
- *    (그래서 ````로 감싼 안쪽 ```가 블록을 조기에 닫지 않는다)
- *  - 닫는 펜스가 없으면 문서 끝까지 코드로 본다
- */
-function stripFencedBlocks(body: string): string {
-  const kept: string[] = [];
-  let open: { marker: string; length: number } | null = null;
-
-  // 줄 분리는 인코딩과 무관해야 한다. "\n"으로만 쪼개면 CRLF 파일에서 각 줄 끝에 \r가
-  // 남고, FENCE_LINE의 `.`는 \r를 매치하지 않아 펜스가 아예 인식되지 않는다.
-  for (const line of body.split(/\r\n|\r|\n/)) {
-    const match = FENCE_LINE.exec(line);
-
-    if (open === null) {
-      if (match) {
-        open = { marker: match[1][0], length: match[1].length };
-        continue;
-      }
-      kept.push(line);
-      continue;
-    }
-
-    const closes =
-      match !== null &&
-      match[1][0] === open.marker &&
-      match[1].length >= open.length &&
-      match[2].trim() === "";
-
-    if (closes) {
-      open = null;
-    }
-  }
-
-  return kept.join("\n");
-}

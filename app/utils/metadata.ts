@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { SITE_URL } from "@/app/lib/site";
 
 export interface MetadataOptions {
   title: string;
@@ -12,7 +13,7 @@ export function generateCommonMetadata(options: MetadataOptions): Metadata {
   const {
     title,
     description,
-    imageUrl = "https://iaman.kr/iaman.png",
+    imageUrl = `${SITE_URL}/iaman.png`,
     type = "article",
     locale = "ko_KR",
   } = options;

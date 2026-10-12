@@ -11,6 +11,8 @@ export type PostMeta = {
   date: string;
   tags: string[];
   thumbnail?: string;
+  /** 검색·공유용 설명문. 없으면 본문에서 뽑는다 (excerpt.ts). */
+  description?: string;
   draft: boolean;
 };
 

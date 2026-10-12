@@ -1,8 +1,7 @@
 import type { MetadataRoute } from "next";
+import { SITE_URL } from "@/app/lib/site";
 import { allPosts } from "@/app/lib/posts/repository";
 import { postListUrls } from "@/app/lib/posts/queries";
-
-const BASE_URL = "https://iaman.kr";
 
 // 정적 export에서는 메타데이터 라우트도 빌드 타임에 고정된 정적 파일로
 // 내보내야 한다는 것을 Next에 명시해야 한다.
@@ -18,14 +17,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const latestDate = posts[0]?.date;
 
   return [
-    { url: BASE_URL, lastModified: latestDate },
-    { url: `${BASE_URL}/about` },
+    { url: SITE_URL, lastModified: latestDate },
+    { url: `${SITE_URL}/about` },
     ...posts.map((post) => ({
-      url: `${BASE_URL}/${post.slug}`,
+      url: `${SITE_URL}/${post.slug}`,
       lastModified: post.date,
     })),
     ...postListUrls(posts).map((path) => ({
-      url: `${BASE_URL}${path}`,
+      url: `${SITE_URL}${path}`,
       lastModified: latestDate,
     })),
   ];

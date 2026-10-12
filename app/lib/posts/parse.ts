@@ -19,13 +19,18 @@ export function parsePost(source: string, fileName: string): Post {
     title: requireString(data.title, "title", fileName),
     date: requireDate(data.date, fileName),
     tags: requireTags(data.tags, fileName),
-    thumbnail:
-      typeof data.thumbnail === "string" && data.thumbnail.trim() !== ""
-        ? data.thumbnail.trim()
-        : undefined,
+    thumbnail: optionalString(data.thumbnail),
+    description: optionalString(data.description),
     draft: data.draft === true,
     body: content.trim(),
   };
+}
+
+/** 비어 있거나 문자열이 아니면 undefined. 선택 필드에 쓴다. */
+function optionalString(value: unknown): string | undefined {
+  return typeof value === "string" && value.trim() !== ""
+    ? value.trim()
+    : undefined;
 }
 
 function requireString(value: unknown, field: string, fileName: string): string {
