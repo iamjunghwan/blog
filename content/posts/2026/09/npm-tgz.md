@@ -3,7 +3,7 @@ slug: npm-tgz
 title: "npm은 왜 tgz로 패키지를 올릴까"
 date: 2026-09-16
 tags: ["npm", "javascript"]
-draft: true
+draft: false
 ---
 
 # npm은 왜 tgz로 패키지를 올릴까
