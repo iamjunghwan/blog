@@ -19,7 +19,7 @@ export const ArticleItem = ({ item }: { item: Post }) => (
       </div>
       <CardImageArea
         src={thumbnailOf(item)}
-        className="w-24 h-24 flex-shrink-0 overflow-hidden rounded-lg flex items-center"
+        className="w-48 sm:w-56 aspect-[40/21] flex-shrink-0 overflow-hidden rounded-lg"
       />
     </article>
   </li>
