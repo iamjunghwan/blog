@@ -3,6 +3,7 @@ slug: swe-bench
 title: "SWE-bench 점수가 말해주지 않는 것"
 date: 2026-10-12
 tags: ["swe-bench", "ai"]
+thumbnail: "/uploads/2026/10/swe-bench.png"
 draft: false
 ---
 

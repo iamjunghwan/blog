@@ -3,6 +3,7 @@ slug: dynamic-components-and-lazy
 title: "Dynamic Component & Lazy"
 date: 2025-03-11
 tags: ["react", "javascript"]
+thumbnail: "/uploads/2025/03/dynamic-components-and-lazy.png"
 draft: false
 ---
 

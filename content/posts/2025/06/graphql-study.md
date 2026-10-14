@@ -3,6 +3,7 @@ slug: graphql-study
 title: "GraphQL 공부해보기"
 date: 2025-06-10
 tags: ["graphql"]
+thumbnail: "/uploads/2025/06/graphql-study.png"
 draft: false
 ---
 

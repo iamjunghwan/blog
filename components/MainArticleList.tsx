@@ -1,34 +1,37 @@
-import ArticleCard from "@/components/Card/ArticleCard";
+/****************************************
+ *
+ * MainArticleList : 메인의 최신 글 목록
+ *
+ * 받은 글을 그대로 나열한다. 몇 개를 보여 줄지는 호출자(app/page.tsx)가 정한다.
+ * 예전에는 3단 그리드 + 아랫줄 2개 구조라 호출자의 slice(0, 5)와 여기의
+ * slice(0, 3)/slice(3, 5)가 겹쳐 있었고, 아랫줄 카드가 윗줄보다 1.6배 컸다.
+ * 세로 스택은 개수에 따라 분기할 일이 없어 그 두 문제가 함께 사라진다.
+ *
+ ****************************************/
+
+import Link from "next/link";
+import MainArticleItem from "@/components/MainArticleItem";
+import { ALL_TAG } from "@/app/lib/posts/constants";
 import type { Post } from "@/app/lib/posts/types";
 
 const MainArticleList = ({ posts }: { posts: Post[] }) => {
   return (
-    <ul className="grid grid-cols-1 md:grid-cols-3 gap-8 ">
-      {posts.slice(0, 3).map((post: Post) => (
-        <li
-          key={post.slug}
-          className="flex flex-col h-full justify-start pt-8 pb-12"
-        >
-          <div className="h-full">
-            <ArticleCard post={post} />
-          </div>
-        </li>
-      ))}
+    <>
+      <ul className="list-none">
+        {posts.map((post: Post, index: number) => (
+          <MainArticleItem key={post.slug} post={post} priority={index === 0} />
+        ))}
+      </ul>
 
-      {/* 아랫줄은 최대 2개. 기존 코드는 `> 4`로 게이트해서 글이 정확히 4개일 때
-          4번째 글이 어디에도 렌더되지 않고 사라졌다.
-          상한(3, 5)은 이 컴포넌트가 직접 유지한다 — 호출자의 slice(0, 5)에 기대면
-          그쪽이 바뀔 때 아랫줄이 무한정 늘어나 3+2 레이아웃이 깨진다. */}
-      {posts.length > 3 ? (
-        <li className="md:col-span-3 flex flex-col md:flex-row gap-2  items-stretch">
-          {posts.slice(3, 5).map((post: Post) => (
-            <div key={post.slug} className="flex-1 h-full pt-8 pb-12">
-              <ArticleCard post={post} />
-            </div>
-          ))}
-        </li>
-      ) : null}
-    </ul>
+      <div className="flex justify-center py-8">
+        <Link
+          href={`/post/${ALL_TAG}/1`}
+          className="font-semibold text-blue-600 dark:text-blue-400"
+        >
+          모든 글 보기 →
+        </Link>
+      </div>
+    </>
   );
 };
 

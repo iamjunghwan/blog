@@ -3,6 +3,7 @@ slug: focus-trap
 title: "Focus Trap 🙊"
 date: 2025-03-13
 tags: ["react", "javascript"]
+thumbnail: "/uploads/2025/03/focus-trap.png"
 draft: false
 ---
 

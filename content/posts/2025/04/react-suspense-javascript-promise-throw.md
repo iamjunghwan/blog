@@ -3,6 +3,7 @@ slug: react-suspense-javascript-promise-throw
 title: "⚛️ Suspense 살펴보기"
 date: 2025-04-26
 tags: ["react", "javascript"]
+thumbnail: "/uploads/2025/04/react-suspense-javascript-promise-throw.png"
 draft: false
 ---
 

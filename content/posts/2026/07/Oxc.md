@@ -3,6 +3,7 @@ slug: Oxc
 title: "새로운 프론트엔드 린팅 환경 Oxc "
 date: 2026-07-09
 tags: ["react", "javascript"]
+thumbnail: "/uploads/2026/07/Oxc.png"
 draft: false
 ---
 

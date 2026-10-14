@@ -3,6 +3,7 @@ slug: Temporal
 title: "Temporal의 등장 ( Date의 문제점 )"
 date: 2026-03-16
 tags: ["javascript"]
+thumbnail: "/uploads/2026/03/Temporal.png"
 draft: false
 ---
 

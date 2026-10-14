@@ -3,6 +3,7 @@ slug: truthy-falsy
 title: "왜 JS는 truthy , falsy 라는 개념을 사용할까?"
 date: 2025-08-29
 tags: ["javascript"]
+thumbnail: "/uploads/2025/08/truthy-falsy.png"
 draft: false
 ---
 

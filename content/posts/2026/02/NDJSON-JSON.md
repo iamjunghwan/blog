@@ -3,6 +3,7 @@ slug: NDJSON-JSON
 title: "NDJSON이란?"
 date: 2026-02-16
 tags: ["javascript"]
+thumbnail: "/uploads/2026/02/NDJSON-JSON.png"
 draft: false
 ---
 

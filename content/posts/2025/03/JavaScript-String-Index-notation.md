@@ -3,6 +3,7 @@ slug: JavaScript-String-Index-notation
 title: "문자열에 'e'가 포함되면 지수 표기법"
 date: 2025-03-10
 tags: ["javascript"]
+thumbnail: "/uploads/2025/03/JavaScript-String-Index-notation.png"
 draft: false
 ---
 

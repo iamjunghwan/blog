@@ -3,6 +3,7 @@ slug: window-object
 title: "window[ elementId or elementName]"
 date: 2025-06-17
 tags: ["javascript", "browser"]
+thumbnail: "/uploads/2025/06/window-object.png"
 draft: false
 ---
 

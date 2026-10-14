@@ -3,6 +3,7 @@ slug: Activity-Compoments
 title: "Activity Compoments"
 date: 2026-03-24
 tags: ["react", "javascript"]
+thumbnail: "/uploads/2026/03/Activity-Compoments.png"
 draft: false
 ---
 
