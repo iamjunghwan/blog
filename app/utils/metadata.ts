@@ -13,7 +13,7 @@ export function generateCommonMetadata(options: MetadataOptions): Metadata {
   const {
     title,
     description,
-    imageUrl = `${SITE_URL}/iaman.png`,
+    imageUrl = `${SITE_URL}/default-thumbnail.png`,
     type = "article",
     locale = "ko_KR",
   } = options;
@@ -28,9 +28,7 @@ export function generateCommonMetadata(options: MetadataOptions): Metadata {
       images: [
         {
           url: imageUrl,
-          width: 800,
-          height: 600,
-          alt: "Blog Post Image",
+          alt: title,
         },
       ],
       locale,
