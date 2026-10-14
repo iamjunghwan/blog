@@ -18,8 +18,8 @@ const MainArticleList = ({ posts }: { posts: Post[] }) => {
   return (
     <>
       <ul className="list-none">
-        {posts.map((post: Post) => (
-          <MainArticleItem key={post.slug} post={post} />
+        {posts.map((post: Post, index: number) => (
+          <MainArticleItem key={post.slug} post={post} priority={index === 0} />
         ))}
       </ul>
 
