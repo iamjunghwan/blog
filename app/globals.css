@@ -28,7 +28,7 @@ h2 {
   margin-bottom: 1em;
 }
 
-h2:hover {
+#article-content h2:hover {
   text-decoration: underline;
   cursor: pointer;
 }
