@@ -3,6 +3,7 @@ slug: difference-between-number-and-parseInt
 title: "Number & parseInt "
 date: 2025-03-24
 tags: ["javascript"]
+thumbnail: "/uploads/2025/03/difference-between-number-and-parseInt.png"
 draft: false
 ---
 

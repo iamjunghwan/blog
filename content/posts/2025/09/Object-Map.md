@@ -3,6 +3,7 @@ slug: Object-Map
 title: "왜 Object 대신 Map을 사용해야할까?"
 date: 2025-09-16
 tags: ["javascript"]
+thumbnail: "/uploads/2025/09/Object-Map.png"
 draft: false
 ---
 

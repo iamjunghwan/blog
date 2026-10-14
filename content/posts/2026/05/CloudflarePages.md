@@ -3,6 +3,7 @@ slug: CloudflarePages
 title: "AWS에서 Cloudflare Pages로 Next.js 블로그를 이전한 이유 및 과정"
 date: 2026-05-11
 tags: ["nextjs", "cloudflare"]
+thumbnail: "/uploads/2026/05/CloudflarePages.png"
 draft: false
 ---
 

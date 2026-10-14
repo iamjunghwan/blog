@@ -3,6 +3,7 @@ slug: javascript-proxy
 title: "Proxy 알아보기"
 date: 2025-07-01
 tags: ["javascript"]
+thumbnail: "/uploads/2025/07/javascript-proxy.png"
 draft: false
 ---
 

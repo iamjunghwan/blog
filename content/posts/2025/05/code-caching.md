@@ -3,6 +3,7 @@ slug: code-caching
 title: "코드 캐싱 (Code-Caching)"
 date: 2025-05-10
 tags: ["browser"]
+thumbnail: "/uploads/2025/05/code-caching.png"
 draft: false
 ---
 
