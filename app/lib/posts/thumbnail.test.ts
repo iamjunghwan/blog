@@ -49,7 +49,7 @@ test("절대 URL은 그대로 둔다", () => {
 
 test("이미지가 없으면 기본 이미지를 쓴다", () => {
   assert.equal(thumbnailOf({ body: "# 제목\n\n이미지 없음" }), DEFAULT_THUMBNAIL);
-  assert.equal(DEFAULT_THUMBNAIL, "/iaman.png");
+  assert.equal(DEFAULT_THUMBNAIL, "/default-thumbnail.png");
 });
 
 test("코드 펜스 안의 markdown 이미지는 무시한다", () => {

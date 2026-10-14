@@ -1,7 +1,7 @@
 import type { Post } from "@/app/lib/posts/types";
 import { stripFencedBlocks } from "@/app/lib/posts/markdown";
 
-export const DEFAULT_THUMBNAIL = "/iaman.png";
+export const DEFAULT_THUMBNAIL = "/default-thumbnail.png";
 
 // ![alt](경로 "title") 에서 경로만 잡는다. 공백/닫는 괄호/> 앞에서 멈춘다.
 const MARKDOWN_IMAGE = /!\[[^\]]*\]\(\s*<?([^\s)>]+)>?/;
