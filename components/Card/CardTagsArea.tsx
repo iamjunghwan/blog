@@ -14,7 +14,7 @@ interface CardTagsAreaProps {
 const CardTagsArea = ({
   tags,
   className = "flex flex-wrap gap-2 mb-2",
-  linkClassName = "text-sm text-blue-600 uppercase no-underline",
+  linkClassName = "text-sm text-blue-600 dark:text-blue-400 uppercase no-underline",
 }: CardTagsAreaProps) => {
   return (
     <div className={className}>
