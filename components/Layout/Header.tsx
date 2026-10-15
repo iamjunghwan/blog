@@ -1,10 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
+import LanguageSwitch from "@/components/Layout/LanguageSwitch";
 import Theme from "../Button/Theme";
 import Search from "../Search/components/Search";
 import MenuToggleButton from "../Button/MenuToggleButton";
 import { allPosts } from "@/app/lib/posts/repository";
-import { postsIn, searchIndex } from "@/app/lib/posts/queries";
+import { bilingualSlugs, postsIn, searchIndex } from "@/app/lib/posts/queries";
 import { localePath } from "@/app/lib/i18n/paths";
 import type { Lang } from "@/app/lib/posts/types";
 
@@ -13,6 +14,9 @@ export default function Header({ lang }: { lang: Lang }) {
   // 별도 JSON 파일과 fetch가 필요 없고, 모달을 열면 즉시 검색된다.
   // 보고 있는 언어의 글만 담는다 — 한국어 화면에서 영어 글이 나오면 혼란스럽다.
   const index = searchIndex(postsIn(allPosts(), lang));
+
+  // 전환 버튼이 "이 글에 반대 언어판이 있나"를 판단할 재료. 빌드 타임에 만든다.
+  const bothLangs = bilingualSlugs(allPosts());
 
   return (
     <header className="pt-10 pb-10 flex justify-between items-center">
@@ -41,10 +45,12 @@ export default function Header({ lang }: { lang: Lang }) {
             {"About"}
           </Link>
           <Search index={index} lang={lang} />
+          <LanguageSwitch lang={lang} bilingualSlugs={bothLangs} />
           <Theme />
         </div>
         <div className="sm:hidden flex items-center">
           <Search index={index} lang={lang} />
+          <LanguageSwitch lang={lang} bilingualSlugs={bothLangs} />
           <Theme />
           <MenuToggleButton lang={lang} />
         </div>

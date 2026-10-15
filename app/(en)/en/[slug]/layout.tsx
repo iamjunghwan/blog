@@ -1,6 +1,6 @@
 import { generateCommonMetadata } from "@/app/utils/metadata";
 import { allPosts } from "@/app/lib/posts/repository";
-import { postBySlug, postsIn } from "@/app/lib/posts/queries";
+import { counterpart, postBySlug, postsIn } from "@/app/lib/posts/queries";
 import { excerptOf } from "@/app/lib/posts/excerpt";
 import { thumbnailOf } from "@/app/lib/posts/thumbnail";
 import { absoluteUrl } from "@/app/lib/site";
@@ -28,6 +28,9 @@ export async function generateMetadata({ params }: Props) {
     title: post.title,
     description: excerptOf(post),
     imageUrl: absoluteUrl(thumbnailOf(post)),
+    lang: "en",
+    path: `/${post.slug}`,
+    hasCounterpart: counterpart(allPosts(), post.slug, "en") !== undefined,
   });
 }
 
