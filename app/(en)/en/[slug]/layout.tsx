@@ -19,6 +19,7 @@ export async function generateMetadata({ params }: Props) {
     return generateCommonMetadata({
       title: "Not Found",
       description: "Page not found",
+      lang: "en",
     });
   }
 

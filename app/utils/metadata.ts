@@ -6,10 +6,10 @@ import type { Lang } from "@/app/lib/posts/types";
 export interface MetadataOptions {
   title: string;
   description: string;
+  /** 이 페이지의 언어. og:locale과 hreflang을 정한다. 기본값이 없다 — 빠뜨리면 컴파일이 실패한다. */
+  lang: Lang;
   imageUrl?: string;
   type?: "article" | "website";
-  /** 이 페이지의 언어. og:locale과 hreflang을 정한다. */
-  lang?: Lang;
   /**
    * 언어 접두사를 뺀 경로 (예: "/swe-bench", "/about", "/").
    * 주어지면 canonical과 hreflang을 만든다. 없으면 둘 다 넣지 않는다 —
@@ -31,7 +31,7 @@ export function generateCommonMetadata(options: MetadataOptions): Metadata {
     description,
     imageUrl = `${SITE_URL}/default-thumbnail.png`,
     type = "article",
-    lang = "ko",
+    lang,
     path,
     hasCounterpart = false,
   } = options;
