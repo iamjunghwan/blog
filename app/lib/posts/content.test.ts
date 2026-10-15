@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
 import { POSTS_DIR, loadAllPosts } from "@/app/lib/posts/repository";
+import { postsIn } from "@/app/lib/posts/queries";
 import { renderPostBody } from "@/app/lib/posts/render";
 import { thumbnailOf, DEFAULT_THUMBNAIL } from "@/app/lib/posts/thumbnail";
 
@@ -14,12 +15,17 @@ import { thumbnailOf, DEFAULT_THUMBNAIL } from "@/app/lib/posts/thumbnail";
  */
 const posts = loadAllPosts(POSTS_DIR, true);
 
-test("한국어 글은 모두 lang이 ko다", () => {
-  // 폴더가 언어를 정한다. 이동이 잘못되면 글이 엉뚱한 언어로 잡히거나 사라진다.
-  const ko = posts.filter((post) => post.lang === "ko");
+test("언어 폴더가 글의 lang을 정한다", () => {
+  // 폴더가 언어를 정한다. 이동이나 추가가 잘못되면 글이 엉뚱한 언어로 잡힌다.
+  const ko = postsIn(posts, "ko");
+  const en = postsIn(posts, "en");
 
-  assert.equal(ko.length, posts.length, "ko가 아닌 글이 섞여 있다");
+  assert.equal(ko.length + en.length, posts.length, "ko도 en도 아닌 글이 있다");
   assert.ok(ko.length >= 19, `한국어 글이 ${ko.length}편뿐이다 (19편 이상이어야 한다)`);
+  assert.ok(
+    en.every((post) => ko.some((k) => k.slug === post.slug)),
+    "영어판만 있고 한국어 원문이 없는 글이 있다"
+  );
 });
 
 test("모든 글이 파싱되고 최소 1건 이상 존재한다", () => {
@@ -55,8 +61,11 @@ test("모든 대표 이미지가 public에 실재한다", () => {
   }
 });
 
-test("slug이 서로 겹치지 않는다", () => {
-  const slugs = posts.map((post) => post.slug);
+test("slug이 언어 안에서 겹치지 않는다", () => {
+  // 두 언어판은 같은 slug으로 짝을 이루므로, 중복 검사는 언어별로 한다.
+  for (const lang of ["ko", "en"] as const) {
+    const slugs = postsIn(posts, lang).map((post) => post.slug);
 
-  assert.equal(new Set(slugs).size, slugs.length, "slug 중복");
+    assert.equal(new Set(slugs).size, slugs.length, `${lang} slug 중복`);
+  }
 });
