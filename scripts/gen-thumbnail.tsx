@@ -17,7 +17,7 @@
 import { ImageResponse } from "next/og";
 import fs from "node:fs";
 import path from "node:path";
-import { allPosts } from "@/app/lib/posts/repository";
+import { POSTS_DIR, allPosts } from "@/app/lib/posts/repository";
 import type { Post } from "@/app/lib/posts/types";
 
 const BASE_WIDTH = 1200;
@@ -896,8 +896,10 @@ async function main() {
     const motif = motifOf(post);
 
     const bytes = await renderToFile(post, outPath);
+    // 경로를 날짜로 재조립하지 않는다. 글이 언제 쓰였는지와 어느 폴더에 있는지는
+    // 다른 문제이고, 언어 폴더가 생기면서 재조립이 실제로 깨졌다.
     const result = setThumbnail(
-      path.join("content/posts", date.slice(0, 4), date.slice(5, 7), `${post.slug}.md`),
+      path.join(POSTS_DIR, post.lang, post.fileName),
       rel
     );
 

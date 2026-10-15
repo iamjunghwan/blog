@@ -1,6 +1,6 @@
 import { generateCommonMetadata } from "../utils/metadata";
 import { allPosts } from "@/app/lib/posts/repository";
-import { postBySlug } from "@/app/lib/posts/queries";
+import { postBySlug, postsIn } from "@/app/lib/posts/queries";
 import { excerptOf } from "@/app/lib/posts/excerpt";
 import { thumbnailOf } from "@/app/lib/posts/thumbnail";
 import { absoluteUrl } from "@/app/lib/site";
@@ -11,7 +11,9 @@ type Props = {
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
-  const post = postBySlug(allPosts(), slug);
+  // 메타데이터도 본문과 같은 언어의 글에서 찾는다. 고정하지 않으면 영어 글이 들어올 때
+  // 정렬상 앞서는 영어판 제목이 한국어 URL에 붙는다. 다음 단계에서 "ko"가 라우트 언어로 바뀐다.
+  const post = postBySlug(postsIn(allPosts(), "ko"), slug);
 
   if (post === undefined) {
     return generateCommonMetadata({

@@ -4,12 +4,14 @@ import Theme from "../Button/Theme";
 import Search from "../Search/components/Search";
 import MenuToggleButton from "../Button/MenuToggleButton";
 import { allPosts } from "@/app/lib/posts/repository";
-import { searchIndex } from "@/app/lib/posts/queries";
+import { postsIn, searchIndex } from "@/app/lib/posts/queries";
 
 export default function Header() {
   // 빌드 타임에 만든 검색 인덱스를 클라이언트 컴포넌트에 넘긴다.
   // 별도 JSON 파일과 fetch가 필요 없고, 모달을 열면 즉시 검색된다.
-  const index = searchIndex(allPosts());
+  // 검색은 한 언어의 글만 대상으로 한다. 지금은 결과가 같지만 영어 글이 들어오면 같은 글이
+  // 두 번 검색되므로 고정한다. 다음 단계에서 "ko"가 현재 언어로 바뀐다.
+  const index = searchIndex(postsIn(allPosts(), "ko"));
 
   return (
     <header className="pt-10 pb-10 flex justify-between items-center">
