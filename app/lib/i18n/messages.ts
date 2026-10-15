@@ -16,6 +16,8 @@ type Messages = {
   searchPlaceholder: string;
   openMenu: string;
   closeMenu: string;
+  searchTitle: string;
+  switchTo: string;
   today: string;
   yesterday: string;
   daysAgo: (days: number) => string;
@@ -27,6 +29,8 @@ export const MESSAGES: Record<Lang, Messages> = {
     searchPlaceholder: "검색어를 입력하세요",
     openMenu: "메뉴 열기",
     closeMenu: "메뉴 닫기",
+    searchTitle: "아티클 검색",
+    switchTo: "English로 보기",
     today: "오늘",
     yesterday: "어제",
     daysAgo: (days) => `${days}일 전`,
@@ -36,6 +40,8 @@ export const MESSAGES: Record<Lang, Messages> = {
     searchPlaceholder: "Search posts",
     openMenu: "Open menu",
     closeMenu: "Close menu",
+    searchTitle: "Search articles",
+    switchTo: "한국어로 보기",
     today: "Today",
     yesterday: "Yesterday",
     daysAgo: (days) => `${days} days ago`,

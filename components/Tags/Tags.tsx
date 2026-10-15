@@ -1,12 +1,17 @@
 import TagList from "./TagList";
 import { allPosts } from "@/app/lib/posts/repository";
 import { allTags, postsIn } from "@/app/lib/posts/queries";
+import type { Lang } from "@/app/lib/posts/types";
 
-const Tags = ({ currTag }: { currTag: string }) => {
-  // 태그 목록은 한국어 글에서만 뽑는다. 영어 글이 들어오면 두 언어 태그가 섞여
-  // /post/<태그>/1 라우트와 어긋난다. 다음 단계에서 이 "ko"가 라우트 언어로 바뀐다.
+const Tags = ({ currTag, lang }: { currTag: string; lang: Lang }) => {
+  // 태그 목록은 그 언어의 글에서만 뽑는다. 두 언어를 합치면 글이 없는 태그의
+  // 목록 페이지로 가는 링크가 생긴다.
   return (
-    <TagList currTag={currTag} tagNames={allTags(postsIn(allPosts(), "ko"))} />
+    <TagList
+      currTag={currTag}
+      lang={lang}
+      tagNames={allTags(postsIn(allPosts(), lang))}
+    />
   );
 };
 

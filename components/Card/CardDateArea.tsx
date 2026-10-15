@@ -17,13 +17,13 @@ import type { Lang } from "@/app/lib/posts/types";
 interface CardDateAreaProps {
   date: string;
   className?: string;
-  lang?: Lang;
+  lang: Lang;
 }
 
 const CardDateArea = ({
   date,
   className = "flex items-center mb-4",
-  lang = "ko",
+  lang,
 }: CardDateAreaProps) => {
   const [relative, setRelative] = useState<string | null>(null);
 

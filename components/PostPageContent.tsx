@@ -1,7 +1,7 @@
 import InnerHeader from "@/components/Layout/InnerHeader";
 import Tags from "@/components/Tags/Tags";
 import PostArticle from "@/components/PostArticle/index";
-import type { Post } from "@/app/lib/posts/types";
+import type { Lang, Post } from "@/app/lib/posts/types";
 
 interface PostPageContentProps {
   slug: string;
@@ -9,6 +9,7 @@ interface PostPageContentProps {
   totalPages: number;
   totalCount: number;
   posts: Post[];
+  lang: Lang;
 }
 
 const PostPageContent = ({
@@ -17,17 +18,19 @@ const PostPageContent = ({
   totalPages,
   totalCount,
   posts,
+  lang,
 }: PostPageContentProps) => {
   return (
     <>
       <InnerHeader title={`Posts ${slug} ${totalCount}`} />
-      <Tags currTag={slug} />
+      <Tags currTag={slug} lang={lang} />
       <PostArticle
         posts={posts}
         page={page}
         slug={slug}
         totalPages={totalPages}
         totalCount={totalCount}
+        lang={lang}
       />
     </>
   );

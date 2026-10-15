@@ -12,23 +12,30 @@
 import Link from "next/link";
 import MainArticleItem from "@/components/MainArticleItem";
 import { ALL_TAG } from "@/app/lib/posts/constants";
-import type { Post } from "@/app/lib/posts/types";
+import { localePath } from "@/app/lib/i18n/paths";
+import { messages } from "@/app/lib/i18n/messages";
+import type { Lang, Post } from "@/app/lib/posts/types";
 
-const MainArticleList = ({ posts }: { posts: Post[] }) => {
+const MainArticleList = ({ posts, lang }: { posts: Post[]; lang: Lang }) => {
   return (
     <>
       <ul className="list-none">
         {posts.map((post: Post, index: number) => (
-          <MainArticleItem key={post.slug} post={post} priority={index === 0} />
+          <MainArticleItem
+            key={post.slug}
+            post={post}
+            lang={lang}
+            priority={index === 0}
+          />
         ))}
       </ul>
 
       <div className="flex justify-center py-8">
         <Link
-          href={`/post/${ALL_TAG}/1`}
+          href={localePath(lang, `/post/${ALL_TAG}/1`)}
           className="font-semibold text-blue-600 dark:text-blue-400"
         >
-          모든 글 보기 →
+          {messages(lang).allPosts}
         </Link>
       </div>
     </>

@@ -37,6 +37,7 @@ export default async function Page({
       totalPages={totalPages}
       totalCount={tagged.length}
       posts={items}
+      lang="ko"
     />
   );
 }

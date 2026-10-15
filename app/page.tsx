@@ -13,7 +13,7 @@ const Page = () => {
   return (
     <>
       <InnerHeader title={`The Latest Article`} />
-      <MainArticleList posts={posts} />
+      <MainArticleList posts={posts} lang="ko" />
     </>
   );
 };
