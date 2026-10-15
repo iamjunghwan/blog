@@ -18,6 +18,10 @@ import path from "node:path";
 import { POSTS_DIR, loadPosts } from "@/app/lib/posts/repository";
 import { ALL_TAG } from "@/app/lib/posts/constants";
 
+// 지금은 한국어 글만 만든다. 언어 선택은 다음 단계에서 인자로 받는다.
+// 충돌 검사도 이 폴더 안에서만 한다 — 같은 slug의 영어판은 공존해야 한다.
+const KO_DIR = path.join(POSTS_DIR, "ko");
+
 const USAGE = `사용법: pnpm new-post <slug> "<제목>" [태그,태그]
 예:     pnpm new-post use-hook "React 19의 use 훅" react,javascript`;
 
@@ -89,13 +93,13 @@ function main(): void {
 
   // 기존 글을 실제 파서로 읽어 slug 충돌을 미리 잡는다.
   // 빌드가 어차피 막지만, 다 쓰고 나서 알게 되는 것보다 지금 아는 편이 낫다.
-  const existing = loadPosts(POSTS_DIR, true).find((post) => post.slug === slug);
+  const existing = loadPosts(KO_DIR, true, "ko").find((post) => post.slug === slug);
 
   if (existing) {
     fail(`slug '${slug}'은 이미 "${existing.title}" (${existing.date})가 쓰고 있다.`);
   }
 
-  const dir = path.join(POSTS_DIR, year, month);
+  const dir = path.join(KO_DIR, year, month);
   const filePath = path.join(dir, `${slug}.md`);
 
   if (fs.existsSync(filePath)) {
