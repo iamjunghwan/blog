@@ -4,6 +4,7 @@ export async function generateMetadata() {
   return generateCommonMetadata({
     title: "Posts by iaman",
     description: "This blog was created by an.",
+    lang: "ko",
   });
 }
 
