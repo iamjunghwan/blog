@@ -8,6 +8,9 @@
  *
  ****************************************/
 
+import { messages } from "@/app/lib/i18n/messages";
+import type { Lang } from "@/app/lib/posts/types";
+
 /** 이 일수를 넘으면 상대 표기를 붙이지 않는다. 640일 전 같은 값은 감이 오지 않는다. */
 export const RELATIVE_LIMIT_DAYS = 30;
 
@@ -17,21 +20,29 @@ const MS_PER_DAY = 24 * 60 * 60 * 1000;
 /**
  * @param date parsePost가 정규화한 "YYYY-MM-DD"
  * @param now  보는 시점 (브라우저의 new Date())
+ * @param lang 문구를 고를 언어
  * @returns 붙일 문구, 또는 붙이지 않아야 하면 null
  */
-export function relativeLabel(date: string, now: Date): string | null {
+export function relativeLabel(
+  date: string,
+  now: Date,
+  lang: Lang
+): string | null {
   const days = daysSince(date, now);
 
   if (days === null || days < 0 || days > RELATIVE_LIMIT_DAYS) {
     return null;
   }
+
+  const t = messages(lang);
+
   if (days === 0) {
-    return "오늘";
+    return t.today;
   }
   if (days === 1) {
-    return "어제";
+    return t.yesterday;
   }
-  return `${days}일 전`;
+  return t.daysAgo(days);
 }
 
 /**

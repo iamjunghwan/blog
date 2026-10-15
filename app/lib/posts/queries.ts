@@ -1,4 +1,4 @@
-import type { Post, SearchEntry } from "@/app/lib/posts/types";
+import type { Lang, Post, SearchEntry } from "@/app/lib/posts/types";
 import { ALL_TAG } from "@/app/lib/posts/constants";
 
 /** 목록 한 페이지에 보여줄 글 수. 이 값만 쓴다. */
@@ -100,4 +100,39 @@ export function postListUrls(posts: Post[]): string[] {
   return postListParams(posts).map(
     ({ slug, page }) => `/post/${slug}/${page[0]}`
   );
+}
+
+/** 그 언어로 쓰인 글만. 호출부가 이걸로 걸러 기존 조회 함수에 넘긴다. */
+export function postsIn(posts: Post[], lang: Lang): Post[] {
+  return posts.filter((post) => post.lang === lang);
+}
+
+/**
+ * 반대 언어의 같은 글. 없으면 undefined.
+ *
+ * 두 판은 slug으로 이어진다. 언어 전환 버튼이 이걸로 "반대 판이 있는가"를
+ * 판단해, 없으면 버튼을 감춘다 — 눌러서 404가 나는 것보다 낫다.
+ */
+export function counterpart(
+  posts: Post[],
+  slug: string,
+  lang: Lang
+): Post | undefined {
+  return posts.find((post) => post.slug === slug && post.lang !== lang);
+}
+
+/** 한국어판과 영어판이 모두 있는 slug. 전환 버튼이 빌드 타임에 받아 간다. */
+export function bilingualSlugs(posts: Post[]): string[] {
+  const byLang = new Map<string, Set<Lang>>();
+
+  for (const post of posts) {
+    const langs = byLang.get(post.slug) ?? new Set<Lang>();
+    langs.add(post.lang);
+    byLang.set(post.slug, langs);
+  }
+
+  return [...byLang.entries()]
+    .filter(([, langs]) => langs.size > 1)
+    .map(([slug]) => slug)
+    .sort();
 }
