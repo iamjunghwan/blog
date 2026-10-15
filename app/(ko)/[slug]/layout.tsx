@@ -1,4 +1,4 @@
-import { generateCommonMetadata } from "../utils/metadata";
+import { generateCommonMetadata } from "@/app/utils/metadata";
 import { allPosts } from "@/app/lib/posts/repository";
 import { postBySlug, postsIn } from "@/app/lib/posts/queries";
 import { excerptOf } from "@/app/lib/posts/excerpt";

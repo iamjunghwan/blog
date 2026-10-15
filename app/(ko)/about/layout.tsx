@@ -1,8 +1,8 @@
-import { generateCommonMetadata } from "../../../utils/metadata";
+import { generateCommonMetadata } from "@/app/utils/metadata";
 
 export async function generateMetadata() {
   return generateCommonMetadata({
-    title: "Posts by iaman",
+    title: "About by iaman",
     description: "This blog was created by an.",
   });
 }
