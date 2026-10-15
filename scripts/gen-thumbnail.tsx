@@ -904,8 +904,11 @@ async function main() {
     );
 
     // 그림이 겹치면 목록에서 같은 카드가 두 장 보인다. 조용히 지나가지 않게 알린다.
+    // 단 같은 slug의 두 언어판은 같은 글이라 같은 그림이 맞다 — 그것까지 경고하면
+    // 번역이 늘수록 경고가 전부 오탐이 되어 진짜 충돌을 가린다.
     const clash = used.get(motif);
-    const mark = clash === undefined ? "" : `  ** ${clash} 와(과) 같은 그림`;
+    const mark =
+      clash === undefined || clash === post.slug ? "" : `  ** ${clash} 와(과) 같은 그림`;
     used.set(motif, post.slug);
 
     console.log(
