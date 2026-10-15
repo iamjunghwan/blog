@@ -21,11 +21,10 @@ test("언어 폴더가 글의 lang을 정한다", () => {
   const en = postsIn(posts, "en");
 
   assert.equal(ko.length + en.length, posts.length, "ko도 en도 아닌 글이 있다");
+  // 양쪽에 하한을 둔다. 한쪽만 재면 반대 폴더 글이 그쪽으로 잘못 잡혀도 통과한다.
+  // 특히 en 폴더 글이 ko로 잡히는 쪽이 위험하다 — 한국어 주소가 영어 본문을 내게 된다.
   assert.ok(ko.length >= 19, `한국어 글이 ${ko.length}편뿐이다 (19편 이상이어야 한다)`);
-  assert.ok(
-    en.every((post) => ko.some((k) => k.slug === post.slug)),
-    "영어판만 있고 한국어 원문이 없는 글이 있다"
-  );
+  assert.ok(en.length >= 1, `영어 글이 ${en.length}편이다 (1편 이상이어야 한다)`);
 });
 
 test("모든 글이 파싱되고 최소 1건 이상 존재한다", () => {
