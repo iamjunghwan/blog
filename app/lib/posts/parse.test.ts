@@ -15,7 +15,7 @@ tags: [nextjs, react]
 `;
 
 test("frontmatter와 본문을 분리해 Post를 만든다", () => {
-  const post = parsePost(VALID, "2026-07-nextjs-16-upgrade.md");
+  const post = parsePost(VALID, "2026-07-nextjs-16-upgrade.md", "ko");
 
   assert.equal(post.slug, "nextjs-16-upgrade");
   assert.equal(post.title, "Next.js 16 업그레이드");
@@ -28,19 +28,19 @@ test("frontmatter와 본문을 분리해 Post를 만든다", () => {
 
 test("YAML이 Date 객체로 파싱한 date를 YYYY-MM-DD 문자열로 되돌린다", () => {
   // date: 2026-07-14 (따옴표 없음) 는 js-yaml이 Date 객체로 만든다.
-  const post = parsePost(VALID, "f.md");
+  const post = parsePost(VALID, "f.md", "ko");
   assert.equal(typeof post.date, "string");
   assert.equal(post.date, "2026-07-14");
 });
 
 test("date를 따옴표로 감싼 문자열도 허용한다", () => {
   const source = VALID.replace("date: 2026-07-14", 'date: "2026-07-14"');
-  assert.equal(parsePost(source, "f.md").date, "2026-07-14");
+  assert.equal(parsePost(source, "f.md", "ko").date, "2026-07-14");
 });
 
 test("CRLF 파일을 읽어도 본문은 LF만 담는다", () => {
   // 디스크에서 읽은 문자열은 템플릿 리터럴과 달리 CRLF가 그대로 들어온다.
-  const post = parsePost(VALID.replace(/\n/g, "\r\n"), "crlf.md");
+  const post = parsePost(VALID.replace(/\n/g, "\r\n"), "crlf.md", "ko");
 
   assert.equal(post.body.includes("\r"), false);
   assert.equal(post.body, "# Next.js 16 업그레이드\n\n본문이다.");
@@ -52,7 +52,7 @@ test("thumbnail과 draft를 읽는다", () => {
     "tags: [nextjs, react]",
     "tags: [nextjs]\nthumbnail: /uploads/2026/07/hero.png\ndraft: true"
   );
-  const post = parsePost(source, "f.md");
+  const post = parsePost(source, "f.md", "ko");
 
   assert.equal(post.thumbnail, "/uploads/2026/07/hero.png");
   assert.equal(post.draft, true);
@@ -62,7 +62,7 @@ test("slug이 없으면 파일명을 포함한 에러를 던진다", () => {
   const source = VALID.replace("slug: nextjs-16-upgrade\n", "");
 
   assert.throws(
-    () => parsePost(source, "2026-07-broken.md"),
+    () => parsePost(source, "2026-07-broken.md", "ko"),
     /2026-07-broken\.md.*slug/
   );
 });
@@ -70,30 +70,66 @@ test("slug이 없으면 파일명을 포함한 에러를 던진다", () => {
 test("title이 없으면 파일명을 포함한 에러를 던진다", () => {
   const source = VALID.replace('title: "Next.js 16 업그레이드"\n', "");
 
-  assert.throws(() => parsePost(source, "broken.md"), /broken\.md.*title/);
+  assert.throws(() => parsePost(source, "broken.md", "ko"), /broken\.md.*title/);
 });
 
 test("date 형식이 틀리면 에러를 던진다", () => {
   const source = VALID.replace("date: 2026-07-14", "date: 2026년 7월");
 
-  assert.throws(() => parsePost(source, "broken.md"), /broken\.md.*date/);
+  assert.throws(() => parsePost(source, "broken.md", "ko"), /broken\.md.*date/);
 });
 
 test("tags가 배열이 아니면 에러를 던진다", () => {
   const source = VALID.replace("tags: [nextjs, react]", "tags: nextjs,react");
 
-  assert.throws(() => parsePost(source, "broken.md"), /broken\.md.*tags/);
+  assert.throws(() => parsePost(source, "broken.md", "ko"), /broken\.md.*tags/);
 });
 
 test("tags가 비어 있으면 에러를 던진다", () => {
   const source = VALID.replace("tags: [nextjs, react]", "tags: []");
 
-  assert.throws(() => parsePost(source, "broken.md"), /broken\.md.*tags/);
+  assert.throws(() => parsePost(source, "broken.md", "ko"), /broken\.md.*tags/);
 });
 
 test("예약어 all은 태그로 쓸 수 없다", () => {
   // /post/all/1 이 전체 목록 라우트라 태그 이름으로 쓰면 그 태그를 필터할 수 없다.
   const source = VALID.replace("tags: [nextjs, react]", "tags: [nextjs, all]");
 
-  assert.throws(() => parsePost(source, "broken.md"), /broken\.md.*all/);
+  assert.throws(() => parsePost(source, "broken.md", "ko"), /broken\.md.*all/);
+});
+
+test("lang과 fileName을 인자로 받아 그대로 담는다", () => {
+  const source = [
+    "---",
+    "slug: hello",
+    'title: "안녕"',
+    "date: 2026-01-02",
+    "tags: [javascript]",
+    "---",
+    "",
+    "본문",
+  ].join("\n");
+
+  const post = parsePost(source, "2026/01/hello.md", "en");
+
+  assert.equal(post.lang, "en");
+  assert.equal(post.fileName, "2026/01/hello.md");
+});
+
+test("lang은 frontmatter를 보지 않는다", () => {
+  // 폴더가 언어를 정한다. frontmatter에 적혀 있어도 무시해야
+  // '적는 걸 잊어서 틀리는' 경로가 생기지 않는다.
+  const source = [
+    "---",
+    "slug: hello",
+    'title: "안녕"',
+    "date: 2026-01-02",
+    "tags: [javascript]",
+    "lang: en",
+    "---",
+    "",
+    "본문",
+  ].join("\n");
+
+  assert.equal(parsePost(source, "2026/01/hello.md", "ko").lang, "ko");
 });

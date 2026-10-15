@@ -1,8 +1,11 @@
 import "@/app/globals.css";
 import InnerHeader from "@/components/Layout/InnerHeader";
 import { GithubIcon, MailIcon } from "@/components/SvgIcon/index";
+import type { Lang } from "@/app/lib/posts/types";
 
-export default function Page() {
+// lang은 지금 쓰지 않는다. 소개 본문에 번역할 문자열이 없기 때문인데,
+// 라우트가 넘기는 모양은 다른 페이지와 같게 두어 나중에 번역을 넣을 때 배선이 끝나 있게 한다.
+const AboutPage = ({ lang }: { lang: Lang }) => {
   return (
     <>
       <InnerHeader title={`About`} />
@@ -49,4 +52,6 @@ export default function Page() {
       </main>
     </>
   );
-}
+};
+
+export default AboutPage;

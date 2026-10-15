@@ -1,4 +1,5 @@
-import type { Post } from "@/app/lib/posts/types";
+import { localePath } from "@/app/lib/i18n/paths";
+import type { Lang, Post } from "@/app/lib/posts/types";
 import { thumbnailOf } from "@/app/lib/posts/thumbnail";
 import CardDateArea from "../Card/CardDateArea";
 import CardTitleArea from "../Card/CardTitleArea";
@@ -7,9 +8,11 @@ import CardImageArea from "../Card/CardImageArea";
 
 export const ArticleItem = ({
   item,
+  lang,
   priority = false,
 }: {
   item: Post;
+  lang: Lang;
   priority?: boolean;
 }) => (
   <li className="relative -mx-4 px-4 py-3 rounded-lg transition-colors hover:bg-gray-50 dark:hover:bg-gray-900">
@@ -17,15 +20,16 @@ export const ArticleItem = ({
       <div className="w-full sm:w-[400px]">
         <CardTitleArea
           title={item.title}
-          slug={`/${item.slug}`}
+          slug={localePath(lang, `/${item.slug}`)}
           className="flex"
           linkClassName="after:absolute after:inset-0"
         />
         <CardTagsArea
           tags={item.tags}
+          lang={lang}
           className="relative z-10 flex flex-wrap gap-2 mb-2"
         />
-        <CardDateArea date={item.date} />
+        <CardDateArea date={item.date} lang={lang} />
       </div>
       <CardImageArea
         src={thumbnailOf(item)}

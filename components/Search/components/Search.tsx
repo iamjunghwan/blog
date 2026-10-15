@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useRef } from "react";
-import type { SearchEntry } from "@/app/lib/posts/types";
+import type { Lang, SearchEntry } from "@/app/lib/posts/types";
+import { localePath } from "@/app/lib/i18n/paths";
+import { messages } from "@/app/lib/i18n/messages";
 import useSearchData from "../hooks/useSearchData";
 import useSearchEvent from "../hooks/useSearchEvent";
 import SearchIcon from "../../../public/search.svg";
@@ -11,10 +13,12 @@ function SearchModal({
   open,
   onClose,
   index,
+  lang,
 }: {
   open: boolean;
   onClose: () => void;
   index: SearchEntry[];
+  lang: Lang;
 }) {
   const modalContainerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -42,13 +46,13 @@ function SearchModal({
           ✕
         </button>
         <div className="text-lg font-bold mb-4 dark:text-gray-500">
-          아티클 검색
+          {messages(lang).searchTitle}
         </div>
         <input
           onChange={(e) => setSearchValue(e.target.value)}
           ref={searchInputRef}
           type="search"
-          placeholder="검색어를 입력하세요"
+          placeholder={messages(lang).searchPlaceholder}
           className="w-full border rounded px-3 py-2 mb-4 "
         />
         <div className="text-gray-500 text-sm min-h-[400px] w-full">
@@ -62,7 +66,7 @@ function SearchModal({
                 tabIndex={0}
                 onClick={() => {
                   onClose();
-                  router.push(`/${item.slug}`);
+                  router.push(localePath(lang, `/${item.slug}`));
                 }}
               >
                 <div className="text-gray-400 text-sm">{item.date}</div>
@@ -73,7 +77,7 @@ function SearchModal({
             ))
           ) : (
             <div className="text-center text-gray-400 py-8 min-h-[400px] flex items-center justify-center">
-              검색 결과가 없습니다.
+              {messages(lang).noResults}
             </div>
           )}
         </div>
@@ -82,7 +86,7 @@ function SearchModal({
   );
 }
 
-const Search = ({ index }: { index: SearchEntry[] }) => {
+const Search = ({ index, lang }: { index: SearchEntry[]; lang: Lang }) => {
   const [isSearchPopupOpen, setIsSearchPopupOpen] = useState(false);
 
   const handleSearchPopup = () => {
@@ -99,7 +103,7 @@ const Search = ({ index }: { index: SearchEntry[] }) => {
         <button
           type="button"
           onClick={handleSearchPopup}
-          aria-label="searchButton"
+          aria-label={messages(lang).searchLabel}
         >
           <SearchIcon className="w-6 h-6" />
         </button>
@@ -108,6 +112,7 @@ const Search = ({ index }: { index: SearchEntry[] }) => {
         open={isSearchPopupOpen}
         onClose={handleClose}
         index={index}
+        lang={lang}
       />
     </>
   );

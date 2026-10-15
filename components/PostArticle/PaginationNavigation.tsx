@@ -1,14 +1,19 @@
+import { localePath } from "@/app/lib/i18n/paths";
+import type { Lang } from "@/app/lib/posts/types";
+
 // 페이지네이션 네비게이션 컴포넌트
 export const PaginationNavigation = ({
   currPage,
   totalPages,
   totalCount,
   slug,
+  lang,
 }: {
   currPage: number;
   totalPages: number;
   totalCount: number;
   slug: string;
+  lang: Lang;
 }) => {
   const hasPrevPage = currPage > 1;
   const hasNextPage = currPage < totalPages;
@@ -18,7 +23,7 @@ export const PaginationNavigation = ({
       {hasPrevPage && (
         <a
           className="absolute left-0 text-blue-500 hover:text-blue-600 dark:hover:text-blue-400"
-          href={`/post/${slug}/${currPage - 1}`}
+          href={localePath(lang, `/post/${slug}/${currPage - 1}`)}
         >
           {`${currPage - 1} Page`}
         </a>
@@ -29,7 +34,7 @@ export const PaginationNavigation = ({
       {hasNextPage && (
         <a
           className="absolute right-0 text-blue-500 hover:text-blue-600 dark:hover:text-blue-400"
-          href={`/post/${slug}/${currPage + 1}`}
+          href={localePath(lang, `/post/${slug}/${currPage + 1}`)}
         >
           {`${currPage + 1} Page`}
         </a>

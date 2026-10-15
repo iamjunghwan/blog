@@ -3,13 +3,16 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ALL_TAG } from "@/app/lib/posts/constants";
+import { localePath } from "@/app/lib/i18n/paths";
+import type { Lang } from "@/app/lib/posts/types";
 
 interface TagListProps {
   currTag: string;
   tagNames: string[];
+  lang: Lang;
 }
 
-export default function TagList({ currTag, tagNames }: TagListProps) {
+export default function TagList({ currTag, tagNames, lang }: TagListProps) {
   const [activeTag, setActiveTag] = useState(currTag);
   const router = useRouter();
 
@@ -17,7 +20,7 @@ export default function TagList({ currTag, tagNames }: TagListProps) {
     if (tag === currTag) return;
 
     setActiveTag(tag);
-    router.push(`/post/${tag}/1`);
+    router.push(localePath(lang, `/post/${tag}/1`));
   };
 
   return (

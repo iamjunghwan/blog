@@ -3,18 +3,30 @@ import assert from "node:assert/strict";
 import {
   PAGE_SIZE,
   allTags,
+  bilingualSlugs,
+  counterpart,
   filterByTitle,
   paginate,
   postBySlug,
   postListParams,
   postListUrls,
   postsByTag,
+  postsIn,
   searchIndex,
 } from "@/app/lib/posts/queries";
 import type { Post } from "@/app/lib/posts/types";
 
 function makePost(slug: string, date: string, tags: string[]): Post {
-  return { slug, title: slug.toUpperCase(), date, tags, draft: false, body: `# ${slug}` };
+  return {
+    slug,
+    title: slug.toUpperCase(),
+    date,
+    tags,
+    draft: false,
+    lang: "ko",
+    fileName: `${slug}.md`,
+    body: `# ${slug}`,
+  };
 }
 
 // date 내림차순 (repository가 이미 정렬한 상태를 가정한다)
@@ -166,4 +178,43 @@ test("postListUrls는 사이트맵용 경로 문자열을 준다", () => {
     "/post/nextjs/1",
     "/post/react/1",
   ]);
+});
+
+function post(slug: string, lang: "ko" | "en", date = "2026-01-02"): Post {
+  return {
+    slug,
+    title: `${slug} (${lang})`,
+    date,
+    tags: ["javascript"],
+    draft: false,
+    lang,
+    fileName: `2026/01/${slug}.md`,
+    body: "본문",
+  };
+}
+
+test("postsIn은 그 언어 글만 준다", () => {
+  const posts = [post("a", "ko"), post("a", "en"), post("b", "ko")];
+
+  assert.deepEqual(postsIn(posts, "en").map((p) => p.slug), ["a"]);
+  assert.deepEqual(postsIn(posts, "ko").map((p) => p.slug), ["a", "b"]);
+});
+
+test("counterpart는 반대 언어의 같은 slug을 찾는다", () => {
+  const posts = [post("a", "ko"), post("a", "en"), post("b", "ko")];
+
+  assert.equal(counterpart(posts, "a", "ko")?.lang, "en");
+  assert.equal(counterpart(posts, "a", "en")?.lang, "ko");
+});
+
+test("반대 언어판이 없으면 undefined", () => {
+  const posts = [post("b", "ko")];
+
+  assert.equal(counterpart(posts, "b", "ko"), undefined);
+});
+
+test("bilingualSlugs는 양쪽 다 있는 slug만 준다", () => {
+  const posts = [post("a", "ko"), post("a", "en"), post("b", "ko"), post("c", "en")];
+
+  assert.deepEqual(bilingualSlugs(posts), ["a"]);
 });

@@ -12,21 +12,24 @@
 
 import { useEffect, useState } from "react";
 import { relativeLabel } from "@/app/lib/date/relative";
+import type { Lang } from "@/app/lib/posts/types";
 
 interface CardDateAreaProps {
   date: string;
   className?: string;
+  lang: Lang;
 }
 
 const CardDateArea = ({
   date,
   className = "flex items-center mb-4",
+  lang,
 }: CardDateAreaProps) => {
   const [relative, setRelative] = useState<string | null>(null);
 
   useEffect(() => {
-    setRelative(relativeLabel(date, new Date()));
-  }, [date]);
+    setRelative(relativeLabel(date, new Date(), lang));
+  }, [date, lang]);
 
   return (
     <div className={className}>

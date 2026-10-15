@@ -1,6 +1,6 @@
-import { generateCommonMetadata } from "../utils/metadata";
+import { generateCommonMetadata } from "@/app/utils/metadata";
 import { allPosts } from "@/app/lib/posts/repository";
-import { postBySlug } from "@/app/lib/posts/queries";
+import { counterpart, postBySlug, postsIn } from "@/app/lib/posts/queries";
 import { excerptOf } from "@/app/lib/posts/excerpt";
 import { thumbnailOf } from "@/app/lib/posts/thumbnail";
 import { absoluteUrl } from "@/app/lib/site";
@@ -11,12 +11,15 @@ type Props = {
 
 export async function generateMetadata({ params }: Props) {
   const { slug } = await params;
-  const post = postBySlug(allPosts(), slug);
+  // 메타데이터도 본문과 같은 언어의 글에서 찾는다. 고정하지 않으면 영어 글이 들어올 때
+  // 정렬상 앞서는 영어판 제목이 한국어 URL에 붙는다. 한국어 라우트이므로 "ko"로 고정한다.
+  const post = postBySlug(postsIn(allPosts(), "ko"), slug);
 
   if (post === undefined) {
     return generateCommonMetadata({
       title: "Not Found",
       description: "Page not found",
+      lang: "ko",
     });
   }
 
@@ -26,6 +29,9 @@ export async function generateMetadata({ params }: Props) {
     title: post.title,
     description: excerptOf(post),
     imageUrl: absoluteUrl(thumbnailOf(post)),
+    lang: "ko",
+    path: `/${post.slug}`,
+    hasCounterpart: counterpart(allPosts(), post.slug, "ko") !== undefined,
   });
 }
 

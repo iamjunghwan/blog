@@ -1,19 +1,26 @@
 import Image from "next/image";
 import Link from "next/link";
+import LanguageSwitch from "@/components/Layout/LanguageSwitch";
 import Theme from "../Button/Theme";
 import Search from "../Search/components/Search";
 import MenuToggleButton from "../Button/MenuToggleButton";
 import { allPosts } from "@/app/lib/posts/repository";
-import { searchIndex } from "@/app/lib/posts/queries";
+import { bilingualSlugs, postsIn, searchIndex } from "@/app/lib/posts/queries";
+import { localePath } from "@/app/lib/i18n/paths";
+import type { Lang } from "@/app/lib/posts/types";
 
-export default function Header() {
+export default function Header({ lang }: { lang: Lang }) {
   // 빌드 타임에 만든 검색 인덱스를 클라이언트 컴포넌트에 넘긴다.
   // 별도 JSON 파일과 fetch가 필요 없고, 모달을 열면 즉시 검색된다.
-  const index = searchIndex(allPosts());
+  // 보고 있는 언어의 글만 담는다 — 한국어 화면에서 영어 글이 나오면 혼란스럽다.
+  const index = searchIndex(postsIn(allPosts(), lang));
+
+  // 전환 버튼이 "이 글에 반대 언어판이 있나"를 판단할 재료. 빌드 타임에 만든다.
+  const bothLangs = bilingualSlugs(allPosts());
 
   return (
     <header className="pt-10 pb-10 flex justify-between items-center">
-      <Link href="/">
+      <Link href={localePath(lang, "/")}>
         <div className="flex items-center">
           <img
             src="/iaman.png"
@@ -31,19 +38,21 @@ export default function Header() {
       </Link>
       <div className="flex justify-between items-center">
         <div className="hidden sm:flex items-center">
-          <Link className="p-4" href="/post/all/1">
+          <Link className="p-4" href={localePath(lang, "/post/all/1")}>
             {"Posts"}
           </Link>
-          <Link className="p-4" href="/about">
+          <Link className="p-4" href={localePath(lang, "/about")}>
             {"About"}
           </Link>
-          <Search index={index} />
+          <Search index={index} lang={lang} />
+          <LanguageSwitch lang={lang} bilingualSlugs={bothLangs} />
           <Theme />
         </div>
         <div className="sm:hidden flex items-center">
-          <Search index={index} />
+          <Search index={index} lang={lang} />
+          <LanguageSwitch lang={lang} bilingualSlugs={bothLangs} />
           <Theme />
-          <MenuToggleButton />
+          <MenuToggleButton lang={lang} />
         </div>
       </div>
     </header>

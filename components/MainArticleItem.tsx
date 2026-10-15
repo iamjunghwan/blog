@@ -8,7 +8,8 @@
  *
  ****************************************/
 
-import type { Post } from "@/app/lib/posts/types";
+import { localePath } from "@/app/lib/i18n/paths";
+import type { Lang, Post } from "@/app/lib/posts/types";
 import { thumbnailOf } from "@/app/lib/posts/thumbnail";
 import { excerptOf } from "@/app/lib/posts/excerpt";
 import CardImageArea from "@/components/Card/CardImageArea";
@@ -19,9 +20,11 @@ import CardExcerptArea from "@/components/Card/CardExcerptArea";
 
 const MainArticleItem = ({
   post,
+  lang,
   priority = false,
 }: {
   post: Post;
+  lang: Lang;
   priority?: boolean;
 }) => {
   return (
@@ -35,15 +38,17 @@ const MainArticleItem = ({
         <div className="flex-1 min-w-0">
           <CardDateArea
             date={post.date}
+            lang={lang}
             className="flex items-center text-sm mb-1"
           />
           <CardTagsArea
             tags={post.tags}
+            lang={lang}
             className="relative z-10 flex flex-wrap gap-2 mb-2"
           />
           <CardTitleArea
             title={post.title}
-            slug={`/${post.slug}`}
+            slug={localePath(lang, `/${post.slug}`)}
             className="flex"
             linkClassName="after:absolute after:inset-0"
           />

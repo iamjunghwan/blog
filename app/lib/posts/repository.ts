@@ -1,22 +1,25 @@
 import fs from "node:fs";
 import path from "node:path";
 import { parsePost } from "@/app/lib/posts/parse";
-import type { Post } from "@/app/lib/posts/types";
+import type { Lang, Post } from "@/app/lib/posts/types";
 
 export const POSTS_DIR = path.join(process.cwd(), "content", "posts");
 
+/** 글 폴더에 있어야 하는 언어들. 폴더가 없으면 빌드가 실패한다. */
+export const LANGS: readonly Lang[] = ["ko", "en"];
+
 /**
- * 폴더에서 글을 읽어 date 내림차순으로 정렬한다.
+ * 한 언어 폴더에서 글을 읽어 date 내림차순으로 정렬한다.
  * dir을 인자로 받아 테스트에서 픽스처를 쓸 수 있게 한다.
  *
  * 글이 연도/월 폴더 아래 중첩되어 있으므로 재귀적으로 훑는다.
  */
-export function loadPosts(dir: string, includeDrafts: boolean): Post[] {
+export function loadPosts(dir: string, includeDrafts: boolean, lang: Lang): Post[] {
   const files = collectMarkdownFiles(dir).sort();
 
   const entries = files.map((file) => ({
     file,
-    post: parsePost(fs.readFileSync(path.join(dir, file), "utf8"), file),
+    post: parsePost(fs.readFileSync(path.join(dir, file), "utf8"), file, lang),
   }));
 
   assertUniqueSlugs(entries);
@@ -24,7 +27,27 @@ export function loadPosts(dir: string, includeDrafts: boolean): Post[] {
   return entries
     .map((entry) => entry.post)
     .filter((post) => includeDrafts || !post.draft)
-    .sort(byDateDescThenSlug);
+    .sort(byDateDescThenSlugThenLang);
+}
+
+/**
+ * 모든 언어 폴더를 읽어 합친다.
+ *
+ * 언어 폴더가 없으면 던진다. 조용히 넘기면 번역을 통째로 빠뜨린 채
+ * 빌드가 성공해 버린다. 언어를 늘릴 때 폴더를 만들라고 알려주는 편이 낫다.
+ */
+export function loadAllPosts(baseDir: string, includeDrafts: boolean): Post[] {
+  const all: Post[] = [];
+
+  for (const lang of LANGS) {
+    const dir = path.join(baseDir, lang);
+    if (!fs.existsSync(dir)) {
+      throw new Error(`글 폴더가 없습니다: ${dir} ('${lang}' 폴더를 만드세요)`);
+    }
+    all.push(...loadPosts(dir, includeDrafts, lang));
+  }
+
+  return all.sort(byDateDescThenSlugThenLang);
 }
 
 /**
@@ -55,7 +78,7 @@ export function allPosts(): Post[] {
     return cache;
   }
 
-  const posts = loadPosts(POSTS_DIR, shouldIncludeDrafts());
+  const posts = loadAllPosts(POSTS_DIR, shouldIncludeDrafts());
 
   // 캐시 여부를 NODE_ENV로 다시 판단하지 않는다. 같은 개념을 두 곳에서 각자 비교하면
   // 한쪽만 바뀌었을 때 캐싱과 draft 표시가 조용히 어긋난다.
@@ -97,17 +120,29 @@ function collectMarkdownFiles(dir: string): string[] {
 }
 
 /**
- * 날짜가 같으면 slug으로 갈라 정적 빌드 순서를 안정시킨다.
- * slug이 같은 경우는 없다 — assertUniqueSlugs가 이 비교자보다 먼저 돌아 빌드를 세운다.
+ * 날짜 내림차순, 같으면 slug, 그래도 같으면 언어로 가른다.
+ *
+ * slug은 더 이상 전역 유일하지 않다 — 같은 글의 한국어판과 영어판이 같은 slug을
+ * 쓰고(그게 두 판을 잇는 열쇠다), 번역을 같은 날 올리면 date까지 같아진다.
+ * 그때 lang까지 보지 않으면 compare(a,b)와 compare(b,a)가 모두 1이 되어
+ * 비교자 계약이 깨지고, 정렬 결과가 알고리즘의 내부 동작에 좌우된다.
  */
-function byDateDescThenSlug(a: Post, b: Post): number {
+function byDateDescThenSlugThenLang(a: Post, b: Post): number {
   if (a.date !== b.date) {
     return a.date < b.date ? 1 : -1;
   }
-  return a.slug < b.slug ? -1 : 1;
+  if (a.slug !== b.slug) {
+    return a.slug < b.slug ? -1 : 1;
+  }
+  return a.lang < b.lang ? -1 : a.lang > b.lang ? 1 : 0;
 }
 
-/** slug 중복은 한 글이 조용히 사라지는 결과를 낳으므로 빌드를 실패시킨다. */
+/**
+ * slug 중복은 한 글이 조용히 사라지는 결과를 낳으므로 빌드를 실패시킨다.
+ *
+ * 한 언어 폴더 안에서만 검사한다. 같은 글의 한국어판과 영어판은 slug이 같아야
+ * 하고(그게 두 판을 잇는 열쇠다), 그 둘은 서로 다른 폴더에 있다.
+ */
 function assertUniqueSlugs(entries: { file: string; post: Post }[]): void {
   const seen = new Map<string, string>();
 

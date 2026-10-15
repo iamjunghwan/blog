@@ -1,5 +1,5 @@
 import matter from "gray-matter";
-import type { Post } from "@/app/lib/posts/types";
+import type { Lang, Post } from "@/app/lib/posts/types";
 import { ALL_TAG } from "@/app/lib/posts/constants";
 
 const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
@@ -8,8 +8,10 @@ const DATE_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
  * md 문자열을 Post로 파싱한다.
  * 필수 필드가 없으면 파일명을 포함한 에러를 던져 빌드를 실패시킨다.
  * 조용히 넘기면 글이 사이트에서 사라지는데 아무도 알 수 없다.
+ *
+ * lang은 호출자(로더)가 준다. 읽은 폴더가 곧 언어이고, frontmatter는 보지 않는다.
  */
-export function parsePost(source: string, fileName: string): Post {
+export function parsePost(source: string, fileName: string, lang: Lang): Post {
   // 이 저장소는 core.autocrlf=true 라 워킹트리 파일이 CRLF다.
   // 파싱 경계에서 한 번 정규화해 아래 모듈들이 줄바꿈을 신경 쓰지 않게 한다.
   const { data, content } = matter(source.replace(/\r\n/g, "\n"));
@@ -22,6 +24,8 @@ export function parsePost(source: string, fileName: string): Post {
     thumbnail: optionalString(data.thumbnail),
     description: optionalString(data.description),
     draft: data.draft === true,
+    lang,
+    fileName,
     body: content.trim(),
   };
 }

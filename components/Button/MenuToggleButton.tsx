@@ -3,8 +3,11 @@
 import Link from "next/link";
 import { useState } from "react";
 import MenuToggle from "../../public/MenuToggle.svg";
+import { localePath } from "@/app/lib/i18n/paths";
+import { messages } from "@/app/lib/i18n/messages";
+import type { Lang } from "@/app/lib/posts/types";
 
-const MenuToggleButton = () => {
+const MenuToggleButton = ({ lang }: { lang: Lang }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleClick = () => {
@@ -21,7 +24,7 @@ const MenuToggleButton = () => {
         <button
           type="button"
           className="rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 flex justify-center items-center"
-          aria-label="메뉴 열기"
+          aria-label={messages(lang).openMenu}
           onClick={handleClick}
         >
           <MenuToggle className="w-6 h-6" />
@@ -39,7 +42,7 @@ const MenuToggleButton = () => {
               <button
                 onClick={handleClick}
                 className="p-2 rounded-md text-white dark:text-black hover:bg-gray-200 dark:hover:bg-gray-200"
-                aria-label="메뉴 닫기"
+                aria-label={messages(lang).closeMenu}
               >
                 <svg
                   className="w-6 h-8"
@@ -60,14 +63,14 @@ const MenuToggleButton = () => {
             <nav className="px-4 py-6">
               <div className="space-y-4">
                 <Link
-                  href="/post/all/1"
+                  href={localePath(lang, "/post/all/1")}
                   className="block p-3 text-lg  text-white hover:bg-gray-300 dark:text-black  rounded-md"
                   onClick={closeMobileMenu}
                 >
                   Posts
                 </Link>
                 <Link
-                  href="/about"
+                  href={localePath(lang, "/about")}
                   className="block p-3 text-lg text-white hover:bg-gray-300 dark:text-black  rounded-md"
                   onClick={closeMobileMenu}
                 >
