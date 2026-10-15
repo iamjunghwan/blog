@@ -56,7 +56,7 @@ export default function RootLayout({
               <div className="flex flex-col justify-between min-h-screen">
                 <Headers lang="ko" />
                 <Article>{children}</Article>
-                <Footer />
+                <Footer lang="ko" />
               </div>
             </div>
           </ThemeProvider>

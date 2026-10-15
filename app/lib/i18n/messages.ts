@@ -16,6 +16,8 @@ type Messages = {
   searchPlaceholder: string;
   openMenu: string;
   closeMenu: string;
+  noResults: string;
+  searchLabel: string;
   searchTitle: string;
   switchTo: string;
   today: string;
@@ -29,6 +31,8 @@ export const MESSAGES: Record<Lang, Messages> = {
     searchPlaceholder: "검색어를 입력하세요",
     openMenu: "메뉴 열기",
     closeMenu: "메뉴 닫기",
+    noResults: "검색 결과가 없습니다.",
+    searchLabel: "검색",
     searchTitle: "아티클 검색",
     switchTo: "English로 보기",
     today: "오늘",
@@ -40,6 +44,8 @@ export const MESSAGES: Record<Lang, Messages> = {
     searchPlaceholder: "Search posts",
     openMenu: "Open menu",
     closeMenu: "Close menu",
+    noResults: "No results found.",
+    searchLabel: "Search",
     searchTitle: "Search articles",
     switchTo: "한국어로 보기",
     today: "Today",

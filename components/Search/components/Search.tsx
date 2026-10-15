@@ -77,7 +77,7 @@ function SearchModal({
             ))
           ) : (
             <div className="text-center text-gray-400 py-8 min-h-[400px] flex items-center justify-center">
-              검색 결과가 없습니다.
+              {messages(lang).noResults}
             </div>
           )}
         </div>
@@ -103,7 +103,7 @@ const Search = ({ index, lang }: { index: SearchEntry[]; lang: Lang }) => {
         <button
           type="button"
           onClick={handleSearchPopup}
-          aria-label="searchButton"
+          aria-label={messages(lang).searchLabel}
         >
           <SearchIcon className="w-6 h-6" />
         </button>

@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { localePath } from "@/app/lib/i18n/paths";
+import type { Lang } from "@/app/lib/posts/types";
 
-export default function Footer() {
+export default function Footer({ lang }: { lang: Lang }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -23,7 +25,7 @@ export default function Footer() {
           <div className="mr-2"> iaman </div>
           <div className="w-px bg-[#d3d5d7] mx-2"></div>
           <div>
-            <Link href="/">https://iaman.kr</Link>
+            <Link href={localePath(lang, "/")}>https://iaman.kr</Link>
           </div>
         </div>
       </div>
