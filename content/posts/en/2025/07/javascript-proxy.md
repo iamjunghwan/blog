@@ -84,7 +84,7 @@ const proxyObj = new Proxy(obj, {
   proxyObj.age = 22;
   console.log(proxyObj.age);  //22
 
-  proxyObj.age = "나이";
+  proxyObj.age = "age";
   console.log(proxyObj.age);  // The age is not an integer
 
   console.log(Object.keys(proxyObj));     // ['name', 'age', 'job', 'NumberArr'] -> _private excluded
