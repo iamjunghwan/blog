@@ -14,7 +14,11 @@ export const LANGS: readonly Lang[] = ["ko", "en"];
  *
  * 글이 연도/월 폴더 아래 중첩되어 있으므로 재귀적으로 훑는다.
  */
-export function loadPosts(dir: string, includeDrafts: boolean, lang: Lang): Post[] {
+export function loadPosts(
+  dir: string,
+  includeDrafts: boolean,
+  lang: Lang,
+): Post[] {
   const files = collectMarkdownFiles(dir).sort();
 
   const entries = files.map((file) => ({
@@ -58,7 +62,7 @@ export function loadAllPosts(baseDir: string, includeDrafts: boolean): Post[] {
  * 순수 함수로 검증된다.
  */
 export function shouldIncludeDrafts(
-  nodeEnv: string | undefined = process.env.NODE_ENV
+  nodeEnv: string | undefined = process.env.NODE_ENV,
 ): boolean {
   return nodeEnv !== "production";
 }
@@ -99,9 +103,9 @@ export function allPosts(): Post[] {
 function collectMarkdownFiles(dir: string): string[] {
   const result: string[] = [];
 
-  for (const entry of fs.readdirSync(dir, { withFileTypes: true }).sort((a, b) =>
-    a.name < b.name ? -1 : a.name > b.name ? 1 : 0
-  )) {
+  for (const entry of fs
+    .readdirSync(dir, { withFileTypes: true })
+    .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))) {
     const fullPath = path.join(dir, entry.name);
 
     if (entry.isDirectory()) {
@@ -150,7 +154,7 @@ function assertUniqueSlugs(entries: { file: string; post: Post }[]): void {
     const previous = seen.get(post.slug);
     if (previous !== undefined) {
       throw new Error(
-        `slug '${post.slug}'가 중복됩니다: ${previous} 와 ${file}`
+        `slug '${post.slug}'가 중복됩니다: ${previous} 와 ${file}`,
       );
     }
     seen.set(post.slug, file);
