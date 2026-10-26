@@ -1,9 +1,10 @@
 import { generateCommonMetadata } from "@/app/utils/metadata";
+import { SITE_COPY } from "@/app/lib/i18n/site-copy";
 
 export async function generateMetadata() {
   return generateCommonMetadata({
     title: "Posts by iaman",
-    description: "A blog by an.",
+    description: SITE_COPY.en.postList,
     lang: "en",
   });
 }

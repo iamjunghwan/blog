@@ -11,7 +11,8 @@
     "migrate": "tsx scripts/migrate-from-cms.ts",
     "verify-migration": "tsx scripts/verify-migration.ts",
     "new-post": "tsx scripts/new-post.ts",
-    "thumbnail": "tsx scripts/gen-thumbnail.tsx"
+    "thumbnail": "tsx scripts/gen-thumbnail.tsx",
+    "icons": "tsx scripts/gen-icons.ts"
   },
   "packageManager": "pnpm@10.28.2",
   "engines": {
@@ -44,6 +45,7 @@
     "typescript": "^5"
   },
   "devDependencies": {
+    "sharp": "^0.35.5",
     "tsx": "^4.23.12"
   }
 }

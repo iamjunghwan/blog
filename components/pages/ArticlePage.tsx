@@ -3,6 +3,7 @@ import { allPosts } from "@/app/lib/posts/repository";
 import { postBySlug, postsIn } from "@/app/lib/posts/queries";
 import { renderPostBody } from "@/app/lib/posts/render";
 import ArticleContent from "@/components/Article/ArticleContent";
+import { JsonLd, blogPostingJsonLd } from "@/app/lib/seo/json-ld";
 import type { Lang } from "@/app/lib/posts/types";
 
 const ArticlePage = ({ lang, slug }: { lang: Lang; slug: string }) => {
@@ -14,7 +15,12 @@ const ArticlePage = ({ lang, slug }: { lang: Lang; slug: string }) => {
     notFound();
   }
 
-  return <ArticleContent content={renderPostBody(post.body)} />;
+  return (
+    <>
+      <JsonLd data={blogPostingJsonLd(post, lang)} />
+      <ArticleContent content={renderPostBody(post.body)} />
+    </>
+  );
 };
 
 export default ArticlePage;

@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { SITE_URL } from "@/app/lib/site";
 import { localePath } from "@/app/lib/i18n/paths";
+import { SITE_COPY } from "@/app/lib/i18n/site-copy";
 import type { Lang } from "@/app/lib/posts/types";
 
 export interface MetadataOptions {
@@ -57,7 +58,7 @@ export function generateCommonMetadata(options: MetadataOptions): Metadata {
     openGraph: {
       title,
       description,
-      siteName: "iaman Blog",
+      siteName: SITE_COPY[lang].siteName,
       // 크기는 적지 않는다. 글마다 대표 이미지가 달라 실제 크기를 여기서 알 수 없고,
       // 틀린 값을 적으면 공유 카드가 잘리거나 큰 이미지 카드로 안 잡힌다.
       images: [{ url: imageUrl, alt: title }],
@@ -69,6 +70,5 @@ export function generateCommonMetadata(options: MetadataOptions): Metadata {
       follow: true,
       googleBot: { index: true, follow: true },
     },
-    icons: { icon: "/iaman.ico" },
   };
 }
