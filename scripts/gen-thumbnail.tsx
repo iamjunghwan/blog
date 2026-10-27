@@ -426,6 +426,62 @@ function Rows({ accent }: Shape) {
   );
 }
 
+/**
+ * 표시가 붙은 문서 — 마크다운
+ *
+ * Rows와 헷갈리지 않게 가른다. Rows는 같은 크기 네 줄이고, 이쪽은
+ * 맨 위 제목 줄이 두껍고 아래 본문 줄은 폭이 들쭉날쭉하다.
+ * 왼쪽의 작은 사각형들이 ## 과 - 같은 구조 표시에 해당한다.
+ */
+function Markup({ accent }: Shape) {
+  const body = [
+    { y: 205, w: 210 },
+    { y: 262, w: 170 },
+    { y: 319, w: 195 },
+  ];
+
+  return (
+    <>
+      {/* ## — 제목 앞의 표시 두 개 */}
+      <Box left={48} top={110} width={22} height={22} accent={accent} radius={5} filled />
+      <Box left={78} top={110} width={22} height={22} accent={accent} radius={5} filled />
+      {/* 제목 줄 — 두껍다 */}
+      <Box left={118} top={104} width={190} height={34} accent={accent} radius={9} filled opacity={0.9} />
+
+      {/* - 로 시작하는 본문 줄 — 폭이 제각각이다 */}
+      {body.map((row) => (
+        <Box
+          key={row.y}
+          left={48}
+          top={row.y + 6}
+          width={22}
+          height={10}
+          accent={accent}
+          radius={5}
+          filled
+          opacity={0.75}
+        />
+      ))}
+      {body.map((row) => (
+        <Box
+          key={`t${row.y}`}
+          left={88}
+          top={row.y}
+          width={row.w}
+          height={22}
+          accent={accent}
+          radius={11}
+          filled
+          opacity={0.3}
+        />
+      ))}
+
+      {/* ** ** — 가운데 줄 한 조각만 강조돼 있다 */}
+      <Box left={138} top={262} width={64} height={22} accent={accent} radius={11} filled opacity={0.85} />
+    </>
+  );
+}
+
 /** 키와 값 — Map의 짝 */
 function KeyValue({ accent }: Shape) {
   const ys = [115, 210, 305];
@@ -644,7 +700,7 @@ function Curve({ accent }: Shape) {
 type MotifName =
   | "nodes" | "bars" | "package" | "lint" | "migrate" | "layers" | "clock"
   | "rows" | "keyValue" | "toggle" | "proxy" | "window" | "graph" | "cache"
-  | "spinner" | "numberLine" | "focus" | "lazy" | "curve";
+  | "spinner" | "numberLine" | "focus" | "lazy" | "curve" | "markup";
 
 const MOTIFS: Record<MotifName, (p: Shape) => React.ReactElement> = {
   nodes: Nodes,
@@ -666,6 +722,7 @@ const MOTIFS: Record<MotifName, (p: Shape) => React.ReactElement> = {
   focus: Focus,
   lazy: Lazy,
   curve: Curve,
+  markup: Markup,
 };
 
 /** 모티프마다 다른 색. 같은 그림이 없으니 색도 겹치지 않게 둔다. */
@@ -689,6 +746,7 @@ const ACCENT: Record<MotifName, string> = {
   focus: "#f43f5e",
   lazy: "#06b6d4",
   curve: "#a3e635",
+  markup: "#fb7185",
 };
 
 /**
@@ -718,6 +776,7 @@ const MOTIF_BY_SLUG: Record<string, MotifName> = {
   "focus-trap": "focus",
   "dynamic-components-and-lazy": "lazy",
   "JavaScript-String-Index-notation": "curve",
+  "ai-markdown": "markup",
 };
 
 /** 아직 배정하지 않은 글이 쓸 기본값. 위에 있는 태그가 이긴다. */
