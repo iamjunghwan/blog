@@ -6,7 +6,7 @@ import { localePath } from "@/app/lib/i18n/paths";
 import { messages } from "@/app/lib/i18n/messages";
 import useSearchData from "../hooks/useSearchData";
 import useSearchEvent from "../hooks/useSearchEvent";
-import SearchIcon from "../../../public/search.svg";
+import SearchIcon from "@/components/Icon/SearchIcon";
 import { useRouter } from "next/navigation";
 
 function SearchModal({

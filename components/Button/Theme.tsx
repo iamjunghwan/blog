@@ -2,8 +2,8 @@
 
 import { useTheme } from "next-themes";
 import { useState, useEffect } from "react";
-import DarkMode from "../../public/darkMode.svg";
-import LightMode from "../../public/lightMode.svg";
+import DarkModeIcon from "@/components/Icon/DarkModeIcon";
+import LightModeIcon from "@/components/Icon/LightModeIcon";
 
 const Theme = () => {
   const { theme, setTheme } = useTheme();
@@ -24,7 +24,7 @@ const Theme = () => {
   return (
     <div className="p-4">
       <button type="button" onClick={toggleTheme} aria-label="ThemeButton">
-        {theme === "light" ? <LightMode /> : <DarkMode />}
+        {theme === "light" ? <LightModeIcon /> : <DarkModeIcon />}
       </button>
     </div>
   );

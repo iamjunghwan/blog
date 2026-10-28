@@ -1,0 +1,37 @@
+/**
+ * 라이트 모드 토글에 쓰는 반쪽 해. 색이 박혀 있다 (Streamline Ultimate).
+ */
+export default function LightModeIcon(props: React.SVGProps<SVGSVGElement>) {
+  const outline =
+    "m20.094 15.352 2.5901 -2.5901c0.4212 -0.4214 0.4212 -1.1046 0 -1.526L20.094 8.64586V4.98527c0 -0.59602 -0.4832 -1.07919 -1.0793 -1.07929h-3.6595l-2.59 -2.59004c-0.4215 -0.421254 -1.1046 -0.421254 -1.5261 0L8.64909 3.90598H4.98527c-0.59612 0 -1.07929 0.48317 -1.07929 1.07929v3.66275L1.31594 11.2381c-0.421254 0.4214 -0.421254 1.1046 0 1.526l2.59004 2.59v3.6606c0 0.5961 0.48317 1.0793 1.07929 1.0793h3.66275l2.59008 2.5901c0.4214 0.4212 1.1046 0.4212 1.526 0l2.59 -2.5901h3.6628c0.5961 0 1.0793 -0.4832 1.0793 -1.0793l-0.0022 -3.6627Z";
+  const half =
+    "M11.4604 5.52486c4.3168 0 6.4752 2.89864 6.4752 6.47514s-2.1584 6.4751 -6.4752 6.4751V5.52486Z";
+
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      height={24}
+      width={24}
+      {...props}
+    >
+      <path fill="#ffef5e" strokeWidth={1} d={outline} />
+      <path fill="#ffbc44" strokeWidth={1} d={half} />
+      <path
+        stroke="#191919"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={1}
+        d={outline}
+      />
+      <path
+        stroke="#191919"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={1}
+        d={half}
+      />
+    </svg>
+  );
+}

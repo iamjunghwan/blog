@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import MenuToggle from "../../public/MenuToggle.svg";
+import MenuToggleIcon from "@/components/Icon/MenuToggleIcon";
 import { localePath } from "@/app/lib/i18n/paths";
 import { messages } from "@/app/lib/i18n/messages";
 import type { Lang } from "@/app/lib/posts/types";
@@ -27,7 +27,7 @@ const MenuToggleButton = ({ lang }: { lang: Lang }) => {
           aria-label={messages(lang).openMenu}
           onClick={handleClick}
         >
-          <MenuToggle className="w-6 h-6" />
+          <MenuToggleIcon className="w-6 h-6" />
         </button>
       </div>
 
