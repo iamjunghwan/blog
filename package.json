@@ -12,7 +12,8 @@
     "verify-migration": "tsx scripts/verify-migration.ts",
     "new-post": "tsx scripts/new-post.ts",
     "thumbnail": "tsx scripts/gen-thumbnail.tsx",
-    "icons": "tsx scripts/gen-icons.ts"
+    "icons": "tsx scripts/gen-icons.ts",
+    "fonts": "tsx scripts/gen-fonts.ts"
   },
   "packageManager": "pnpm@10.28.2",
   "engines": {
@@ -46,6 +47,7 @@
   },
   "devDependencies": {
     "sharp": "^0.35.5",
+    "subset-font": "^2.9.0",
     "tsx": "^4.23.12"
   }
 }
