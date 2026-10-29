@@ -3,16 +3,17 @@ import * as cheerio from 'cheerio'
 /**
  * @FunctionName : renderTocHtml
  * @description 이 함수는 TOC영역을 만듭니다.
- * @param html 
- * @returns 
  */
 function renderTocHtml(headings: any[]) {
-  let toc = '<div class="toc"><h2 id=toc>TOC</h2><nav><ul>'
+  // 제목을 h2로 두면 본문 h2 취급을 받는다 — globals.css의 호버 밑줄이 붙고
+  // ArticleClientActions가 클릭 핸들러까지 단다(눌러도 제자리로 스크롤할 뿐이다).
+  // nav에 aria-label을 주면 스크린리더에는 이름이 전해지므로 p로 충분하다.
+  let toc = '<nav class="toc" aria-label="Table of contents"><p class="toc-title">TOC</p><ul>'
   for (const h of headings) {
-    const marginLeft = h.depth === 3 ? 16 : 0
-    toc += `<li style="margin-left: ${marginLeft}px;"><a href="#${h.id}">${h.text}</a></li>`
+    // 들여쓰기는 인라인 style 대신 class로 넘긴다. 간격을 CSS에서 한 번에 고칠 수 있다.
+    toc += `<li class="toc-d${h.depth}"><a href="#${h.id}">${h.text}</a></li>`
   }
-  toc += '</ul></nav></div>'
+  toc += '</ul></nav>'
   return toc
 }// end renderTocHtml()
 

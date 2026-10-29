@@ -210,22 +210,100 @@ li::marker {
   color: #9ca3af;
 }
 
+/* ------------------------------------------------------------------ *
+ * 목차
+ *
+ * 채운 상자에 굵은 파란 세로줄을 긋던 것을 걷어냈다. 본문 바로 위에 놓이는
+ * 요소라 상자로 두면 글보다 먼저 눈에 들어온다. 위아래 머리카락 선만 긋고
+ * 글자로만 구분한다.
+ *
+ * 항목마다 투명한 왼쪽 레일을 깔아 두고 호버할 때만 켠다 — 예전의 파란
+ * 세로줄을 통째로 두는 대신 지금 가리키는 한 줄에만 준다.
+ * ------------------------------------------------------------------ */
+
 .toc {
-  background-color: #f9fafb;
-  border-left: 4px solid #3b82f6;
-  padding: 20px 24px;
-  margin-bottom: 40px;
+  margin: 0 0 2.75rem;
+  padding-block: 1.1rem;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* .toc 를 앞에 붙여 prose의 p 규칙(margin 1.25em)을 확실히 이긴다.
+   둘 다 명시도가 같아 순서로 갈리는데, 그건 Tailwind 레이어 순서에 기대는 것이다. */
+.toc .toc-title {
+  margin: 0 0 0.7rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #9ca3af;
+}
+
+.toc ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* 본문 li에 걸린 disc와 들여쓰기를 되돌린다. */
+.toc li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.toc li::marker {
+  content: "";
+}
+
+.toc a {
+  display: block;
+  padding: 0.3rem 0 0.3rem 0.85rem;
+  border-left: 2px solid transparent;
+  color: #4b5563;
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.5;
+  text-decoration: none;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.toc a:hover {
+  color: #2563eb;
+  border-left-color: #2563eb;
+}
+
+/* h3는 한 칸 들여쓰고 조금 작게 — 번호 없이도 층이 보인다. */
+.toc-d3 a {
+  padding-left: 1.9rem;
+  font-size: 0.88rem;
+  color: #6b7280;
 }
 
 html.dark .toc {
-  background-color: #111827;
-  border-left: 4px solid #3b82f6;
+  border-top-color: #262b33;
+  border-bottom-color: #262b33;
 }
 
-html.dark .toc h2 {
-  color: #f3f4f6;
+html.dark .toc-title {
+  color: #6b7280;
 }
 
 html.dark .toc a {
+  color: #b2b9c4;
+}
+
+html.dark .toc a:hover {
   color: #60a5fa;
+  border-left-color: #60a5fa;
+}
+
+html.dark .toc-d3 a {
+  color: #8b94a1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toc a {
+    transition: none;
+  }
 }
