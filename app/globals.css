@@ -210,6 +210,36 @@ li::marker {
   color: #9ca3af;
 }
 
+/* 제목과 TOC 사이의 날짜·태그. 제목에 바싹 붙인다. */
+.article-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin: -0.9rem 0 0;
+  font-size: 0.9rem;
+}
+
+/**
+ * 제목 아래 구분선과 목차 사이.
+ *
+ * 마크다운의 `---` 와 목차의 위쪽 테두리가 겹쳐 줄이 두 개로 보였다.
+ * 위쪽 줄은 hr 에 맡기고 목차는 자기 테두리를 지운다.
+ *
+ * prose-lg 가 hr 에 위아래 3.11em(약 56px)씩 주는 것도 같이 줄인다.
+ * 제목 블록을 띄우려고 둔 여백인데, 여기서는 제목·날짜·목차가 한 덩어리라
+ * 그만큼 벌어질 이유가 없다.
+ */
+.article-rest > hr:first-child {
+  margin-top: 1.5rem;
+  margin-bottom: 1.4rem;
+}
+
+.article-rest > hr:first-child + .toc {
+  border-top: 0;
+  padding-top: 0;
+}
+
 /* ------------------------------------------------------------------ *
  * 목차
  *

@@ -1,6 +1,15 @@
 import * as cheerio from 'cheerio'
 
 /**
+ * 제목과 TOC 사이, 날짜·태그가 들어갈 자리.
+ *
+ * h1이 마크다운 본문 안에 있어서 React를 그 자리에 바로 넣을 수 없다.
+ * 대신 표시를 남겨 두고 ArticleContent가 이 지점에서 HTML을 둘로 쪼갠다.
+ * 상대 날짜("3일 전")는 브라우저에서 계산해야 해서 문자열로 못 박을 수 없다.
+ */
+export const META_MARKER = '<!--article-meta-->'
+
+/**
  * @FunctionName : renderTocHtml
  * @description 이 함수는 TOC영역을 만듭니다.
  */
@@ -50,6 +59,10 @@ export function processHtml(html: string) {
     } else {
       firstH1.after('<div id="toc-area"></div>')
     }
+    // 제목 바로 밑에 날짜·태그가 들어갈 자리를 표시해 둔다.
+    // 주석을 쓰는 이유는 둘이다 — 쪼개지 않고 그대로 내보내도 화면에 아무것도
+    // 남지 않고, 위의 next('hr')가 이미 끝난 뒤라 hr 탐색을 방해하지 않는다.
+    firstH1.after(META_MARKER)
   }
 
   const tocHtml = renderTocHtml(headings)

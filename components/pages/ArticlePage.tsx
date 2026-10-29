@@ -18,7 +18,12 @@ const ArticlePage = ({ lang, slug }: { lang: Lang; slug: string }) => {
   return (
     <>
       <JsonLd data={blogPostingJsonLd(post, lang)} />
-      <ArticleContent content={renderPostBody(post.body)} />
+      <ArticleContent
+        content={renderPostBody(post.body)}
+        date={post.date}
+        tags={post.tags}
+        lang={lang}
+      />
     </>
   );
 };
