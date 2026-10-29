@@ -111,3 +111,29 @@ test("markdown 이미지를 img 태그로 렌더한다", () => {
 
   assert.match(html, /<img src="\/uploads\/a\.png" alt="대체텍스트">/);
 });
+
+test("제목 속 인라인 코드의 꺾쇠가 목차에서 태그로 읽히지 않는다", () => {
+  // `<img>` 가 들어간 제목이 실제로 있었고, 이스케이프가 없어 브라우저가
+  // 목차의 <img> 를 진짜 이미지로 읽었다 — 글자가 사라지고 깨진 자리만 남았다.
+  const html = renderPostBody("# 제목\n\n### `<img>` 로는 안 되는 이유\n\n내용");
+
+  const toc = html.slice(html.indexOf('class="toc"'), html.indexOf("</nav>"));
+
+  assert.ok(!toc.includes("<img>"), "목차에 날 <img> 태그가 들어갔다");
+  assert.match(toc, /&lt;img&gt; 로는 안 되는 이유/);
+});
+
+test("heading id에서 꺾쇠를 뺀다", () => {
+  const html = renderPostBody("# 제목\n\n### `<img>` 로는 안 되는 이유\n\n내용");
+
+  assert.match(html, /<h3 id="img-로는-안-되는-이유">/);
+  assert.ok(!html.includes('id="<img>'), "id에 꺾쇠가 남았다");
+});
+
+test("제목에 & 가 있어도 목차가 깨지지 않는다", () => {
+  const html = renderPostBody("# 제목\n\n## eslint & oxlint\n\n내용");
+
+  const toc = html.slice(html.indexOf('class="toc"'), html.indexOf("</nav>"));
+
+  assert.match(toc, /eslint &amp; oxlint/);
+});

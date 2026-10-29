@@ -10,6 +10,22 @@ import * as cheerio from 'cheerio'
 export const META_MARKER = '<!--article-meta-->'
 
 /**
+ * 제목 글자를 HTML 텍스트로 안전하게 만든다.
+ *
+ * 목차는 문자열을 이어붙여 만드는데, 제목에 인라인 코드가 있으면 그 안의 글자가
+ * 그대로 섞인다. `` `<img>` 로는 안 되는 이유 `` 같은 제목이 실제로 있었고,
+ * 이스케이프가 없어 브라우저가 <img> 를 진짜 이미지 태그로 읽었다 —
+ * 목차에 깨진 이미지 자리만 남고 글자가 사라졌다.
+ */
+function escapeHtml(text: string) {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+}
+
+/**
  * @FunctionName : renderTocHtml
  * @description 이 함수는 TOC영역을 만듭니다.
  */
@@ -20,7 +36,7 @@ function renderTocHtml(headings: any[]) {
   let toc = '<nav class="toc" aria-label="Table of contents"><p class="toc-title">TOC</p><ul>'
   for (const h of headings) {
     // 들여쓰기는 인라인 style 대신 class로 넘긴다. 간격을 CSS에서 한 번에 고칠 수 있다.
-    toc += `<li class="toc-d${h.depth}"><a href="#${h.id}">${h.text}</a></li>`
+    toc += `<li class="toc-d${h.depth}"><a href="#${escapeHtml(h.id)}">${escapeHtml(h.text)}</a></li>`
   }
   toc += '</ul></nav>'
   return toc
@@ -41,7 +57,13 @@ export function processHtml(html: string) {
   // h2, h3 id 부여 및 headings 수집
   $('h2, h3').each((_, el) => {
     const text = $(el).text()
-    const id = text.toLowerCase().replace(/\s+/g, '-')
+    // 꺾쇠는 id에서 뺀다. 조각 식별자(#...)와 속성 안에서 태그처럼 읽혀 깨진다.
+    // 따옴표·&는 cheerio가 속성에 넣을 때 제대로 escape하므로 건드리지 않는다 —
+    // 건드리면 이미 밖에 나가 있는 앵커 주소가 바뀐다.
+    const id = text
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[<>]/g, '')
     $(el).attr('id', id)
 
     headings.push({
