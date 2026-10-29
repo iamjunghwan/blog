@@ -268,6 +268,47 @@ function Nodes({ accent }: Shape) {
   );
 }
 
+/**
+ * 하나가 끌고 오는 여럿 — 전이 의존성.
+ *
+ * Nodes는 층끼리 그물처럼 얽히지만 이쪽은 위에서 아래로 갈라지기만 한다.
+ * 뿌리 하나가 아래로 갈수록 불어나는 모양이다.
+ */
+function Deps({ accent }: Shape) {
+  const root: Point = { x: 200, y: 60 };
+  const mid: Point[] = [
+    { x: 95, y: 200 },
+    { x: 200, y: 200 },
+    { x: 305, y: 200 },
+  ];
+  const leaf: Point[] = [40, 105, 170, 235, 300, 360].map((x) => ({ x, y: 340 }));
+
+  return (
+    <>
+      {mid.map((to, i) => (
+        <Line key={`a${i}`} from={root} to={to} accent={accent} opacity={0.26} thickness={3} />
+      ))}
+      {leaf.map((to, i) => (
+        <Line
+          key={`b${i}`}
+          from={mid[Math.min(Math.floor(i / 2), mid.length - 1)]}
+          to={to}
+          accent={accent}
+          opacity={0.14}
+          thickness={2}
+        />
+      ))}
+      <Dot at={root} size={40} accent={accent} filled />
+      {mid.map((at, i) => (
+        <Dot key={`m${i}`} at={at} size={26} accent={accent} />
+      ))}
+      {leaf.map((at, i) => (
+        <Dot key={`l${i}`} at={at} size={15} accent={accent} filled opacity={0.45} />
+      ))}
+    </>
+  );
+}
+
 /** 막대 점수 — 벤치마크 수치. 마지막 막대만 비워 "말해주지 않는 것"을 남긴다. */
 function Bars({ accent }: Shape) {
   const bars = [
@@ -700,7 +741,7 @@ function Curve({ accent }: Shape) {
 type MotifName =
   | "nodes" | "bars" | "package" | "lint" | "migrate" | "layers" | "clock"
   | "rows" | "keyValue" | "toggle" | "proxy" | "window" | "graph" | "cache"
-  | "spinner" | "numberLine" | "focus" | "lazy" | "curve" | "markup";
+  | "spinner" | "numberLine" | "focus" | "lazy" | "curve" | "markup" | "deps";
 
 const MOTIFS: Record<MotifName, (p: Shape) => React.ReactElement> = {
   nodes: Nodes,
@@ -723,6 +764,7 @@ const MOTIFS: Record<MotifName, (p: Shape) => React.ReactElement> = {
   lazy: Lazy,
   curve: Curve,
   markup: Markup,
+  deps: Deps,
 };
 
 /** 모티프마다 다른 색. 같은 그림이 없으니 색도 겹치지 않게 둔다. */
@@ -747,6 +789,7 @@ const ACCENT: Record<MotifName, string> = {
   lazy: "#06b6d4",
   curve: "#a3e635",
   markup: "#fb7185",
+  deps: "#14b8a6",
 };
 
 /**
@@ -777,6 +820,7 @@ const MOTIF_BY_SLUG: Record<string, MotifName> = {
   "dynamic-components-and-lazy": "lazy",
   "JavaScript-String-Index-notation": "curve",
   "ai-markdown": "markup",
+  "dependabot-alerts": "deps",
 };
 
 /** 아직 배정하지 않은 글이 쓸 기본값. 위에 있는 태그가 이긴다. */
