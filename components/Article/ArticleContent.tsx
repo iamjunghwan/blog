@@ -1,4 +1,4 @@
-import ArticleClientActions from "./ArticleClientActions";
+import ArticleInteractions from "./ArticleInteractions";
 import ArticleMeta from "./ArticleMeta";
 import { META_MARKER } from "@/app/lib/processHtml";
 import type { Lang } from "@/app/lib/posts/types";
@@ -23,8 +23,8 @@ export default function ArticleContent({
 
   return (
     <article>
-      {/* h2 클릭 핸들러가 이 id 아래를 훑으므로, 쪼갠 조각도 전부 안에 둔다. */}
-      <div id="article-content">
+      {/* children으로 넘기므로 아래 조각들은 서버에서 그려진 채로 전달된다. */}
+      <ArticleInteractions>
         <div dangerouslySetInnerHTML={{ __html: head }}></div>
         <ArticleMeta date={date} tags={tags} lang={lang} />
         {rest !== "" && (
@@ -33,8 +33,7 @@ export default function ArticleContent({
             dangerouslySetInnerHTML={{ __html: rest }}
           ></div>
         )}
-      </div>
-      <ArticleClientActions />
+      </ArticleInteractions>
     </article>
   );
 }
