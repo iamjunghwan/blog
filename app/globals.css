@@ -337,3 +337,99 @@ html.dark .toc-d3 a {
     transition: none;
   }
 }
+
+/* ------------------------------------------------------------------ *
+ * 참고 문헌
+ *
+ * 글 맨 끝의 부록이다. 본문 h2와 같은 무게로 두면 결론처럼 읽힌다.
+ * 제목을 낮추고 위에 선을 그어 본문이 끝났음을 보인다.
+ *
+ * 뒤에 오는 것이 <ul>인 글이 15편, <p>인 글이 8편이라 둘 다 받는다.
+ * 링크 글자가 긴 URL 그대로인 글도 있어서 줄바꿈을 열어 둔다.
+ * ------------------------------------------------------------------ */
+
+#article-content .refs-title {
+  margin-top: 3.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.refs-body {
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+#article-content .refs-body ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+#article-content .refs-body li {
+  margin: 0 0 0.45rem;
+  padding: 0 0 0 1rem;
+  list-style: none;
+  position: relative;
+}
+
+#article-content .refs-body li::marker {
+  content: "";
+}
+
+/* 불릿 대신 옅은 가로줄. 목록이 촘촘해도 답답하지 않다. */
+#article-content .refs-body li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.78em;
+  width: 0.45rem;
+  height: 1px;
+  background: #cbd5e1;
+}
+
+#article-content .refs-body p {
+  margin: 0 0 0.45rem;
+}
+
+/* 링크 글자가 긴 URL 그대로인 글이 있다. 가둬 두지 않으면 가로로 넘친다. */
+#article-content .refs-body a {
+  color: #4b5563;
+  font-weight: 500;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+  border-bottom: 1px solid #d1d5db;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+#article-content .refs-body a:hover {
+  color: #2563eb;
+  border-bottom-color: #2563eb;
+}
+
+html.dark #article-content .refs-title {
+  border-top-color: #262b33;
+  color: #949caa;
+}
+
+html.dark #article-content .refs-body li::before {
+  background: #3f4652;
+}
+
+html.dark #article-content .refs-body a {
+  color: #b2b9c4;
+  border-bottom-color: #3f4652;
+}
+
+html.dark #article-content .refs-body a:hover {
+  color: #60a5fa;
+  border-bottom-color: #60a5fa;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #article-content .refs-body a {
+    transition: none;
+  }
+}

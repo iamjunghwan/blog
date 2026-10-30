@@ -73,6 +73,20 @@ export function processHtml(html: string) {
     })
   })
 
+  // 맨 끝 참고 문헌에 표시를 단다. 본문과 같은 무게로 두면 부록이 결론처럼 읽힌다.
+  // 글마다 "참고" / "References" / "📌 참고" / "5. 참고" 로 제각각이라 글자로 찾는다.
+  // 뒤에 오는 것도 <ul>인 글이 15편, <p>인 글이 8편이라 섹션을 통째로 감싼다.
+  const refsHeading = $('h2, h3')
+    .filter((_, el) => /참고|reference/i.test($(el).text()))
+    .last()
+  if (refsHeading.length) {
+    refsHeading.addClass('refs-title')
+    const body = refsHeading.nextUntil('h1, h2')
+    if (body.length) {
+      body.wrapAll('<div class="refs-body"></div>')
+    }
+  }
+
   const firstH1 = $('h1').first()
   if (firstH1.length) {
     const hr = firstH1.next('hr')

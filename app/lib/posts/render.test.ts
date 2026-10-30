@@ -137,3 +137,32 @@ test("제목에 & 가 있어도 목차가 깨지지 않는다", () => {
 
   assert.match(toc, /eslint &amp; oxlint/);
 });
+
+test("참고 문헌 섹션에 표시를 단다 (목록인 경우)", () => {
+  const html = renderPostBody("# 제목\n\n## 본문\n\n내용\n\n## 참고\n\n- [링크](https://a.kr)");
+
+  assert.match(html, /<h2[^>]*class="refs-title"[^>]*>참고<\/h2>|<h2[^>]*>참고<\/h2>/);
+  assert.match(html, /class="refs-body"/);
+});
+
+test("참고 뒤가 문단이어도 감싼다", () => {
+  // 옛 글 8편은 목록이 아니라 문단으로 링크를 늘어놓는다.
+  const html = renderPostBody("# 제목\n\n## 참고\n\nhttps://a.kr\n\nhttps://b.kr");
+
+  const body = html.slice(html.indexOf('class="refs-body"'));
+  assert.match(body, /<p>/);
+});
+
+test("References 도 참고 문헌으로 본다", () => {
+  const html = renderPostBody("# 제목\n\n## References\n\n- [a](https://a.kr)");
+
+  assert.match(html, /class="refs-title"/);
+  assert.match(html, /class="refs-body"/);
+});
+
+test("참고가 없는 글에는 표시가 붙지 않는다", () => {
+  const html = renderPostBody("# 제목\n\n## 정리\n\n끝");
+
+  assert.ok(!html.includes("refs-title"));
+  assert.ok(!html.includes("refs-body"));
+});
