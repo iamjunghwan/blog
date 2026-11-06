@@ -3,6 +3,7 @@ slug: tsc-incremental-type-check
 title: "TypeScript 증분 검사 deep dive"
 date: 2026-11-06
 tags: ["typescript"]
+thumbnail: "/uploads/2026/11/tsc-incremental-type-check.png"
 ---
 
 # TypeScript 증분 검사 deep dive

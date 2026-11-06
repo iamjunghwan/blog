@@ -309,6 +309,105 @@ function Deps({ accent }: Shape) {
   );
 }
 
+/**
+ * 파일 격자 — 증분 타입 검사.
+ *
+ * 고친 파일 하나가 꽉 차 있고, 의존 그래프를 타고 닿은 몇 개만 옅게 켜진다.
+ * 나머지는 윤곽만 남겨 "이번에 건너뛴 것"을 보여준다. 켜진 칸보다 꺼진 칸이
+ * 훨씬 많아야 그림이 말이 된다 — 그게 증분 검사가 버는 것이다.
+ */
+function Recheck({ accent }: Shape) {
+  // 모티프 캔버스는 360x430이다. 6칸이 가로 360에 들어가도록 잡고 남는 만큼
+  // 상하좌우를 똑같이 띄운다. 넘치면 잘리지는 않지만 그림이 가운데에서 밀린다.
+  const COLS = 6;
+  const ROWS = 6;
+  const CELL = 42;
+  const GAP = 18;
+  const STEP = CELL + GAP;
+  const SPAN = COLS * CELL + (COLS - 1) * GAP; // 342
+  const ORIGIN_X = (360 - SPAN) / 2;
+  const ORIGIN_Y = (430 - SPAN) / 2;
+
+  const at = (col: number, row: number) => ({
+    left: ORIGIN_X + col * STEP,
+    top: ORIGIN_Y + row * STEP,
+  });
+  const center = (col: number, row: number): Point => ({
+    x: ORIGIN_X + col * STEP + CELL / 2,
+    y: ORIGIN_Y + row * STEP + CELL / 2,
+  });
+
+  /** 고친 파일. */
+  const changed: [col: number, row: number] = [1, 1];
+  /** 그 파일을 쓰고 있어 같이 다시 검사된 파일. */
+  const rechecked: [col: number, row: number][] = [
+    [3, 1],
+    [1, 3],
+    [4, 3],
+    [2, 4],
+  ];
+
+  const lit = (col: number, row: number) =>
+    (col === changed[0] && row === changed[1]) ||
+    rechecked.some(([c, r]) => c === col && r === row);
+
+  const skipped: [number, number][] = [];
+  for (let row = 0; row < ROWS; row++) {
+    for (let col = 0; col < COLS; col++) {
+      if (!lit(col, row)) {
+        skipped.push([col, row]);
+      }
+    }
+  }
+
+  return (
+    <>
+      {skipped.map(([col, row]) => (
+        <Box
+          key={`skip-${col}-${row}`}
+          {...at(col, row)}
+          width={CELL}
+          height={CELL}
+          accent={accent}
+          radius={10}
+          border={3}
+          opacity={0.13}
+        />
+      ))}
+      {rechecked.map(([col, row]) => (
+        <Line
+          key={`edge-${col}-${row}`}
+          from={center(changed[0], changed[1])}
+          to={center(col, row)}
+          accent={accent}
+          opacity={0.22}
+          thickness={3}
+        />
+      ))}
+      {rechecked.map(([col, row]) => (
+        <Box
+          key={`hit-${col}-${row}`}
+          {...at(col, row)}
+          width={CELL}
+          height={CELL}
+          accent={accent}
+          radius={10}
+          filled
+          opacity={0.5}
+        />
+      ))}
+      <Box
+        {...at(changed[0], changed[1])}
+        width={CELL}
+        height={CELL}
+        accent={accent}
+        radius={10}
+        filled
+      />
+    </>
+  );
+}
+
 /** 막대 점수 — 벤치마크 수치. 마지막 막대만 비워 "말해주지 않는 것"을 남긴다. */
 function Bars({ accent }: Shape) {
   const bars = [
@@ -741,7 +840,8 @@ function Curve({ accent }: Shape) {
 type MotifName =
   | "nodes" | "bars" | "package" | "lint" | "migrate" | "layers" | "clock"
   | "rows" | "keyValue" | "toggle" | "proxy" | "window" | "graph" | "cache"
-  | "spinner" | "numberLine" | "focus" | "lazy" | "curve" | "markup" | "deps";
+  | "spinner" | "numberLine" | "focus" | "lazy" | "curve" | "markup" | "deps"
+  | "recheck";
 
 const MOTIFS: Record<MotifName, (p: Shape) => React.ReactElement> = {
   nodes: Nodes,
@@ -765,6 +865,7 @@ const MOTIFS: Record<MotifName, (p: Shape) => React.ReactElement> = {
   curve: Curve,
   markup: Markup,
   deps: Deps,
+  recheck: Recheck,
 };
 
 /** 모티프마다 다른 색. 같은 그림이 없으니 색도 겹치지 않게 둔다. */
@@ -790,6 +891,7 @@ const ACCENT: Record<MotifName, string> = {
   curve: "#a3e635",
   markup: "#fb7185",
   deps: "#14b8a6",
+  recheck: "#3b82f6",
 };
 
 /**
@@ -821,6 +923,7 @@ const MOTIF_BY_SLUG: Record<string, MotifName> = {
   "JavaScript-String-Index-notation": "curve",
   "ai-markdown": "markup",
   "dependabot-alerts": "deps",
+  "tsc-incremental-type-check": "recheck",
 };
 
 /** 아직 배정하지 않은 글이 쓸 기본값. 위에 있는 태그가 이긴다. */
@@ -833,6 +936,7 @@ const TAG_FALLBACK: [tag: string, motif: MotifName][] = [
   ["nextjs", "layers"],
   ["browser", "window"],
   ["react", "lazy"],
+  ["typescript", "recheck"],
   ["javascript", "rows"],
 ];
 
