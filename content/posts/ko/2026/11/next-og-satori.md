@@ -3,6 +3,7 @@ slug: next-og-satori
 title: "next/og는 왜 Grid를 못 쓰나"
 date: 2026-11-09
 tags: ["nextjs", "react"]
+thumbnail: "/uploads/2026/11/next-og-satori.png"
 ---
 
 # next/og는 왜 Grid를 못 쓰나

@@ -833,6 +833,88 @@ function Curve({ accent }: Shape) {
   );
 }
 
+function Brick({ accent }: Shape) {
+  // "Flexbox만 된다"가 무슨 뜻인지 그린다. flex-wrap으로 줄을 바꾸면 각 줄이
+  // 따로 공간을 나눠 가지므로, 폭이 제각각인 아이템은 줄끼리 열이 어긋난다.
+  // 점선은 Grid였다면 생겼을 열 경계고, 벽돌의 모서리는 거기에 닿지 않는다.
+  //
+  // 모티프 캔버스는 360x430이다. 가로 300을 쓰고 남는 60을 양쪽에 30씩 둔다.
+  const SPAN = 300;
+  const ORIGIN_X = (360 - SPAN) / 2; // 30
+  const BRICK_H = 48;
+  const ROW_GAP = 24;
+  const ITEM_GAP = 10;
+  const COLS = 3;
+
+  /** 줄마다 다른 폭. 세 개의 합은 280으로 같고, 나뉘는 지점만 다르다. */
+  const ROWS: number[][] = [
+    [70, 135, 75],
+    [125, 95, 60],
+    [75, 90, 115],
+    [50, 160, 70],
+  ];
+
+  const stackH = ROWS.length * BRICK_H + (ROWS.length - 1) * ROW_GAP; // 264
+  const ORIGIN_Y = (430 - stackH) / 2; // 83
+
+  // Grid였다면 생겼을 열 경계. 300을 3등분하므로 100마다 선이 선다.
+  const GUIDE_TOP = ORIGIN_Y - 18;
+  const GUIDE_BOTTOM = ORIGIN_Y + stackH + 18;
+  const DASH = 10;
+  const DASH_GAP = 8;
+
+  const guides: { x: number; y: number }[] = [];
+  for (let col = 0; col <= COLS; col++) {
+    const x = ORIGIN_X + (col * SPAN) / COLS;
+    for (let y = GUIDE_TOP; y + DASH <= GUIDE_BOTTOM; y += DASH + DASH_GAP) {
+      guides.push({ x, y });
+    }
+  }
+
+  const bricks: { left: number; top: number; width: number; dim: number }[] = [];
+  ROWS.forEach((widths, row) => {
+    let left = ORIGIN_X;
+    widths.forEach((width, col) => {
+      bricks.push({
+        left,
+        top: ORIGIN_Y + row * (BRICK_H + ROW_GAP),
+        width,
+        // 같은 줄 안에서도 조금씩 다르게 — 한 덩어리로 뭉쳐 보이지 않게.
+        dim: 0.34 + ((row + col) % 3) * 0.09,
+      });
+      left += width + ITEM_GAP;
+    });
+  });
+
+  return (
+    <>
+      {guides.map(({ x, y }, i) => (
+        <Line
+          key={`guide-${i}`}
+          from={{ x, y }}
+          to={{ x, y: y + DASH }}
+          accent={accent}
+          opacity={0.22}
+          thickness={2}
+        />
+      ))}
+      {bricks.map(({ left, top, width, dim }, i) => (
+        <Box
+          key={`brick-${i}`}
+          left={left}
+          top={top}
+          width={width}
+          height={BRICK_H}
+          accent={accent}
+          radius={8}
+          opacity={dim}
+          filled
+        />
+      ))}
+    </>
+  );
+}
+
 /* ------------------------------------------------------------------ *
  * 글 -> 모티프
  * ------------------------------------------------------------------ */
@@ -841,7 +923,7 @@ type MotifName =
   | "nodes" | "bars" | "package" | "lint" | "migrate" | "layers" | "clock"
   | "rows" | "keyValue" | "toggle" | "proxy" | "window" | "graph" | "cache"
   | "spinner" | "numberLine" | "focus" | "lazy" | "curve" | "markup" | "deps"
-  | "recheck";
+  | "recheck" | "brick";
 
 const MOTIFS: Record<MotifName, (p: Shape) => React.ReactElement> = {
   nodes: Nodes,
@@ -866,6 +948,7 @@ const MOTIFS: Record<MotifName, (p: Shape) => React.ReactElement> = {
   markup: Markup,
   deps: Deps,
   recheck: Recheck,
+  brick: Brick,
 };
 
 /** 모티프마다 다른 색. 같은 그림이 없으니 색도 겹치지 않게 둔다. */
@@ -892,6 +975,7 @@ const ACCENT: Record<MotifName, string> = {
   markup: "#fb7185",
   deps: "#14b8a6",
   recheck: "#3b82f6",
+  brick: "#f97316",
 };
 
 /**
@@ -924,6 +1008,7 @@ const MOTIF_BY_SLUG: Record<string, MotifName> = {
   "ai-markdown": "markup",
   "dependabot-alerts": "deps",
   "tsc-incremental-type-check": "recheck",
+  "next-og-satori": "brick",
 };
 
 /** 아직 배정하지 않은 글이 쓸 기본값. 위에 있는 태그가 이긴다. */
