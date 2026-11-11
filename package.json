@@ -10,8 +10,8 @@
     "test": "tsx --test \"app/**/*.test.ts\"",
     "new-post": "tsx scripts/new-post.ts",
     "thumbnail": "tsx scripts/thumbnail/main.tsx",
-    "icons": "tsx scripts/gen-icons.ts",
-    "fonts": "tsx scripts/gen-fonts.ts"
+    "icons": "tsx scripts/icons.ts",
+    "fonts": "tsx scripts/fonts.ts"
   },
   "packageManager": "pnpm@10.28.2",
   "engines": {

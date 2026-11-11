@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
-import { usedCharacters } from "@/scripts/gen-fonts";
+import { usedCharacters } from "@/scripts/fonts";
 
 /**
  * 서브셋 폰트가 본문을 다 덮는지 확인한다.
