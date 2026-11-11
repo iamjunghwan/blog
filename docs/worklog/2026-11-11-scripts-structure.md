@@ -75,16 +75,21 @@ scripts/
 로 단어 경계를 넣었더니 `\b` 가 백스페이스 문자로 해석돼 매치가 전부 실패했다.
 `(?![A-Za-z0-9_])` 로 바꿔 백슬래시를 없앴다.
 
-## 딸려 죽은 것 — 아직 안 지움
+## 딸려 죽은 것 — 같이 지웠다
 
-마이그레이션 스크립트가 사라지면서 읽는 쪽이 없어졌다.
+마이그레이션 스크립트가 사라지면서 읽는 쪽이 없어진 것들이다. 같은 날 바로
+정리했다.
 
-- `migration/cms-dump.json` (218KB)
-- `turndown`, `@types/turndown`, `turndown-plugin-gfm`
-- `types/turndown-plugin-gfm.d.ts`
+- `migration/cms-dump.json` (218KB, CMS 원본 응답 16건) — 폴더째 사라짐
+- `turndown`, `@types/turndown`, `turndown-plugin-gfm` — `pnpm install` 로 락파일까지
+- `types/turndown-plugin-gfm.d.ts` — 저 패키지에 타입이 없어 두었던 섀도
 
-`cheerio` 는 `app/lib/processHtml.ts` 가 아직 쓰므로 남긴다.
-지우려면 `pnpm install` 로 락파일도 갱신해야 한다.
+`cheerio` 는 `app/lib/processHtml.ts` 가 아직 쓰므로 남겼다.
+
+덤프를 지우면서 **CMS 원본 HTML 사본이 저장소에서 사라졌다.** 변환이 무엇을
+빠뜨렸는지 대조할 길이 없다. 그래도 지운 이유는 둘 — 대조해줄 스크립트가 이미
+없고, memexdata.io 토큰을 폐기하면 어차피 다시 받을 수 없다. 필요하면 git
+이력에서 꺼낸다.
 
 ## 검증
 
