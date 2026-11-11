@@ -9,7 +9,7 @@
     "lint": "next lint",
     "test": "tsx --test \"app/**/*.test.ts\"",
     "new-post": "tsx scripts/new-post.ts",
-    "thumbnail": "tsx scripts/gen-thumbnail.tsx",
+    "thumbnail": "tsx scripts/thumbnail/main.tsx",
     "icons": "tsx scripts/gen-icons.ts",
     "fonts": "tsx scripts/gen-fonts.ts"
   },
