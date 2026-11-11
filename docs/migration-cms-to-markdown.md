@@ -154,15 +154,22 @@ Cloudflare Pages 대시보드에서:
 
 ### 배포 안정화 후 정리
 
-지금은 안전망이라 남겨둔다. 지우면 되돌릴 수 없다.
+**2026-11-11에 스크립트를 지웠다.** 마이그레이션은 2026-10-12에 끝났고 그 뒤로
+한 번도 돌리지 않았다. `scripts/` 를 열었을 때 어느 것이 현역인지 구분되지 않는
+게 더 큰 비용이라 판단했다. 지운 것은 git 이력에 남아 있다.
+
+- ~~`scripts/migrate-from-cms.ts`, `scripts/verify-migration.ts`~~ — 삭제
+- ~~`package.json`의 `migrate`, `verify-migration` 스크립트~~ — 삭제
+
+아직 남은 것. 스크립트가 사라졌으므로 이제 읽는 쪽이 없다.
 
 - `migration/cms-dump.json` (216KB, CMS 원본 응답 16건)
-- `scripts/migrate-from-cms.ts`, `scripts/verify-migration.ts`
-- `package.json`의 `migrate`, `verify-migration` 스크립트
 - `turndown`, `@types/turndown`, `turndown-plugin-gfm` 의존성
 - `types/turndown-plugin-gfm.d.ts`
 
-정리 후에는 [app/lib/posts/content.test.ts](../app/lib/posts/content.test.ts)가 실제 콘텐츠를 지키는 유일한 장치가 된다.
+(`cheerio` 는 `app/lib/processHtml.ts` 가 아직 쓰므로 남긴다.)
+
+지금은 [app/lib/posts/content.test.ts](../app/lib/posts/content.test.ts)가 실제 콘텐츠를 지키는 유일한 장치다.
 
 ---
 
