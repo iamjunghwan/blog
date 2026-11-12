@@ -23,6 +23,11 @@ type Messages = {
   today: string;
   yesterday: string;
   daysAgo: (days: number) => string;
+  carouselLabel: string;
+  prevSlide: string;
+  nextSlide: string;
+  slidePosition: (current: number, total: number) => string;
+  goToSlide: (n: number) => string;
 };
 
 export const MESSAGES: Record<Lang, Messages> = {
@@ -38,6 +43,11 @@ export const MESSAGES: Record<Lang, Messages> = {
     today: "오늘",
     yesterday: "어제",
     daysAgo: (days) => `${days}일 전`,
+    carouselLabel: "최신 글",
+    prevSlide: "이전 글",
+    nextSlide: "다음 글",
+    slidePosition: (current, total) => `${total}개 중 ${current}번째`,
+    goToSlide: (n) => `${n}번째 글로 이동`,
   },
   en: {
     allPosts: "All posts →",
@@ -51,6 +61,11 @@ export const MESSAGES: Record<Lang, Messages> = {
     today: "Today",
     yesterday: "Yesterday",
     daysAgo: (days) => `${days} days ago`,
+    carouselLabel: "Latest articles",
+    prevSlide: "Previous article",
+    nextSlide: "Next article",
+    slidePosition: (current, total) => `${current} of ${total}`,
+    goToSlide: (n) => `Go to article ${n}`,
   },
 };
 
