@@ -16,3 +16,13 @@ test("N일 전은 수를 받아 만든다", () => {
   assert.equal(messages("ko").daysAgo(3), "3일 전");
   assert.equal(messages("en").daysAgo(3), "3 days ago");
 });
+
+test("캐러셀 위치 문구는 현재와 전체를 받아 만든다", () => {
+  assert.equal(messages("ko").slidePosition(2, 5), "5개 중 2번째");
+  assert.equal(messages("en").slidePosition(2, 5), "2 of 5");
+});
+
+test("점 버튼 문구는 번호를 받아 만든다", () => {
+  assert.equal(messages("ko").goToSlide(3), "3번째 글로 이동");
+  assert.equal(messages("en").goToSlide(3), "Go to article 3");
+});
