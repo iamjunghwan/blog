@@ -448,3 +448,170 @@ html.dark #article-content .refs-body a:hover {
     transition: none;
   }
 }
+
+/**
+ * 메인 최신 글 코버플로우 캐러셀.
+ *
+ * Tailwind 3에는 perspective·mask-image 유틸리티가 없어 여기에 직접 적는다.
+ * 카드 폭 --card-w 하나에서 카드 높이와 스테이지 높이까지 끌어내, 반응형 분기를
+ * 한 군데로 모았다. 0.525는 썸네일 비율 21/40이고 132px은 메타 영역 고정 높이다.
+ */
+.carousel {
+  --card-w: clamp(240px, 72vw, 320px);
+  --card-h: calc(var(--card-w) * 0.525 + 132px);
+  position: relative;
+}
+
+.carousel-stage {
+  position: relative;
+  height: calc(var(--card-h) + 56px);
+  /*
+   * clip 은 hidden 과 달리 스크롤 컨테이너를 만들지 않는다. hidden 이면
+   * 화면 밖(translateX 576px)에 있는 카드에 포커스가 갈 때 브라우저가
+   * 스테이지를 가로로 스크롤해 카드 배치가 통째로 밀린다.
+   * 앞 줄은 clip 을 모르는 브라우저용 폴백이다.
+   */
+  overflow: hidden;
+  overflow: clip;
+  perspective: 1300px;
+  cursor: grab;
+  /* 가로만 가져간다. 모바일에서 세로 페이지 스크롤을 막으면 안 된다. */
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  /* 본문 폭(max-w-3xl)에서 멀리 있는 카드가 잘린다. 그 직선을 감춘다. */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+
+.carousel-stage.is-dragging {
+  cursor: grabbing;
+}
+
+/*
+ * perspective 는 직계 자식에만 걸린다. 카드는 stage > ul > li 로 손자라,
+ * 중간의 ul 이 3D 맥락을 이어 주지 않으면 rotateY 가 원근 없이 가로로
+ * 찌그러지기만 한다. 실측으로 잡았다 — 옆 카드의 높이가 가운데 카드 높이에
+ * scale 을 곱한 값과 정확히 같았다. 원근이 걸렸다면 사다리꼴이라 그럴 수 없다.
+ */
+.carousel-stage > ul {
+  transform-style: preserve-3d;
+}
+
+.carousel-slide {
+  position: absolute;
+  top: 28px;
+  left: 50%;
+  width: var(--card-w);
+  margin-left: calc(var(--card-w) / -2);
+  transition: transform 0.44s cubic-bezier(0.22, 0.61, 0.36, 1), opacity 0.44s ease;
+  will-change: transform, opacity;
+}
+
+/* 드래그 중에는 전환을 꺼야 카드가 손을 따라온다. */
+.carousel-stage.is-dragging .carousel-slide {
+  transition: none;
+}
+
+/* 썸네일을 끌면 브라우저의 이미지 드래그가 먼저 집어간다. */
+.carousel-slide img {
+  -webkit-user-drag: none;
+}
+
+/* CardImageArea의 img가 가진 rounded-lg를 끈다. 카드 위쪽 모서리만 둥글어야 한다. */
+.carousel-thumb img {
+  border-radius: 0;
+}
+
+/* 화살표는 스테이지 밖에 둔다. 안에 두면 가장자리 페이드 마스크에 함께 흐려진다. */
+.carousel-arrow {
+  position: absolute;
+  top: calc((var(--card-h) + 56px) / 2);
+  transform: translateY(-50%);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #374151;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.12);
+}
+
+.carousel-arrow-prev {
+  left: 0;
+}
+
+.carousel-arrow-next {
+  right: 0;
+}
+
+.carousel-arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+html.dark .carousel-arrow {
+  border-color: #374151;
+  background: #111827;
+  color: #d1d5db;
+}
+
+/*
+ * 점은 손가락으로 누를 수 있어야 한다. 버튼 자체를 24×24 로 잡고(WCAG 2.5.8
+ * 최소 터치 크기), 보이는 점은 ::before 로 그린다. 겉보기는 8px 그대로고
+ * 누를 수 있는 범위만 넓어진다. 실측으로 잡았다 — 버튼이 8×8 이던 동안
+ * 모바일에서는 사실상 못 누르는 장치였다.
+ *
+ * 이웃과 겹치지 않도록 점 사이 gap 은 0 이다. 버튼 폭 24px 자체가 간격이다.
+ */
+.carousel-dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.carousel-dot::before {
+  content: "";
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: #d1d5db;
+  transition: width 0.3s ease, background 0.3s ease;
+}
+
+/* 현재 점은 길쭉한 알약이라, 버튼도 그만큼 넓혀야 ::before 가 잘리지 않는다. */
+.carousel-dot.is-current {
+  width: 38px;
+}
+
+.carousel-dot.is-current::before {
+  width: 22px;
+  border-radius: 4px;
+  background: #2563eb;
+}
+
+html.dark .carousel-dot::before {
+  background: #374151;
+}
+
+html.dark .carousel-dot.is-current::before {
+  background: #60a5fa;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .carousel-slide,
+  .carousel-dot::before {
+    transition: none;
+  }
+}

@@ -30,3 +30,16 @@ export type Post = PostMeta & {
 
 /** 검색 모달에 넘기는 최소 정보 (본문 제외) */
 export type SearchEntry = Pick<PostMeta, "slug" | "title" | "date" | "tags">;
+
+/**
+ * 메인 캐러셀에 넘기는 최소 정보.
+ *
+ * 캐러셀은 클라이언트 컴포넌트라 props가 전부 직렬화되어 HTML에 실린다.
+ * Post를 그대로 넘기면 마크다운 본문(body) 다섯 편이 메인 HTML에 복사된다.
+ * 썸네일 경로는 body를 읽어야 정해지므로 서버에서 thumbnailOf()를 미리 돌리고
+ * 결과 문자열만 넘긴다. SearchEntry와 같은 이유로 만든 타입이다.
+ */
+export type CarouselSlide = Pick<PostMeta, "slug" | "title" | "date" | "tags"> & {
+  /** thumbnailOf()가 서버에서 결정한 최종 경로 */
+  thumbnailSrc: string;
+};
