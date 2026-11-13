@@ -28,7 +28,8 @@ export interface SlideTransform {
   zIndex: number;
 }
 
-function clamp(value: number, min: number, max: number): number {
+/** drag.ts 도 같은 걸 쓴다. 한 줄짜리를 두 군데 두지 않으려고 내보낸다. */
+export function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
 }
 
