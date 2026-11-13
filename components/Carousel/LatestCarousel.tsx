@@ -23,9 +23,17 @@ import type { CarouselSlide, Lang } from "@/app/lib/posts/types";
 interface LatestCarouselProps {
   slides: CarouselSlide[];
   lang: Lang;
+  /**
+   * 눈에 보이는 제목의 id. 주면 그 제목이 캐러셀의 이름이 된다.
+   *
+   * 없으면 사전의 carouselLabel 을 쓴다. 화면에 제목이 있는데도 제 이름을
+   * 따로 가지면, 스크린리더가 같은 말을 제목에서 한 번, 캐러셀에서 또 한 번
+   * 읽는다. ARIA 캐러셀 패턴은 보이는 제목을 이름으로 삼으라고 한다.
+   */
+  labelledBy?: string;
 }
 
-const LatestCarousel = ({ slides, lang }: LatestCarouselProps) => {
+const LatestCarousel = ({ slides, lang, labelledBy }: LatestCarouselProps) => {
   const total = slides.length;
   const m = messages(lang);
   const {
@@ -42,7 +50,8 @@ const LatestCarousel = ({ slides, lang }: LatestCarouselProps) => {
     <section
       className="carousel"
       aria-roledescription="carousel"
-      aria-label={m.carouselLabel}
+      aria-labelledby={labelledBy}
+      aria-label={labelledBy ? undefined : m.carouselLabel}
       {...sectionProps}
     >
       <div ref={stageRef} className="carousel-stage" {...stageProps}>
@@ -70,7 +79,6 @@ const LatestCarousel = ({ slides, lang }: LatestCarouselProps) => {
         onSelect={settle}
       />
 
-      {/* 위치가 바뀐 걸 스크린리더에 알린다. 눈에는 보이지 않는다. */}
       <p className="sr-only" aria-live="polite">
         {m.slidePosition(current + 1, total)}
       </p>
