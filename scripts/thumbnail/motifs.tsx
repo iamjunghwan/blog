@@ -699,3 +699,60 @@ export function Brick({ accent }: Shape) {
     </>
   );
 }
+
+/**
+ * 3계층 — 여러 클라이언트가 한 줄기로 모여 daemon · cache · server 로 내려간다.
+ *
+ * 맨 아래만 채워 둔다. 위 두 층은 캐시라 언제든 버리고 다시 띄울 수 있고,
+ * 권위 있는 데이터는 맨 아래에만 있다는 것이 이 구조의 요점이다.
+ */
+export function Tiers({ accent }: Shape) {
+  const CLIENTS = [30, 80, 130, 180, 230, 280, 330];
+  const FUNNEL: Point = { x: 180, y: 122 };
+
+  const BAND_X = 45;
+  const BAND_W = 270;
+  const BAND_H = 56;
+  const TOPS = [122, 218, 314];
+
+  return (
+    <>
+      {CLIENTS.map((x, i) => (
+        <Line
+          key={`feed-${i}`}
+          from={{ x, y: 64 }}
+          to={FUNNEL}
+          accent={accent}
+          opacity={0.2}
+          thickness={2}
+        />
+      ))}
+      {CLIENTS.map((x, i) => (
+        <Dot key={`client-${i}`} at={{ x, y: 56 }} size={16} accent={accent} opacity={0.75} border={3} />
+      ))}
+      {TOPS.slice(1).map((top, i) => (
+        <Line
+          key={`hop-${i}`}
+          from={{ x: 180, y: TOPS[i] + BAND_H }}
+          to={{ x: 180, y: top }}
+          accent={accent}
+          opacity={0.45}
+          thickness={3}
+        />
+      ))}
+      {TOPS.map((top, i) => (
+        <Box
+          key={`band-${i}`}
+          left={BAND_X}
+          top={top}
+          width={BAND_W}
+          height={BAND_H}
+          accent={accent}
+          radius={12}
+          opacity={i === 2 ? 0.9 : 0.4 + i * 0.15}
+          filled={i === 2}
+        />
+      ))}
+    </>
+  );
+}
