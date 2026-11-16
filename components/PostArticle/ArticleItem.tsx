@@ -17,16 +17,17 @@ export const ArticleItem = ({
   lang: Lang;
   priority?: boolean;
 }) => (
-  <li className="relative -mx-4 px-4 py-3 rounded-lg transition-colors hover:bg-gray-50 dark:hover:bg-gray-900">
-    <article className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+  <li className="relative -mx-4 px-4 rounded-lg transition-colors hover:bg-gray-50 dark:hover:bg-gray-900">
+    <article className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-gray-200 dark:border-gray-800 py-6">
       <div className="w-full sm:w-[400px]">
+        <CardDateArea date={item.date} lang={lang} />
         <CardTitleArea
           title={item.title}
           slug={localePath(lang, `/${item.slug}`)}
           className="flex"
           linkClassName="after:absolute after:inset-0"
         />
-        <CardDateArea date={item.date} lang={lang} />
+
         <CardTagsArea
           tags={item.tags}
           lang={lang}
