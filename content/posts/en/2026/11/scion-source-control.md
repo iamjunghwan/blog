@@ -1,13 +1,13 @@
 ---
 slug: scion-source-control
-title: "Writing Code Is No Longer the Bottleneck — Anthropic's Scion"
+title: "Anthropic's Scion — From Human Scale to Agent Scale"
 date: 2026-11-16
 tags: ["news", "ai"]
 draft: true
 description: "Daily merges went from 2,500 to over 30,000 in four months, and the infrastructure built to absorb them became the constraint. What Anthropic changed, what it means for merge queues and CI, and why git isn't going anywhere."
 ---
 
-# Anthropic's Scion: From Human Scale to Agent Scale
+# Anthropic's Scion — From Human Scale to Agent Scale
 
 ---
 

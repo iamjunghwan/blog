@@ -1,6 +1,6 @@
 ---
 slug: scion-source-control
-title: "AI 시대, 코드 작성은 더 이상 병목이 아니다 — Anthropic의 Scion"
+title: "Anthropic의 Scion — 인간 규모에서 에이전트 규모로"
 date: 2026-11-16
 tags: ["news", "ai"]
 draft: true
