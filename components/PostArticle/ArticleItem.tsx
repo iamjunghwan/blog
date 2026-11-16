@@ -1,10 +1,12 @@
 import { localePath } from "@/app/lib/i18n/paths";
 import type { Lang, Post } from "@/app/lib/posts/types";
 import { thumbnailOf } from "@/app/lib/posts/thumbnail";
+import { excerptOf } from "@/app/lib/posts/excerpt";
 import CardDateArea from "../Card/CardDateArea";
 import CardTitleArea from "../Card/CardTitleArea";
 import CardTagsArea from "../Card/CardTagsArea";
 import CardImageArea from "../Card/CardImageArea";
+import CardExcerptArea from "../Card/CardExcerptArea";
 
 export const ArticleItem = ({
   item,
@@ -24,12 +26,16 @@ export const ArticleItem = ({
           className="flex"
           linkClassName="after:absolute after:inset-0"
         />
+        <CardDateArea date={item.date} lang={lang} />
         <CardTagsArea
           tags={item.tags}
           lang={lang}
-          className="relative z-10 flex flex-wrap gap-2 mb-2"
+          className="relative z-10 mt-2 flex flex-wrap gap-2 mb-2"
         />
-        <CardDateArea date={item.date} lang={lang} />
+        <CardExcerptArea
+          excerpt={excerptOf(item)}
+          className="mt-1 line-clamp-2 text-sm leading-relaxed text-gray-600 dark:text-gray-400"
+        />
       </div>
       <CardImageArea
         src={thumbnailOf(item)}
