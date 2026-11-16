@@ -3,7 +3,8 @@ slug: scion-source-control
 title: "Anthropic의 Scion — 인간 규모에서 에이전트 규모로"
 date: 2026-11-16
 tags: ["news", "ai"]
-draft: true
+thumbnail: "/uploads/2026/11/scion-source-control.png"
+draft: false
 ---
 
 # Anthropic의 Scion — 인간 규모에서 에이전트 규모로
