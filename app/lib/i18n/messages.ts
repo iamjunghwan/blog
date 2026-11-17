@@ -17,6 +17,8 @@ type Messages = {
   openMenu: string;
   closeMenu: string;
   noResults: string;
+  /** 아직 검색어를 넣지 않았을 때. 전체 목록을 뿌리는 대신 이걸 보여 준다. */
+  searchHint: string;
   searchLabel: string;
   searchTitle: string;
   switchTo: string;
@@ -43,6 +45,7 @@ export const MESSAGES: Record<Lang, Messages> = {
     openMenu: "메뉴 열기",
     closeMenu: "메뉴 닫기",
     noResults: "검색 결과가 없습니다.",
+    searchHint: "글 제목으로 찾습니다. 검색어를 입력해 보세요.",
     searchLabel: "검색",
     searchTitle: "아티클 검색",
     switchTo: "English로 보기",
@@ -68,6 +71,7 @@ export const MESSAGES: Record<Lang, Messages> = {
     openMenu: "Open menu",
     closeMenu: "Close menu",
     noResults: "No results found.",
+    searchHint: "Searches post titles. Start typing.",
     searchLabel: "Search",
     searchTitle: "Search articles",
     switchTo: "한국어로 보기",
