@@ -4,6 +4,12 @@ import type { NextConfig } from "next";
 // 117개 패키지를 들이고 있었다. 지금은 components/Icon/ 에 직접 적는다.
 const nextConfig: NextConfig = {
   output: "export",
+
+  experimental: {
+    // 보안 권고가 나온 버전만 알려 준다. next dev 가 띄우는 업그레이드 안내를
+    // 끄는 게 아니라, 보안 건으로 범위를 좁히는 설정이다.
+    agentUpgrade: "security",
+  },
 };
 
 export default nextConfig;
