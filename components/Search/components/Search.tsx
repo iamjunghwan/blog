@@ -24,18 +24,21 @@ function SearchModal({
   const searchInputRef = useRef<HTMLInputElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
-  const { filteredData, setSearchValue } = useSearchData(index);
+  const { filteredData, hasQuery, setSearchValue } = useSearchData(index);
   useSearchEvent(open, modalContainerRef, searchInputRef, onClose);
 
   if (!open) {
     return null;
   }
 
+  // 세로 가운데가 아니라 위에 붙인다. 가운데 정렬이면 결과 수에 따라 모달이
+  // 자랄 때 위쪽 모서리가 같이 올라가서, 타이핑하는 중에 입력창이 움직인다.
+  // 위를 기준으로 두면 제목과 입력창의 y가 고정되고 목록만 아래로 자란다.
   return (
-    <div className=" fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+    <div className="fixed inset-0 z-50 flex items-start justify-center px-4 pt-[10vh] bg-black/40">
       <div
         ref={modalContainerRef}
-        className="w-full max-w-xl bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative"
+        className="w-full max-w-xl bg-white rounded-lg shadow-lg p-6 relative"
       >
         <button
           type="button"
@@ -55,13 +58,16 @@ function SearchModal({
           placeholder={messages(lang).searchPlaceholder}
           className="w-full border rounded px-3 py-2 mb-4 "
         />
-        <div className="text-gray-500 text-sm min-h-[400px] w-full">
-          {filteredData &&
-          Array.isArray(filteredData) &&
-          filteredData.length > 0 ? (
-            filteredData.map((item: SearchEntry, idx: number) => (
+        {/*
+          천장만 두고 안에서 스크롤한다. 고정 높이로 두면 검색어가 없을 때
+          400px 빈 상자가 남고, 천장이 없으면 결과가 늘수록 모달이 화면을
+          넘긴다. 뷰포트가 낮은 기기에서는 400px도 과해서 절반까지만 쓴다.
+        */}
+        <div className="text-gray-500 text-sm max-h-[min(400px,50vh)] w-full overflow-y-auto">
+          {filteredData.length > 0 ? (
+            filteredData.map((item: SearchEntry) => (
               <div
-                key={idx}
+                key={item.slug}
                 className="flex cursor-pointer justify-between px-4 py-2 text-gray-700 dark:text-gray-100 bg-transparent hover:bg-yellow-100"
                 tabIndex={0}
                 onClick={() => {
@@ -76,8 +82,9 @@ function SearchModal({
               </div>
             ))
           ) : (
-            <div className="text-center text-gray-400 py-8 min-h-[400px] flex items-center justify-center">
-              {messages(lang).noResults}
+            // 빈 결과가 두 가지다. 아직 안 찾았거나, 찾았는데 없거나.
+            <div className="text-center text-gray-400 px-6 py-10">
+              {hasQuery ? messages(lang).noResults : messages(lang).searchHint}
             </div>
           )}
         </div>
