@@ -119,11 +119,13 @@ test("filterByTitle은 대소문자를 무시하고 부분 일치로 거른다",
   );
 });
 
-test("filterByTitle은 빈 검색어와 공백만 있는 검색어에 전체를 준다", () => {
+// 전체를 주던 자리다. 글이 늘면서 모달을 열기만 해도 목록이 화면을 넘겼다.
+// 검색은 찾는 행위라 아직 찾지 않은 상태의 답은 전체가 아니라 없음이다.
+test("filterByTitle은 빈 검색어와 공백만 있는 검색어에 아무것도 주지 않는다", () => {
   const entries = searchIndex(POSTS);
 
-  assert.equal(filterByTitle(entries, "").length, entries.length);
-  assert.equal(filterByTitle(entries, "   ").length, entries.length);
+  assert.deepEqual(filterByTitle(entries, ""), []);
+  assert.deepEqual(filterByTitle(entries, "   "), []);
 });
 
 test("filterByTitle은 일치하는 게 없으면 빈 배열을 준다", () => {

@@ -50,7 +50,11 @@ export function paginate<T>(
 
 /**
  * 검색어로 제목을 거른다. 대소문자를 무시하고 부분 일치를 본다.
- * 검색어가 비었거나 공백뿐이면 전체를 준다 (모달을 열었을 때 목록이 보이는 동작).
+ * 검색어가 비었거나 공백뿐이면 빈 배열을 준다.
+ *
+ * 전에는 빈 검색어에 전체를 줬다. 글이 늘면서 모달을 열기만 해도 목록이 화면을
+ * 넘겼다. 아직 아무것도 찾지 않은 상태의 답은 전체가 아니라 없음이다. 모달은 이
+ * 빈 배열을 "결과 없음"이 아니라 안내 문구로 그린다 — 검색어 유무로 구분한다.
  *
  * 훅이 아니라 여기에 두는 이유: 순수 함수라 컴포넌트 테스트 인프라 없이
  * node:test로 그대로 검증된다. 검색 동작이 사용자에게 보이는 계약이므로 고정한다.
@@ -62,7 +66,7 @@ export function filterByTitle(
   const keyword = query.trim().toLowerCase();
 
   if (keyword === "") {
-    return entries;
+    return [];
   }
   return entries.filter((entry) =>
     entry.title.toLowerCase().includes(keyword)
