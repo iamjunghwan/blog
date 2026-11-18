@@ -13,6 +13,7 @@ import {
 } from "@/app/lib/analytics/config";
 import { Ga4Error, fetchStats, type Ga4Stats } from "@/app/lib/analytics/ga4";
 import { articleViews, type ArticleRef } from "@/app/lib/analytics/articles";
+import { articleUrl, inspectAll, type IndexStatus } from "@/app/lib/analytics/searchConsole";
 
 /** Google Identity Services 중 쓰는 부분만 타입을 적는다. */
 type TokenResponse = { access_token?: string; error?: string };
@@ -64,6 +65,8 @@ export default function AdminDashboard({ articles }: { articles: ArticleRef[] })
   const [period, setPeriod] = useState<Period>(DEFAULT_PERIOD);
   const [view, setView] = useState<View>({ kind: "signedOut" });
   const [attempt, setAttempt] = useState(0);
+  // 글 주소 → 색인 상태. 기간과 무관해 토큰을 얻은 직후 한 번만 채운다.
+  const [index, setIndex] = useState<Record<string, IndexStatus>>({});
 
   const signIn = useCallback(() => {
     const oauth2 = window.google?.accounts.oauth2;
@@ -125,6 +128,26 @@ export default function AdminDashboard({ articles }: { articles: ArticleRef[] })
     };
   }, [token, period, attempt]);
 
+  useEffect(() => {
+    if (token === null) {
+      return;
+    }
+    let cancelled = false;
+    const urls = articles.map((article) => articleUrl(article.slug, article.lang));
+    const pending: IndexStatus = { state: "pending", detail: "조회 중" };
+
+    setIndex(Object.fromEntries(urls.map((url) => [url, pending])));
+    inspectAll(token, urls, (url, status) => {
+      if (!cancelled) {
+        setIndex((prev) => ({ ...prev, [url]: status }));
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [token, articles]);
+
   return (
     <>
       <Script
@@ -184,7 +207,11 @@ export default function AdminDashboard({ articles }: { articles: ArticleRef[] })
               </div>
             )}
             {view.kind === "ready" && (
-              <StatTables stats={view.stats} articles={articleViews(view.stats.pages, articles)} />
+              <StatTables
+                stats={view.stats}
+                articles={articleViews(view.stats.pages, articles)}
+                index={index}
+              />
             )}
           </>
         )}

@@ -1,5 +1,6 @@
 import type { Ga4Stats, Row } from "@/app/lib/analytics/ga4";
 import type { ArticleViews } from "@/app/lib/analytics/articles";
+import { articleUrl, type IndexStatus } from "@/app/lib/analytics/searchConsole";
 
 const format = (value: number) => value.toLocaleString("ko-KR");
 
@@ -45,7 +46,37 @@ function RowTable({ rows, valueLabel }: { rows: Row[]; valueLabel: string }) {
   );
 }
 
-function ArticleTable({ articles }: { articles: ArticleViews[] }) {
+const INDEX_LABEL: Record<IndexStatus["state"], string> = {
+  pending: "…",
+  indexed: "✅ 색인",
+  notIndexed: "⏳ 미색인",
+  unknown: "❌ 모름",
+  error: "–",
+};
+
+/** status가 없으면 그 언어판이 없는 글이다 — 빈 칸. */
+function IndexCell({ status }: { status: IndexStatus | undefined }) {
+  if (!status) {
+    return <td className="py-1 pl-3" />;
+  }
+  const title = status.lastCrawl
+    ? `${status.detail} · 마지막 크롤링 ${status.lastCrawl}`
+    : status.detail;
+
+  return (
+    <td className="py-1 pl-3 text-right whitespace-nowrap" title={title}>
+      {INDEX_LABEL[status.state]}
+    </td>
+  );
+}
+
+function ArticleTable({
+  articles,
+  index,
+}: {
+  articles: ArticleViews[];
+  index: Record<string, IndexStatus>;
+}) {
   return (
     <table className="w-full text-sm">
       <thead>
@@ -54,6 +85,8 @@ function ArticleTable({ articles }: { articles: ArticleViews[] }) {
           <th className="py-1 text-right font-normal">합계</th>
           <th className="py-1 text-right font-normal">ko</th>
           <th className="py-1 text-right font-normal">en</th>
+          <th className="py-1 pl-3 text-right font-normal">색인 ko</th>
+          <th className="py-1 pl-3 text-right font-normal">색인 en</th>
         </tr>
       </thead>
       <tbody>
@@ -67,6 +100,8 @@ function ArticleTable({ articles }: { articles: ArticleViews[] }) {
             <td className="py-1 text-right tabular-nums font-bold">{format(article.total)}</td>
             <td className="py-1 text-right tabular-nums">{format(article.ko)}</td>
             <td className="py-1 text-right tabular-nums">{format(article.en)}</td>
+            <IndexCell status={index[articleUrl(article.slug, "ko")]} />
+            <IndexCell status={index[articleUrl(article.slug, "en")]} />
           </tr>
         ))}
       </tbody>
@@ -77,9 +112,11 @@ function ArticleTable({ articles }: { articles: ArticleViews[] }) {
 export default function StatTables({
   stats,
   articles,
+  index,
 }: {
   stats: Ga4Stats;
   articles: ArticleViews[];
+  index: Record<string, IndexStatus>;
 }) {
   return (
     <div className="space-y-8">
@@ -89,7 +126,7 @@ export default function StatTables({
         <Card label="세션" value={stats.summary.sessions} />
       </div>
       <Section title="아티클 조회수">
-        <ArticleTable articles={articles} />
+        <ArticleTable articles={articles} index={index} />
       </Section>
       <div className="grid grid-cols-3 gap-6 max-[800px]:grid-cols-1">
         <Section title="방문 국가">
