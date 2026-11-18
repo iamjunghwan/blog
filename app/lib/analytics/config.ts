@@ -13,7 +13,11 @@ export const GA4_PROPERTY_ID = "433431799";
 export const OAUTH_CLIENT_ID =
   "131871495844-jjum07lvadb8iju1t8093s8kaca1udht.apps.googleusercontent.com";
 
-export const OAUTH_SCOPE = "https://www.googleapis.com/auth/analytics.readonly";
+/** GA4 읽기 + Search Console 읽기. GIS는 공백으로 구분한 여러 범위를 받는다. */
+export const OAUTH_SCOPE = [
+  "https://www.googleapis.com/auth/analytics.readonly",
+  "https://www.googleapis.com/auth/webmasters.readonly",
+].join(" ");
 
 /** 고를 수 있는 기간(일). */
 export const PERIODS = [7, 28, 90] as const;
@@ -21,3 +25,6 @@ export const PERIODS = [7, 28, 90] as const;
 export type Period = (typeof PERIODS)[number];
 
 export const DEFAULT_PERIOD: Period = 28;
+
+/** Search Console의 URL 접두어 속성. 끝 슬래시까지 정확히 같아야 한다. */
+export const SEARCH_CONSOLE_SITE = "https://iaman.kr/";
