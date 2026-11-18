@@ -106,7 +106,7 @@ export const ACCENT: Record<MotifName, string> = {
  * 그래서 슬러그로 직접 배정한다. 새 글은 아래 TAG_FALLBACK이 임시로 맡고,
  * 어울리는 그림이 생기면 여기에 한 줄 추가하면 된다.
  */
-const MOTIF_BY_SLUG: Record<string, MotifName> = {
+export const MOTIF_BY_SLUG: Record<string, MotifName> = {
   "ai-developer-responsibility": "nodes",
   "swe-bench": "bars",
   "npm-tgz": "package",

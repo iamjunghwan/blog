@@ -6,6 +6,7 @@ import { POSTS_DIR, loadAllPosts } from "@/app/lib/posts/repository";
 import { postsIn } from "@/app/lib/posts/queries";
 import { renderPostBody } from "@/app/lib/posts/render";
 import { thumbnailOf, DEFAULT_THUMBNAIL } from "@/app/lib/posts/thumbnail";
+import { MOTIF_BY_SLUG } from "@/scripts/thumbnail/registry";
 
 /**
  * 실제 content/posts를 대상으로 하는 회귀 테스트.
@@ -67,4 +68,47 @@ test("slug이 언어 안에서 겹치지 않는다", () => {
 
     assert.equal(new Set(slugs).size, slugs.length, `${lang} slug 중복`);
   }
+});
+
+test("ko·en 짝은 date·tags·thumbnail·draft가 같다", () => {
+  // 썸네일 경로가 날짜로 조립되므로 날짜가 갈리면 영어판이 다른 그림을 가리킨다.
+  // draft가 갈리면 한쪽만 공개된다.
+  const ko = new Map(postsIn(posts, "ko").map((post) => [post.slug, post]));
+
+  for (const en of postsIn(posts, "en")) {
+    const pair = ko.get(en.slug);
+
+    if (!pair) {
+      continue;
+    }
+    assert.equal(en.date, pair.date, `${en.slug}: date가 다르다`);
+    assert.deepEqual(en.tags, pair.tags, `${en.slug}: tags가 다르다`);
+    assert.equal(en.thumbnail, pair.thumbnail, `${en.slug}: thumbnail이 다르다`);
+    assert.equal(en.draft, pair.draft, `${en.slug}: draft가 다르다`);
+  }
+});
+
+test("공개된 영어판에는 description이 있다", () => {
+  // 없으면 본문 첫 문단이 검색·공유 설명으로 나간다. 빌드는 통과하므로 여기서 잡는다.
+  for (const post of postsIn(posts, "en")) {
+    if (post.draft) {
+      continue;
+    }
+    assert.ok(post.description, `${post.slug}: 영어판에 description이 없다`);
+  }
+});
+
+test("공개된 글마다 고유한 썸네일 그림이 배정돼 있다", () => {
+  // 배정이 없으면 태그 폴백이 고르는데, 폴백 그림은 전부 다른 글이 이미 쓰고 있다.
+  const published = new Set(posts.filter((post) => !post.draft).map((post) => post.slug));
+
+  for (const slug of published) {
+    assert.ok(slug in MOTIF_BY_SLUG, `${slug}: scripts/thumbnail/registry.ts의 MOTIF_BY_SLUG에 그림이 없다`);
+  }
+
+  const motifs = Object.entries(MOTIF_BY_SLUG)
+    .filter(([slug]) => published.has(slug))
+    .map(([, motif]) => motif);
+
+  assert.equal(new Set(motifs).size, motifs.length, "두 글이 같은 그림을 쓴다");
 });
