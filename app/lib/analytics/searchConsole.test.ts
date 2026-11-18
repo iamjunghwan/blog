@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   INSPECT_ENDPOINT,
   articleUrl,
+  indexFailure,
   inspectAll,
   inspectRequestBody,
   inspectUrl,
@@ -116,4 +117,60 @@ test("inspectAll은 모든 주소를 조회하고 동시 호출을 제한한다"
 
   assert.deepEqual([...seen].sort(), [...urls].sort());
   assert.equal(peak, 3);
+});
+
+test("inspectAll은 shouldContinue가 false가 되면 새 주소를 조회하지 않는다", async () => {
+  let calls = 0;
+  let go = true;
+  const fakeFetch = (async () => {
+    calls += 1;
+    return new Response(JSON.stringify(result({ verdict: "PASS", coverageState: "Submitted and indexed" })));
+  }) as unknown as typeof fetch;
+  const urls = Array.from({ length: 5 }, (_, i) => `https://iaman.kr/p${i}`);
+
+  await inspectAll(
+    "tok",
+    urls,
+    () => {
+      go = false;
+    },
+    { concurrency: 1, fetchImpl: fakeFetch, shouldContinue: () => go }
+  );
+
+  assert.equal(calls, 1);
+});
+
+const err = (detail: string) => ({ state: "error" as const, detail });
+
+test("indexFailure: 비었거나 하나라도 error가 아니면 null이다", () => {
+  assert.equal(indexFailure({}), null);
+  assert.equal(
+    indexFailure({ a: err("HTTP 403"), b: { state: "pending", detail: "조회 중" } }),
+    null
+  );
+  assert.equal(
+    indexFailure({ a: err("HTTP 403"), b: { state: "indexed", detail: "Submitted and indexed" } }),
+    null
+  );
+});
+
+test("indexFailure: 전부 error인데 사유가 다르면 일반 문구다", () => {
+  assert.equal(
+    indexFailure({ a: err("HTTP 403"), b: err("네트워크 오류") }),
+    "색인 상태를 불러오지 못했습니다."
+  );
+});
+
+test("indexFailure: 전부 HTTP 403이면 권한 안내다", () => {
+  assert.equal(
+    indexFailure({ a: err("HTTP 403"), b: err("HTTP 403") }),
+    "Search Console 권한이 없습니다. API 사용 설정, 데이터 액세스 범위(webmasters.readonly), 속성 사용자 여부를 확인해 주세요."
+  );
+});
+
+test("indexFailure: 전부 같은 다른 사유면 사유를 덧붙인다", () => {
+  assert.equal(
+    indexFailure({ a: err("HTTP 500"), b: err("HTTP 500") }),
+    "색인 상태를 불러오지 못했습니다 (HTTP 500)."
+  );
 });

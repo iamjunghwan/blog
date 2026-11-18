@@ -137,11 +137,17 @@ export default function AdminDashboard({ articles }: { articles: ArticleRef[] })
     const pending: IndexStatus = { state: "pending", detail: "조회 중" };
 
     setIndex(Object.fromEntries(urls.map((url) => [url, pending])));
-    inspectAll(token, urls, (url, status) => {
-      if (!cancelled) {
-        setIndex((prev) => ({ ...prev, [url]: status }));
-      }
-    });
+    // 주소별 실패는 이미 error 상태로 보고된다. 예상 밖의 throw만 막는다.
+    void inspectAll(
+      token,
+      urls,
+      (url, status) => {
+        if (!cancelled) {
+          setIndex((prev) => ({ ...prev, [url]: status }));
+        }
+      },
+      { shouldContinue: () => !cancelled }
+    ).catch(() => {});
 
     return () => {
       cancelled = true;

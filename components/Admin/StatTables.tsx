@@ -1,6 +1,6 @@
 import type { Ga4Stats, Row } from "@/app/lib/analytics/ga4";
 import type { ArticleViews } from "@/app/lib/analytics/articles";
-import { articleUrl, type IndexStatus } from "@/app/lib/analytics/searchConsole";
+import { articleUrl, indexFailure, type IndexStatus } from "@/app/lib/analytics/searchConsole";
 
 const format = (value: number) => value.toLocaleString("ko-KR");
 
@@ -118,6 +118,8 @@ export default function StatTables({
   articles: ArticleViews[];
   index: Record<string, IndexStatus>;
 }) {
+  const failure = indexFailure(index);
+
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-3 gap-3 max-[500px]:grid-cols-1">
@@ -126,7 +128,14 @@ export default function StatTables({
         <Card label="세션" value={stats.summary.sessions} />
       </div>
       <Section title="아티클 조회수">
-        <ArticleTable articles={articles} index={index} />
+        {failure && (
+          <p role="alert" className="mb-2 text-sm text-red-600 dark:text-red-400">
+            {failure}
+          </p>
+        )}
+        <div className="overflow-x-auto">
+          <ArticleTable articles={articles} index={index} />
+        </div>
       </Section>
       <div className="grid grid-cols-3 gap-6 max-[800px]:grid-cols-1">
         <Section title="방문 국가">
