@@ -8,7 +8,7 @@ export const dynamic = "force-static";
 /** next-sitemap이 만들던 robots.txt를 대체하는 Next 메타데이터 라우트. */
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: [{ userAgent: "*", allow: "/" }],
+    rules: [{ userAgent: "*", allow: "/", disallow: "/admin" }],
     sitemap: `${SITE_URL}/sitemap.xml`,
     host: SITE_URL,
   };
