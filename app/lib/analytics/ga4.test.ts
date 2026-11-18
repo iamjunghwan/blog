@@ -13,6 +13,7 @@ type Req = {
   dimensions?: { name: string }[];
   metrics: { name: string }[];
   limit?: number;
+  orderBys?: unknown[];
 };
 
 const requestsOf = (period: 7 | 28 | 90) =>
@@ -50,6 +51,16 @@ test("보고서 순서와 차원·지표가 설계와 같다", () => {
   ]);
   assert.equal(requests[2].limit, 10);
   assert.equal(requests[4].limit, 10);
+});
+
+test("잘림에 대비해 글 보고서와 상위 보고서는 지표 내림차순으로 정렬한다", () => {
+  const requests = requestsOf(28);
+  const desc = (name: string) => [{ metric: { metricName: name }, desc: true }];
+
+  assert.equal(requests[1].limit, 1000);
+  assert.deepEqual(requests[1].orderBys, desc("screenPageViews"));
+  assert.deepEqual(requests[2].orderBys, desc("activeUsers"));
+  assert.deepEqual(requests[4].orderBys, desc("sessions"));
 });
 
 const row = (label: string, value: string) => ({

@@ -82,8 +82,14 @@ export default function AdminDashboard({ articles }: { articles: ArticleRef[] })
             setView({ kind: "signedOut", message: "로그인하지 못했습니다." });
           }
         },
-        error_callback: () => {
-          setView({ kind: "signedOut", message: "로그인 창이 닫혔습니다." });
+        error_callback: (error) => {
+          const message =
+            error.type === "popup_failed_to_open"
+              ? "로그인 창이 열리지 않았습니다. 팝업 차단을 확인해 주세요."
+              : error.type === "popup_closed"
+                ? "로그인 창이 닫혔습니다."
+                : "로그인하지 못했습니다.";
+          setView({ kind: "signedOut", message });
         },
       })
       .requestAccessToken();
@@ -121,7 +127,16 @@ export default function AdminDashboard({ articles }: { articles: ArticleRef[] })
 
   return (
     <>
-      <Script src="https://accounts.google.com/gsi/client" onReady={() => setGisReady(true)} />
+      <Script
+        src="https://accounts.google.com/gsi/client"
+        onReady={() => setGisReady(true)}
+        onError={() =>
+          setView({
+            kind: "signedOut",
+            message: "Google 로그인 스크립트를 불러오지 못했습니다. 광고 차단기를 확인해 주세요.",
+          })
+        }
+      />
       <InnerHeader title="Admin" />
       <main className="space-y-6 pb-12">
         {view.kind === "signedOut" ? (

@@ -49,6 +49,7 @@ export function batchRequestBody(period: Period): object {
         dateRanges,
         dimensions: [dimension("pagePath")],
         metrics: [metric("screenPageViews")],
+        orderBys: byMetricDesc("screenPageViews"),
         limit: PAGE_LIMIT,
       },
       {
