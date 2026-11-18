@@ -15,7 +15,9 @@ disable-model-invocation: true
 
 - `content/posts/ko/**/<slug>.md`와 `content/posts/en/**/<slug>.md`를 찾는다.
 - 영어판이 없으면 사용자에게 알린다 (한국어만 공개할지, translate-post를 먼저 할지).
-- 두 판의 `date`·`tags`가 같은지 본다.
+- 기술 검토: `.local/posts/<slug>/review.md`가 있으면 남은 지적이 없는지 본다.
+  없거나 지적이 남아 있으면 사용자에게 알리고, 공개를 계속할지 묻는다.
+- 짝 일치·영어판 description·썸네일 배정은 4단계 `pnpm test`가 검사한다. 눈으로 다시 보지 않는다.
 
 ## 2. 썸네일
 

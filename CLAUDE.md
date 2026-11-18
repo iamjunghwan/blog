@@ -56,5 +56,13 @@ out/                            정적 HTML → Cloudflare Pages
 
 ## 작업 방식
 
-- 커밋은 사용자 승인 후. 메시지는 `📝 post: ...` 같은 gitmoji + `-다`체
+- 커밋·푸시·공개(`draft: false`)는 사용자 승인 후. 메시지는 `📝 post: ...` 같은 gitmoji + `-다`체
 - 끝나면 `docs/worklog/YYYY-MM-DD-<주제>.md`에 기록을 남긴다
+- 글 작업의 서브에이전트(`researcher` `article-writer` `technical-reviewer`)는 write-post skill이 정한 조건에서만 부른다
+- 기능 개발은 Superpowers skill과 `/code-review`를 쓴다. 글용 에이전트를 쓰지 않는다
+
+## 병렬 작업
+
+- worktree는 기능 개발을 병렬로 할 때만 쓴다 (Superpowers using-git-worktrees). 글 작업은 main에서
+- `pnpm fonts`는 main에 합친 뒤에만 돌린다 — 모든 글 기준으로 다시 만들어 브랜치마다 결과가 갈린다
+- dev 서버를 동시에 띄우면 두 번째는 `pnpm dev -p 3001`

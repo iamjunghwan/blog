@@ -10,20 +10,35 @@ argument-hint: "[주제 또는 초안 경로]"
 
 ## 절차
 
+메인 세션이 지휘한다. 서브에이전트는 **조건에 맞을 때만** 부르고, 자료는 파일 경로로 넘긴다
+(`.local/posts/<slug>/` — gitignore돼 있다). 본문·조사 결과를 프롬프트에 붙이지 않는다.
+
 1. **파일 만들기** — 기존 글이 아니면 `pnpm new-post <slug> "<제목>" <태그>`.
    slug은 영문 개념어로 짓는다 (`focus-trap`, `tsc-incremental-type-check`). 태그는 기존 것에서 고른다:
    `grep -h "^tags:" -r content/posts/ko | sort | uniq -c`
-2. **검증 먼저** — 초안의 주장을 그대로 다듬지 않는다. 아래 "사실 검증"을 거친 뒤 쓴다.
-3. **구조와 문체**에 맞춰 쓴다. 문체 세부는 [style.md](style.md).
-   방향이 애매하면 최근 글 하나를 읽고 맞춘다 (`content/posts/ko/2026/11/`).
-4. **확인** — `pnpm dev` 후 `http://localhost:3000/<slug>`, 그리고 `pnpm test`.
-   새 글자가 들어갔으면 `pnpm fonts`부터.
-5. **기록** — `docs/worklog/YYYY-MM-DD-<slug>-post.md`에 검증한 것, 초안에서 고친 것을 남긴다.
-6. **썸네일** — 본문이 마무리되면 [thumbnail.md](thumbnail.md) 절차로 만든다.
+2. **조사** — 외부 사실(버전·API 동작·수치·원문)이 필요하고 사용자가 출처를 주지 않았을 때만
+   `researcher`에 주제·slug·확인할 질문을 넘긴다. 결과: `.local/posts/<slug>/research.md`
+3. **초안** — 새 글이거나 구조를 바꾸는 재작성일 때만 `article-writer`에 글 경로·research.md(또는 사용자 초안)·방향을 넘긴다.
+   사용자 초안을 다듬는 정도면 메인 세션이 [style.md](style.md)를 보고 직접 한다.
+4. **다듬기** — 메인 세션이 읽고 고친다. writer가 남긴 "추가 조사 필요"가 있으면 2로 돌아간다.
+5. **기술 검토** — 새 글이거나 기술 주장을 바꿨을 때 `technical-reviewer`에 글 경로와 slug만 넘긴다
+   (일부만 바꿨으면 해당 소제목도). 지적을 반영하거나, 반영하지 않을 이유를 사용자에게 알린다.
+   오탈자·문장 손질만 했으면 부르지 않는다.
+6. **썸네일** — 검토까지 반영해 내용이 확정된 뒤에 그린다. [thumbnail.md](thumbnail.md) 절차.
    글의 핵심 장면을 한 줄로 정리해 사용자에게 먼저 확인받는다.
    태그에 맡기지 않는다 — 태그로 정해지는 기본 그림은 항상 다른 글과 겹친다.
-7. `draft: true`는 그대로 둔다. 커밋은 사용자 승인 후:
+7. **확인** — 새 글자가 들어갔으면 `pnpm fonts`, 그다음 `pnpm test`.
+   `pnpm dev`로 `http://localhost:3000/<slug>`를 사용자에게 안내한다.
+8. **기록과 커밋** — `docs/worklog/YYYY-MM-DD-<slug>-post.md`에 조사·검토에서 고친 것을 남긴다.
+   `draft: true`는 그대로 둔다. 커밋은 사용자 승인 후:
    `📝 post: <주제>` / 새 그림이면 `✨ feat: 썸네일에 <그림> 모티프를 더한다` / `🎨 thumbnail: <주제>의 대표 이미지`
+
+| 상황 | researcher | article-writer | technical-reviewer |
+|---|---|---|---|
+| 새 주제의 글 | O | O | O |
+| 출처가 담긴 사용자 초안 | X | X | O |
+| 기술 주장 한 단락 추가 | 필요하면 | X | O (그 단락만) |
+| 오탈자·문장 손질 | X | X | X |
 
 ## 구조
 
