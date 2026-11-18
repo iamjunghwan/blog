@@ -41,7 +41,7 @@ Superpowers의 서브에이전트 방식. 작업마다 구현 → 리뷰(스펙 
 
 ## 검증
 
-- `pnpm test` 167개 통과 (기존 150 + ga4 9 + articles 8)
+- `pnpm test` 167개 통과 (기존 150 + ga4 9 + articles 8) — 색인 추가 후 181개
 - `npx tsc --noEmit -p .` 통과
 - `pnpm build` 성공. `out/admin.html`에 `noindex, nofollow`, `out/robots.txt`에 `Disallow: /admin`, 사이트맵에 /admin 없음
 
@@ -51,8 +51,29 @@ Superpowers의 서브에이전트 방식. 작업마다 구현 → 리뷰(스펙 
   로그인 계정이 테스트 사용자에 없었다. Google 인증 플랫폼 → 대상 → 테스트 사용자에 추가하면 된다. 앱은 게시하지 않는다
   (`analytics.readonly`는 민감 범위라 게시하면 검수가 필요).
 
+## 추가 — 색인 상태 (Search Console)
+
+첫 화면을 보고 "새 글 조회가 0인 게 색인 때문인가"를 확인하려고 붙였다.
+설계 [specs/2026-11-18-search-console-index-design.md](../superpowers/specs/2026-11-18-search-console-index-design.md),
+계획 [plans/2026-11-18-search-console-index.md](../superpowers/plans/2026-11-18-search-console-index.md).
+
+| 커밋 | 내용 |
+|---|---|
+| `872139d` | 설계·계획 |
+| `94916e0` | `searchConsole.ts` — URL Inspection API, 상태 분류, 동시 6개 `inspectAll` |
+| `fc844cb` | 아티클 표에 색인 ko·en 칸 (`✅ 색인` / `⏳ 미색인` / `❌ 모름` / `–`, 마우스 올리면 상세·크롤링 날짜) |
+| `d0bf7f8` | 최종 리뷰 반영 — 전부 같은 이유로 실패하면 표 위 한 줄 안내, 취소 시 남은 조회 중단, 표 가로 스크롤 |
+
+- 같은 브라우저 토큰에 `webmasters.readonly`를 더했다. 서버 없음 유지
+- 색인은 로그인 직후 한 번만. 기간 탭 전환에는 다시 부르지 않는다. 48회/로그인, 하루 한도 2,000
+- 최종 리뷰(opus)가 잡은 것: 권한·API·범위 중 하나만 빠져도 48칸이 이유 없이 `–`가 된다 — 첫 실행에서 가장 흔할 실패라
+  "Search Console 권한이 없습니다…" 한 줄을 띄운다
+- 사용자 설정: Search Console API 사용 설정, 데이터 액세스에 `webmasters.readonly`, 로그인 계정이 `https://iaman.kr/` 속성 사용자
+- 검증: `pnpm test` 181개, tsc 통과. 브라우저 호출(CORS 포함)은 사람이 확인
+
 ## 남은 일
 
 - [ ] localhost에서 로그인 → 카드·표 확인, 기간 탭 전환, GA4 화면의 28일 수치와 대략 일치하는지
 - [ ] main 병합 → 배포 후 `https://iaman.kr/admin`에서 같은 확인
-- [ ] 화면을 보고 더하거나 뺄 것 정하기 (일별 추이, 기기 등)
+- [ ] 색인 칸이 채워지는지, 권한 오류 시 안내 한 줄이 보이는지
+- [ ] 화면을 보고 더하거나 뺄 것 정하기 (일별 추이, 기기, 검색 노출·클릭 등)
