@@ -21,13 +21,16 @@ Cloudflare Pages ( CDN 업로드 )
 ## Writing
 
 ```
-pnpm new-post <slug> "<제목>" <태그,태그>
+pnpm new-post <slug> "<제목>" <태그,태그> [ko|en]
 pnpm new-post use-hook "React 19의 use 훅" react,javascript
+pnpm new-post use-hook "The use hook in React 19" react,javascript en
 ```
 
-오늘 날짜로 `content/posts/<year>/<month>/<slug>.md`를 만들고 frontmatter를 채운 뒤 `draft: true`로 열어둔다. slug 중복과 예약어는 미리 막는다.
+오늘 날짜로 `content/posts/<lang>/<year>/<month>/<slug>.md`를 만들고 frontmatter를 채운 뒤 `draft: true`로 열어둔다. 언어를 생략하면 `ko`다. slug 중복과 예약어는 미리 막는다.
 
-직접 만들어도 된다. `content/posts/<year>/<month>/<slug>.md` 로 두면 되고, 연/월 폴더는 그 글의 `date`에서 나온다 (파일명이 아니라 폴더가 날짜를 나타낸다).
+직접 만들어도 된다. `content/posts/<lang>/<year>/<month>/<slug>.md` 로 두면 되고, 연/월 폴더는 그 글의 `date`에서 나온다 (파일명이 아니라 폴더가 날짜를 나타낸다).
+
+**언어는 폴더가 정한다** (`ko` · `en`). 같은 slug의 두 파일이 한 글의 한국어판·영어판이고, 영어판은 `iaman.kr/en/<slug>`로 나간다. 영어판을 스크립트로 만들면 한국어 원문의 날짜를 물려받는다 — 썸네일 경로가 날짜로 정해져서 두 판의 날짜가 같아야 한다.
 
 ```md
 ---
@@ -50,6 +53,7 @@ draft: false
 | `date` | O | `YYYY-MM-DD`. 폴더 위치의 근거 |
 | `tags` | O | YAML 배열. `all`은 예약어라 쓸 수 없다 |
 | `thumbnail` | X | 없으면 본문 첫 이미지 → 그마저 없으면 `/iaman.png` |
+| `description` | X | 검색 · 공유용 설명문. 없으면 본문 첫 문단에서 뽑는다 |
 | `draft` | X | `true`면 프로덕션에서 숨고 `pnpm dev`에서는 보인다 |
 
 조심할 것:

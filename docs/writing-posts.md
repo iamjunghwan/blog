@@ -8,17 +8,19 @@ README의 `## Writing`이 요약이라면, 이 문서는 **막힐 때 찾아보�
 ## 새 글 만들기
 
 ```bash
-pnpm new-post <slug> "<제목>" <태그,태그>
+pnpm new-post <slug> "<제목>" <태그,태그> [ko|en]
 pnpm new-post use-hook "React 19의 use 훅" react,javascript
+pnpm new-post use-hook "The use hook in React 19" react,javascript en
 ```
 
-오늘 날짜로 `content/posts/<year>/<month>/<slug>.md`를 만들고 frontmatter를 채운 뒤
-`draft: true`로 열어둔다. 다음은 미리 막는다:
+오늘 날짜로 `content/posts/<lang>/<year>/<month>/<slug>.md`를 만들고 frontmatter를 채운 뒤
+`draft: true`로 열어둔다. 언어를 생략하면 `ko`다. 영어판은 한국어 원문의 날짜를 물려받는다.
+다음은 미리 막는다:
 
 - slug 형식 (영문·숫자로 시작, 영문·숫자·하이픈만)
-- 예약어 `all` (slug·태그 양쪽)
+- 예약어 — slug에 `all` `en` `about` `post`, 태그에 `all`
 - 태그 누락
-- 기존 글과의 slug 충돌 — 실제 파서로 읽어서 검사한다
+- 같은 언어 안에서의 slug 충돌 — 실제 파서로 읽어서 검사한다
 - 같은 경로에 파일이 이미 있는 경우
 
 직접 만들어도 된다. 아래 규칙만 지키면 된다.
@@ -42,6 +44,7 @@ draft: true
 | `date` | O | `YYYY-MM-DD`. 폴더 위치의 근거 |
 | `tags` | O | YAML 배열. `all`은 예약어 |
 | `thumbnail` | X | 생략 시 본문 첫 이미지 → 없으면 `/iaman.png` |
+| `description` | X | 검색 · 공유용 설명문. 생략 시 본문 첫 문단에서 뽑는다 (155자 안팎) |
 | `draft` | X | `true`면 프로덕션에서 제외, `pnpm dev`에서는 보인다 |
 
 **필수 필드가 빠지면 파일명을 담은 에러로 빌드가 멈춘다.** 글이 조용히 사라지지 않는다.
@@ -49,8 +52,12 @@ draft: true
 ## 파일 위치
 
 ```
-content/posts/<year>/<month>/<slug>.md
+content/posts/ko/<year>/<month>/<slug>.md   한국어 → iaman.kr/<slug>
+content/posts/en/<year>/<month>/<slug>.md   영어   → iaman.kr/en/<slug>
 ```
+
+**언어는 폴더가 정한다.** frontmatter에 언어를 적지 않는다.
+같은 slug의 ko·en 두 파일이 한 글의 두 판이고, `date`·`tags`·`thumbnail`을 맞춘다.
 
 연/월 폴더는 **`date` frontmatter에서 나온다** (파일명이 아니다). 날짜를 고치면 폴더도 옮겨야 짝이 맞는다 — 안 옮겨도 사이트는 정상 동작하지만 정리 상태가 어긋난다.
 
