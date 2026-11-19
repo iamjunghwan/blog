@@ -1,11 +1,16 @@
 import "@/app/globals.css";
 import InnerHeader from "@/components/Layout/InnerHeader";
+import AboutPanel from "@/components/About/AboutPanel";
 import { GithubIcon, MailIcon } from "@/components/SvgIcon/index";
+import { allPosts } from "@/app/lib/posts/repository";
+import { postsIn } from "@/app/lib/posts/queries";
+import { writingSince } from "@/app/lib/blog/stats";
 import type { Lang } from "@/app/lib/posts/types";
 
-// lang은 지금 쓰지 않는다. 소개 본문에 번역할 문자열이 없기 때문인데,
-// 라우트가 넘기는 모양은 다른 페이지와 같게 두어 나중에 번역을 넣을 때 배선이 끝나 있게 한다.
+// 서버 컴포넌트. "writing since" 는 그 언어의 가장 오래된 글에서 빌드 때 계산한다.
 const AboutPage = ({ lang }: { lang: Lang }) => {
+  const since = writingSince(postsIn(allPosts(), lang));
+
   return (
     <>
       <InnerHeader title={`About`} />
@@ -42,12 +47,9 @@ const AboutPage = ({ lang }: { lang: Lang }) => {
           </nav>
         </section>
 
-        <article className="flex flex-col pl-4 pt-14">
-          <p>
-            Hello.
-            <br />A front developer who always approaches and solves problems
-            for why?
-          </p>
+        {/* min-w-0: 그리드 칸이 패널의 white-space:pre 폭만큼 늘어나지 않게 한다. */}
+        <article className="min-w-0 pl-4 pt-14 max-[500px]:pl-0">
+          <AboutPanel lang={lang} since={since} />
         </article>
       </main>
     </>

@@ -12,13 +12,10 @@
  ****************************************/
 
 import Link from "next/link";
-import AboutPanel from "@/components/Home/AboutPanel";
-import TagChips from "@/components/Home/TagChips";
 import LatestCarousel from "@/components/Carousel/LatestCarousel";
 import MostRead, { type MostReadItem } from "@/components/Home/MostRead";
 import { allPosts, featuredSlugs } from "@/app/lib/posts/repository";
 import { featuredPosts, postsIn } from "@/app/lib/posts/queries";
-import { topTags, writingSince } from "@/app/lib/blog/stats";
 import { thumbnailOf } from "@/app/lib/posts/thumbnail";
 import { localePath } from "@/app/lib/i18n/paths";
 import { messages } from "@/app/lib/i18n/messages";
@@ -27,8 +24,6 @@ import type { CarouselSlide, Lang } from "@/app/lib/posts/types";
 
 /** 메인에 보여줄 글 개수. 이 값만 쓴다. */
 const LATEST_COUNT = 5;
-/** 히어로 아래에 띄울 주제 칩 개수. */
-const TOP_TAG_COUNT = 5;
 /** 캐러셀이 aria-labelledby 로 가리킬 제목의 id. */
 const LATEST_HEADING_ID = "latest-articles";
 /** Most Read에 보일 글 개수. 이 값만 쓴다. */
@@ -62,10 +57,12 @@ const HomePage = ({ lang }: { lang: Lang }) => {
 
   return (
     <>
-      <header className="pt-2 pb-8 md:pb-16">
-        <AboutPanel lang={lang} since={writingSince(posts)} />
-        <TagChips lang={lang} tags={topTags(posts, TOP_TAG_COUNT)} />
-      </header>
+      {/*
+        페이지 제목. 자기소개 패널을 About 으로 옮긴 뒤 화면에 보이는 h1 이
+        없어졌다. "Latest Articles" 는 섹션 이름이라 h1 로 올리지 않고,
+        검색엔진·스크린리더용으로 블로그 이름과 성격을 숨겨서 둔다.
+      */}
+      <h1 className="sr-only">iaman — {messages(lang).aboutRole} blog</h1>
 
       {/*
         캐러셀이 이 제목을 자기 이름으로 삼는다(aria-labelledby). 제목과

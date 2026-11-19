@@ -30,12 +30,10 @@ type Messages = {
   nextSlide: string;
   slidePosition: (current: number, total: number) => string;
   goToSlide: (n: number) => string;
-  heroRole: string;
-  heroAsks: string;
+  aboutRole: string;
+  aboutAsks: string;
   /** "2025.03" 을 받는다. */
-  heroSince: (yearMonth: string) => string;
-  heroTagsLabel: string;
-  heroTagCount: (n: number) => string;
+  aboutSince: (yearMonth: string) => string;
 };
 
 export const MESSAGES: Record<Lang, Messages> = {
@@ -57,13 +55,11 @@ export const MESSAGES: Record<Lang, Messages> = {
     nextSlide: "다음 글",
     slidePosition: (current, total) => `${total}개 중 ${current}번째`,
     goToSlide: (n) => `${n}번째 글로 이동`,
-    heroRole: "Frontend Engineer",
-    heroAsks: "why?",
+    aboutRole: "Frontend Engineer",
+    aboutAsks: "why?",
     // 이 줄은 한국어 화면에서도 영어다. 패널 안이 코드라서, 주석도 코드처럼
     // 읽히는 편이 자연스럽다. allPosts / About 를 양쪽에서 영어로 두는 것과 같다.
-    heroSince: (yearMonth) => `writing since ${yearMonth}`,
-    heroTagsLabel: "자주 쓰는 주제",
-    heroTagCount: (n) => `글 ${n}편`,
+    aboutSince: (yearMonth) => `writing since ${yearMonth}`,
   },
   en: {
     allPosts: "All posts →",
@@ -83,11 +79,9 @@ export const MESSAGES: Record<Lang, Messages> = {
     nextSlide: "Next article",
     slidePosition: (current, total) => `${current} of ${total}`,
     goToSlide: (n) => `Go to article ${n}`,
-    heroRole: "Frontend Engineer",
-    heroAsks: "why?",
-    heroSince: (yearMonth) => `writing since ${yearMonth}`,
-    heroTagsLabel: "Frequent topics",
-    heroTagCount: (n) => `${n} posts`,
+    aboutRole: "Frontend Engineer",
+    aboutAsks: "why?",
+    aboutSince: (yearMonth) => `writing since ${yearMonth}`,
   },
 };
 
