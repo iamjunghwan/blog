@@ -13,7 +13,7 @@
 
 import Link from "next/link";
 import LatestCarousel from "@/components/Carousel/LatestCarousel";
-import MostRead, { type MostReadItem } from "@/components/Home/MostRead";
+import MostRead from "@/components/Home/MostRead";
 import { allPosts, featuredSlugs } from "@/app/lib/posts/repository";
 import { featuredPosts, postsIn } from "@/app/lib/posts/queries";
 import { thumbnailOf } from "@/app/lib/posts/thumbnail";
@@ -43,17 +43,7 @@ const HomePage = ({ lang }: { lang: Lang }) => {
     thumbnailSrc: thumbnailOf(post),
   }));
 
-  const mostRead: MostReadItem[] = featuredPosts(
-    posts,
-    featuredSlugs(),
-    lang,
-    MOST_READ_COUNT,
-  ).map((post) => ({
-    slug: post.slug,
-    title: post.title,
-    date: post.date,
-    thumbnailSrc: thumbnailOf(post),
-  }));
+  const mostRead = featuredPosts(posts, featuredSlugs(), lang, MOST_READ_COUNT);
 
   return (
     <>
@@ -96,7 +86,7 @@ const HomePage = ({ lang }: { lang: Lang }) => {
             Most Read
           </h2>
           <div className="my-6 h-px w-full bg-gray-300 dark:bg-gray-700" />
-          <MostRead items={mostRead} lang={lang} labelledBy={MOST_READ_HEADING_ID} />
+          <MostRead posts={mostRead} lang={lang} labelledBy={MOST_READ_HEADING_ID} />
         </section>
       )}
     </>
