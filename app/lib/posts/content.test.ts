@@ -2,7 +2,12 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
-import { POSTS_DIR, loadAllPosts } from "@/app/lib/posts/repository";
+import {
+  FEATURED_FILE,
+  POSTS_DIR,
+  loadAllPosts,
+  loadFeaturedSlugs,
+} from "@/app/lib/posts/repository";
 import { postsIn } from "@/app/lib/posts/queries";
 import { renderPostBody } from "@/app/lib/posts/render";
 import { thumbnailOf, DEFAULT_THUMBNAIL } from "@/app/lib/posts/thumbnail";
@@ -111,4 +116,18 @@ test("공개된 글마다 고유한 썸네일 그림이 배정돼 있다", () =>
     .map(([, motif]) => motif);
 
   assert.equal(new Set(motifs).size, motifs.length, "두 글이 같은 그림을 쓴다");
+});
+
+test("featured.json의 slug은 모두 공개된 한국어 글이고 겹치지 않는다", () => {
+  const slugs = loadFeaturedSlugs(FEATURED_FILE);
+  const published = new Set(
+    postsIn(posts, "ko")
+      .filter((post) => !post.draft)
+      .map((post) => post.slug),
+  );
+
+  assert.equal(new Set(slugs).size, slugs.length, "content/featured.json에 같은 slug이 두 번 있다");
+  for (const slug of slugs) {
+    assert.ok(published.has(slug), `${slug}: content/featured.json에 있지만 공개된 한국어 글이 아니다`);
+  }
 });

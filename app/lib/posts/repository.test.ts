@@ -3,7 +3,12 @@ import assert from "node:assert/strict";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { loadAllPosts, loadPosts, shouldIncludeDrafts } from "@/app/lib/posts/repository";
+import {
+  loadAllPosts,
+  loadFeaturedSlugs,
+  loadPosts,
+  shouldIncludeDrafts,
+} from "@/app/lib/posts/repository";
 
 const FIXTURES = path.join(process.cwd(), "app", "lib", "posts", "__fixtures__");
 const POSTS = path.join(FIXTURES, "posts");
@@ -126,5 +131,36 @@ test("날짜와 slug이 같은 번역판끼리는 언어로 순서를 고정한�
   assert.deepEqual(
     loadAllPosts(dir, true).map((post) => post.lang),
     ["en", "ko"]
+  );
+});
+
+function writeTempJson(content: string): string {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "featured-"));
+  const file = path.join(dir, "featured.json");
+  fs.writeFileSync(file, content);
+  return file;
+}
+
+test("loadFeaturedSlugs는 slug 문자열 배열을 순서대로 읽는다", () => {
+  const file = writeTempJson('["b", "a", "c"]');
+
+  assert.deepEqual(loadFeaturedSlugs(file), ["b", "a", "c"]);
+});
+
+test("loadFeaturedSlugs는 배열이 아니면 던진다", () => {
+  const file = writeTempJson('{"slugs": ["a"]}');
+
+  assert.throws(() => loadFeaturedSlugs(file), /slug 문자열 배열/);
+});
+
+test("loadFeaturedSlugs는 문자열이 아닌 원소가 있으면 던진다", () => {
+  const file = writeTempJson('["a", 1]');
+
+  assert.throws(() => loadFeaturedSlugs(file), /slug 문자열 배열/);
+});
+
+test("loadFeaturedSlugs는 파일이 없으면 던진다", () => {
+  assert.throws(() =>
+    loadFeaturedSlugs(path.join(os.tmpdir(), "no-such-dir-featured", "featured.json")),
   );
 });

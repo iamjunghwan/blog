@@ -5,6 +5,9 @@ import type { Lang, Post } from "@/app/lib/posts/types";
 
 export const POSTS_DIR = path.join(process.cwd(), "content", "posts");
 
+/** 홈 Most Read 목록. slug 배열이고 순서가 순위다. */
+export const FEATURED_FILE = path.join(process.cwd(), "content", "featured.json");
+
 /** 글 폴더에 있어야 하는 언어들. 폴더가 없으면 빌드가 실패한다. */
 export const LANGS: readonly Lang[] = ["ko", "en"];
 
@@ -90,6 +93,26 @@ export function allPosts(): Post[] {
     cache = posts;
   }
   return posts;
+}
+
+/**
+ * 추천 목록 파일을 읽는다. 형식이 틀리면 던져 빌드를 멈춘다.
+ *
+ * 파일이 없을 때도 readFileSync가 던지게 둔다. 조용히 빈 목록이 되면
+ * 홈에서 섹션이 사라진 걸 눈치채기 어렵다.
+ */
+export function loadFeaturedSlugs(file: string): string[] {
+  const data: unknown = JSON.parse(fs.readFileSync(file, "utf8"));
+
+  if (!Array.isArray(data) || !data.every((item) => typeof item === "string")) {
+    throw new Error(`${file}: slug 문자열 배열이어야 합니다`);
+  }
+  return data;
+}
+
+/** content/featured.json의 slug 목록. 글처럼 dev에서는 매번 읽는다. */
+export function featuredSlugs(): string[] {
+  return loadFeaturedSlugs(FEATURED_FILE);
 }
 
 /**
