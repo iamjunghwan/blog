@@ -26,5 +26,5 @@ export type Period = (typeof PERIODS)[number];
 
 export const DEFAULT_PERIOD: Period = 28;
 
-/** Search Console의 URL 접두어 속성. 끝 슬래시까지 정확히 같아야 한다. */
-export const SEARCH_CONSOLE_SITE = "https://iaman.kr/";
+/** Search Console의 도메인 속성. URL 접두어 속성이면 "https://iaman.kr/" 형태다. */
+export const SEARCH_CONSOLE_SITE = "sc-domain:iaman.kr";

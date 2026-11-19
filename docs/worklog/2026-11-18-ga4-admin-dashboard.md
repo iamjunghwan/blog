@@ -68,12 +68,16 @@ Superpowers의 서브에이전트 방식. 작업마다 구현 → 리뷰(스펙 
 - 색인은 로그인 직후 한 번만. 기간 탭 전환에는 다시 부르지 않는다. 48회/로그인, 하루 한도 2,000
 - 최종 리뷰(opus)가 잡은 것: 권한·API·범위 중 하나만 빠져도 48칸이 이유 없이 `–`가 된다 — 첫 실행에서 가장 흔할 실패라
   "Search Console 권한이 없습니다…" 한 줄을 띄운다
-- 사용자 설정: Search Console API 사용 설정, 데이터 액세스에 `webmasters.readonly`, 로그인 계정이 `https://iaman.kr/` 속성 사용자
+- 사용자 설정: Search Console API 사용 설정, 데이터 액세스에 `webmasters.readonly`, 로그인 계정이 도메인 속성 `iaman.kr`의 사용자
 - 검증: `pnpm test` 181개, tsc 통과. 브라우저 호출(CORS 포함)은 사람이 확인
+- 첫 실행에서 48칸 모두 403. 안내 한 줄은 의도대로 떴다. 응답 메시지는
+  "You do not own this site, or the inspected URL is not part of this property."
+  속성이 URL 접두어가 아니라 **도메인 속성**(`iaman.kr`)이었다. `siteUrl`을 `sc-domain:iaman.kr`로 바꾸자 색인 칸이 채워졌다.
+  속성 종류는 Search Console 속성 목록의 이름으로 구분한다 (`https://`가 없으면 도메인 속성)
 
 ## 남은 일
 
 - [ ] localhost에서 로그인 → 카드·표 확인, 기간 탭 전환, GA4 화면의 28일 수치와 대략 일치하는지
 - [ ] main 병합 → 배포 후 `https://iaman.kr/admin`에서 같은 확인
-- [ ] 색인 칸이 채워지는지, 권한 오류 시 안내 한 줄이 보이는지
+- [x] 색인 칸이 채워지는지, 권한 오류 시 안내 한 줄이 보이는지
 - [ ] 화면을 보고 더하거나 뺄 것 정하기 (일별 추이, 기기, 검색 노출·클릭 등)

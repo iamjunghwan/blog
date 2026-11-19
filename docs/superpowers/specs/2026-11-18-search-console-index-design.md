@@ -18,7 +18,7 @@
 GA4와 같은 브라우저 토큰으로 부른다. 서버·비밀키 없음.
 
 - 엔드포인트: `POST https://searchconsole.googleapis.com/v1/urlInspection/index:inspect`
-- 본문: `{ inspectionUrl, siteUrl: "https://iaman.kr/" }` (URL 접두어 속성)
+- 본문: `{ inspectionUrl, siteUrl: "sc-domain:iaman.kr" }` (도메인 속성. 처음엔 URL 접두어 `https://iaman.kr/`로 잘못 잡아 403이 났다)
 - `languageCode`는 보내지 않는다 — 기본 `en-US`라야 `coverageState` 문자열 비교가 안정적이다
 - 범위 추가: `https://www.googleapis.com/auth/webmasters.readonly`
 - 한도: 속성당 분당 600, 하루 2,000. 글 24편 × 2개 언어 = 48회
@@ -59,7 +59,7 @@ GA4와 같은 브라우저 토큰으로 부른다. 서버·비밀키 없음.
 
 1. Google Cloud(`iaman-blog-analytics`) → **Google Search Console API** 사용 설정
 2. Google 인증 플랫폼 → 데이터 액세스 → 범위 `https://www.googleapis.com/auth/webmasters.readonly` 추가
-3. 로그인 계정이 Search Console 속성 `https://iaman.kr/`의 사용자여야 한다
+3. 로그인 계정이 Search Console 도메인 속성 `iaman.kr`의 사용자여야 한다
 
 ## 테스트
 

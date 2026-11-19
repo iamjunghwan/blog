@@ -20,7 +20,7 @@ test("글 주소는 언어에 따라 /en 접두가 붙는다", () => {
 test("요청 본문은 주소와 URL 접두어 속성이다", () => {
   assert.deepEqual(inspectRequestBody("https://iaman.kr/oxc"), {
     inspectionUrl: "https://iaman.kr/oxc",
-    siteUrl: "https://iaman.kr/",
+    siteUrl: "sc-domain:iaman.kr",
   });
 });
 
@@ -71,7 +71,7 @@ test("inspectUrl은 Bearer 토큰과 본문을 POST로 보낸다", async () => {
   assert.equal((seen?.init.headers as Record<string, string>).Authorization, "Bearer tok");
   assert.deepEqual(JSON.parse(String(seen?.init.body)), {
     inspectionUrl: "https://iaman.kr/oxc",
-    siteUrl: "https://iaman.kr/",
+    siteUrl: "sc-domain:iaman.kr",
   });
   assert.equal(status.state, "indexed");
 });
