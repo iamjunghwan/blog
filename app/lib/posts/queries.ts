@@ -140,3 +140,30 @@ export function bilingualSlugs(posts: Post[]): string[] {
     .map(([slug]) => slug)
     .sort();
 }
+
+/**
+ * 추천 목록(slug 순서 = 순위)에서 그 언어의 글을 앞에서부터 limit편 고른다.
+ *
+ * 그 언어판이 없는 글은 건너뛰고 다음 글로 채운다. 그래서 목록을 limit보다
+ * 길게 적어 두면 번역이 빠진 글이 섞여도 두 언어 모두 limit편을 채운다.
+ */
+export function featuredPosts(
+  posts: Post[],
+  slugs: string[],
+  lang: Lang,
+  limit: number
+): Post[] {
+  const result: Post[] = [];
+
+  for (const slug of slugs) {
+    if (result.length >= limit) {
+      break;
+    }
+    const post = posts.find((item) => item.slug === slug && item.lang === lang);
+    if (post) {
+      result.push(post);
+    }
+  }
+
+  return result;
+}

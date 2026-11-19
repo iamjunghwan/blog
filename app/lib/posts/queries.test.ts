@@ -5,6 +5,7 @@ import {
   allTags,
   bilingualSlugs,
   counterpart,
+  featuredPosts,
   filterByTitle,
   paginate,
   postBySlug,
@@ -219,4 +220,46 @@ test("bilingualSlugs는 양쪽 다 있는 slug만 준다", () => {
   const posts = [post("a", "ko"), post("a", "en"), post("b", "ko"), post("c", "en")];
 
   assert.deepEqual(bilingualSlugs(posts), ["a"]);
+});
+
+function makeLangPost(slug: string, lang: "ko" | "en"): Post {
+  return { ...makePost(slug, "2026-01-01", []), lang };
+}
+
+const BILINGUAL: Post[] = [
+  makeLangPost("a", "ko"),
+  makeLangPost("a", "en"),
+  makeLangPost("b", "ko"),
+  makeLangPost("c", "ko"),
+  makeLangPost("c", "en"),
+  makeLangPost("d", "ko"),
+  makeLangPost("d", "en"),
+];
+
+test("featuredPosts는 목록 순서를 지킨다", () => {
+  const result = featuredPosts(BILINGUAL, ["c", "a", "d"], "ko", 3);
+
+  assert.deepEqual(result.map((post) => post.slug), ["c", "a", "d"]);
+  assert.ok(result.every((post) => post.lang === "ko"));
+});
+
+test("featuredPosts는 그 언어판이 없는 글을 건너뛰고 다음 글로 채운다", () => {
+  const result = featuredPosts(BILINGUAL, ["a", "b", "c", "d"], "en", 3);
+
+  assert.deepEqual(result.map((post) => post.slug), ["a", "c", "d"]);
+  assert.ok(result.every((post) => post.lang === "en"));
+});
+
+test("featuredPosts는 limit편까지만 돌려준다", () => {
+  const result = featuredPosts(BILINGUAL, ["a", "b", "c", "d"], "ko", 2);
+
+  assert.deepEqual(result.map((post) => post.slug), ["a", "b"]);
+});
+
+test("featuredPosts는 없는 slug을 무시하고 빈 목록이면 빈 배열이다", () => {
+  assert.deepEqual(
+    featuredPosts(BILINGUAL, ["zzz", "a"], "ko", 3).map((post) => post.slug),
+    ["a"],
+  );
+  assert.deepEqual(featuredPosts(BILINGUAL, [], "ko", 3), []);
 });
