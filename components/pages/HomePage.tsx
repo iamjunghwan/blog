@@ -15,8 +15,9 @@ import Link from "next/link";
 import AboutPanel from "@/components/Home/AboutPanel";
 import TagChips from "@/components/Home/TagChips";
 import LatestCarousel from "@/components/Carousel/LatestCarousel";
-import { allPosts } from "@/app/lib/posts/repository";
-import { postsIn } from "@/app/lib/posts/queries";
+import MostRead, { type MostReadItem } from "@/components/Home/MostRead";
+import { allPosts, featuredSlugs } from "@/app/lib/posts/repository";
+import { featuredPosts, postsIn } from "@/app/lib/posts/queries";
 import { topTags, writingSince } from "@/app/lib/blog/stats";
 import { thumbnailOf } from "@/app/lib/posts/thumbnail";
 import { localePath } from "@/app/lib/i18n/paths";
@@ -30,6 +31,10 @@ const LATEST_COUNT = 5;
 const TOP_TAG_COUNT = 5;
 /** 캐러셀이 aria-labelledby 로 가리킬 제목의 id. */
 const LATEST_HEADING_ID = "latest-articles";
+/** Most Read에 보일 글 개수. 이 값만 쓴다. */
+const MOST_READ_COUNT = 3;
+/** Most Read 목록이 aria-labelledby 로 가리킬 제목의 id. */
+const MOST_READ_HEADING_ID = "most-read";
 
 const HomePage = ({ lang }: { lang: Lang }) => {
   const posts = postsIn(allPosts(), lang);
@@ -40,6 +45,18 @@ const HomePage = ({ lang }: { lang: Lang }) => {
     date: post.date,
     tags: post.tags,
     // body를 읽어야 정해진다. 서버에서 끝내고 결과만 넘긴다.
+    thumbnailSrc: thumbnailOf(post),
+  }));
+
+  const mostRead: MostReadItem[] = featuredPosts(
+    posts,
+    featuredSlugs(),
+    lang,
+    MOST_READ_COUNT,
+  ).map((post) => ({
+    slug: post.slug,
+    title: post.title,
+    date: post.date,
     thumbnailSrc: thumbnailOf(post),
   }));
 
@@ -72,6 +89,19 @@ const HomePage = ({ lang }: { lang: Lang }) => {
           {messages(lang).allPosts}
         </Link>
       </div>
+
+      {mostRead.length > 0 && (
+        <section className="pb-8">
+          <h2
+            id={MOST_READ_HEADING_ID}
+            className="text-center text-2xl font-black sm:text-3xl"
+          >
+            Most Read
+          </h2>
+          <div className="my-6 h-px w-full bg-gray-300 dark:bg-gray-700" />
+          <MostRead items={mostRead} lang={lang} labelledBy={MOST_READ_HEADING_ID} />
+        </section>
+      )}
     </>
   );
 };
