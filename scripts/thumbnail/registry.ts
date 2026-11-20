@@ -32,6 +32,7 @@ import {
   Curve,
   Brick,
   Tiers,
+  Merge,
 } from "./motifs";
 
 /* ------------------------------------------------------------------ *
@@ -42,7 +43,7 @@ export type MotifName =
   | "nodes" | "bars" | "package" | "lint" | "migrate" | "layers" | "clock"
   | "rows" | "keyValue" | "toggle" | "proxy" | "window" | "graph" | "cache"
   | "spinner" | "numberLine" | "focus" | "lazy" | "curve" | "markup" | "deps"
-  | "recheck" | "brick" | "tiers";
+  | "recheck" | "brick" | "tiers" | "merge";
 
 export const MOTIFS: Record<MotifName, (p: Shape) => React.ReactElement> = {
   nodes: Nodes,
@@ -69,6 +70,7 @@ export const MOTIFS: Record<MotifName, (p: Shape) => React.ReactElement> = {
   recheck: Recheck,
   brick: Brick,
   tiers: Tiers,
+  merge: Merge,
 };
 
 /** 모티프마다 다른 색. 같은 그림이 없으니 색도 겹치지 않게 둔다. */
@@ -97,6 +99,7 @@ export const ACCENT: Record<MotifName, string> = {
   recheck: "#3b82f6",
   brick: "#f97316",
   tiers: "#0ea5e9",
+  merge: "#bef264",
 };
 
 /**
@@ -131,6 +134,7 @@ export const MOTIF_BY_SLUG: Record<string, MotifName> = {
   "tsc-incremental-type-check": "recheck",
   "next-og-satori": "brick",
   "scion-source-control": "tiers",
+  "js-sort-timsort": "merge",
 };
 
 /** 아직 배정하지 않은 글이 쓸 기본값. 위에 있는 태그가 이긴다. */

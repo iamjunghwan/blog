@@ -756,3 +756,66 @@ export function Tiers({ accent }: Shape) {
     </>
   );
 }
+
+/**
+ * 병합 — 이미 정렬된 두 run 이 하나로 합쳐진다 (TimSort).
+ *
+ * 위의 점선 상자 둘이 run 이다. 막대 높이가 값이고, 상자 안에서는 이미 오름차순이다.
+ * 아래가 합친 결과다. 왼쪽 run 에서 온 막대는 채우고 오른쪽 run 에서 온 막대는 테두리만
+ * 남겨, 두 run 이 지퍼처럼 엇갈려 끼워지는 병합을 보이게 했다.
+ */
+export function Merge({ accent }: Shape) {
+  const RUN_A = [2, 5, 6, 8];
+  const RUN_B = [1, 3, 4, 7];
+  const TOP_BASE = 170;
+  const TOP_UNIT = 14;
+  const BOTTOM_BASE = 400;
+  const BOTTOM_UNIT = 16;
+  const JOIN: Point = { x: 180, y: 248 };
+
+  const merged = [
+    ...RUN_A.map((v) => ({ v, fromA: true })),
+    ...RUN_B.map((v) => ({ v, fromA: false })),
+  ].sort((a, b) => a.v - b.v);
+
+  const runBars = (values: number[], startX: number, filled: boolean) =>
+    values.map((v, i) => (
+      <Box
+        key={`${startX}-${v}`}
+        left={startX + i * 36}
+        top={TOP_BASE - v * TOP_UNIT}
+        width={26}
+        height={v * TOP_UNIT}
+        accent={accent}
+        radius={6}
+        filled={filled}
+        opacity={filled ? 0.7 : 0.8}
+        border={3}
+      />
+    ));
+
+  return (
+    <>
+      <Box left={12} top={46} width={154} height={136} accent={accent} radius={12} dashed opacity={0.45} border={3} />
+      <Box left={187} top={46} width={154} height={136} accent={accent} radius={12} dashed opacity={0.45} border={3} />
+      {runBars(RUN_A, 22, true)}
+      {runBars(RUN_B, 197, false)}
+      <Line from={{ x: 89, y: 182 }} to={JOIN} accent={accent} opacity={0.4} thickness={3} />
+      <Line from={{ x: 264, y: 182 }} to={JOIN} accent={accent} opacity={0.4} thickness={3} />
+      {merged.map((bar, i) => (
+        <Box
+          key={`merged-${bar.v}`}
+          left={18 + i * 42}
+          top={BOTTOM_BASE - bar.v * BOTTOM_UNIT}
+          width={30}
+          height={bar.v * BOTTOM_UNIT}
+          accent={accent}
+          radius={6}
+          filled={bar.fromA}
+          opacity={bar.fromA ? 0.9 : 1}
+          border={3}
+        />
+      ))}
+    </>
+  );
+}
