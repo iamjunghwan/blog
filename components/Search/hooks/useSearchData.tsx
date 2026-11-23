@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { filterByTitle } from "@/app/lib/posts/queries";
+import { filterByTitle } from "@/app/lib/posts/query/queries";
 import type { SearchEntry } from "@/app/lib/posts/types";
 
 /**

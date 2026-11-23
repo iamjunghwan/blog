@@ -8,7 +8,7 @@ import {
   loadFeaturedSlugs,
   loadPosts,
   shouldIncludeDrafts,
-} from "@/app/lib/posts/repository";
+} from "@/app/lib/posts/load/repository";
 
 const FIXTURES = path.join(process.cwd(), "app", "lib", "posts", "__fixtures__");
 const POSTS = path.join(FIXTURES, "posts");

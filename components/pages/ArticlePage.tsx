@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
-import { allPosts } from "@/app/lib/posts/repository";
-import { postBySlug, postsIn } from "@/app/lib/posts/queries";
-import { renderPostBody } from "@/app/lib/posts/render";
+import { allPosts } from "@/app/lib/posts/load/repository";
+import { postBySlug, postsIn } from "@/app/lib/posts/query/queries";
+import { renderPostBody } from "@/app/lib/posts/render/render";
 import ArticleContent from "@/components/Article/ArticleContent";
 import { JsonLd, blogPostingJsonLd } from "@/app/lib/seo/json-ld";
 import type { Lang } from "@/app/lib/posts/types";

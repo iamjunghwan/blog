@@ -14,9 +14,9 @@
 import Link from "next/link";
 import LatestCarousel from "@/components/Carousel/LatestCarousel";
 import MostRead from "@/components/Home/MostRead";
-import { allPosts, featuredSlugs } from "@/app/lib/posts/repository";
-import { featuredPosts, postsIn } from "@/app/lib/posts/queries";
-import { thumbnailOf } from "@/app/lib/posts/thumbnail";
+import { allPosts, featuredSlugs } from "@/app/lib/posts/load/repository";
+import { featuredPosts, postsIn } from "@/app/lib/posts/query/queries";
+import { thumbnailOf } from "@/app/lib/posts/derive/thumbnail";
 import { localePath } from "@/app/lib/i18n/paths";
 import { messages } from "@/app/lib/i18n/messages";
 import { ALL_TAG } from "@/app/lib/posts/constants";

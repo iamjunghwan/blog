@@ -2,8 +2,8 @@ import "@/app/globals.css";
 import InnerHeader from "@/components/Layout/InnerHeader";
 import AboutPanel from "@/components/About/AboutPanel";
 import { GithubIcon, MailIcon } from "@/components/SvgIcon/index";
-import { allPosts } from "@/app/lib/posts/repository";
-import { postsIn } from "@/app/lib/posts/queries";
+import { allPosts } from "@/app/lib/posts/load/repository";
+import { postsIn } from "@/app/lib/posts/query/queries";
 import { writingSince } from "@/app/lib/blog/stats";
 import type { Lang } from "@/app/lib/posts/types";
 

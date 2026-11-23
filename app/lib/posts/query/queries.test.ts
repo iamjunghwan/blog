@@ -14,7 +14,7 @@ import {
   postsByTag,
   postsIn,
   searchIndex,
-} from "@/app/lib/posts/queries";
+} from "@/app/lib/posts/query/queries";
 import type { Post } from "@/app/lib/posts/types";
 
 function makePost(slug: string, date: string, tags: string[]): Post {

@@ -2,6 +2,7 @@
  * PostToolUse(Edit|Write) — 글 파일을 고친 직후 그 파일 하나만 검사한다.
  *
  * - 실제 파서(parsePost)로 읽어 frontmatter 오류를 잡는다
+ * - 렌더 결과에 `**`가 그대로 남은 줄(깨진 강조)을 잡는다
  * - 짝(같은 slug의 반대 언어판)이 있으면 date·tags·thumbnail 일치를 본다
  *
  * draft는 보지 않는다. 번역 중에는 갈리는 게 정상이고, 경고하면 Claude가 draft를
@@ -11,8 +12,10 @@
  */
 import fs from "node:fs";
 import path from "node:path";
-import { parsePost } from "@/app/lib/posts/parse";
-import { POSTS_DIR, loadPosts } from "@/app/lib/posts/repository";
+import { parsePost } from "@/app/lib/posts/load/parse";
+import { renderPostBody } from "@/app/lib/posts/render/render";
+import { findBrokenEmphasis } from "@/app/lib/posts/render/emphasis";
+import { POSTS_DIR, loadPosts } from "@/app/lib/posts/load/repository";
 import type { Lang, Post } from "@/app/lib/posts/types";
 
 async function readStdin(): Promise<string> {
@@ -44,6 +47,16 @@ async function main(): Promise<void> {
     post = parsePost(fs.readFileSync(filePath, "utf8"), fileName, lang);
   } catch (error) {
     fail(`${lang}/${fileName}: ${(error as Error).message}`);
+  }
+
+  const broken = findBrokenEmphasis(renderPostBody(post.body));
+
+  if (broken.length > 0) {
+    fail(
+      `${lang}/${fileName}: 강조가 렌더되지 않아 **가 그대로 보인다. ` +
+        `닫는 ** 앞이 구두점이고 뒤가 글자면 깨진다 — ** 뒤에 공백을 두거나 <strong>을 쓴다\n- ` +
+        broken.join("\n- "),
+    );
   }
 
   const otherLang: Lang = lang === "ko" ? "en" : "ko";

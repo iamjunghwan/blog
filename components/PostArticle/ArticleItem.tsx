@@ -1,7 +1,7 @@
 import { localePath } from "@/app/lib/i18n/paths";
 import type { Lang, Post } from "@/app/lib/posts/types";
-import { thumbnailOf } from "@/app/lib/posts/thumbnail";
-import { excerptOf } from "@/app/lib/posts/excerpt";
+import { thumbnailOf } from "@/app/lib/posts/derive/thumbnail";
+import { excerptOf } from "@/app/lib/posts/derive/excerpt";
 import CardDateArea from "../Card/CardDateArea";
 import CardTitleArea from "../Card/CardTitleArea";
 import CardTagsArea from "../Card/CardTagsArea";

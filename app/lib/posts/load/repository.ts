@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { parsePost } from "@/app/lib/posts/parse";
+import { parsePost } from "@/app/lib/posts/load/parse";
 import type { Lang, Post } from "@/app/lib/posts/types";
 
 export const POSTS_DIR = path.join(process.cwd(), "content", "posts");

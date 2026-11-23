@@ -4,8 +4,8 @@ import LanguageSwitch from "@/components/Layout/LanguageSwitch";
 import Theme from "../Button/Theme";
 import Search from "../Search/components/Search";
 import MenuToggleButton from "../Button/MenuToggleButton";
-import { allPosts } from "@/app/lib/posts/repository";
-import { bilingualSlugs, postsIn, searchIndex } from "@/app/lib/posts/queries";
+import { allPosts } from "@/app/lib/posts/load/repository";
+import { bilingualSlugs, postsIn, searchIndex } from "@/app/lib/posts/query/queries";
 import { localePath } from "@/app/lib/i18n/paths";
 import type { Lang } from "@/app/lib/posts/types";
 

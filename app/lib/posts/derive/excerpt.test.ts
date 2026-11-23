@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { excerptOf } from "@/app/lib/posts/excerpt";
+import { excerptOf } from "@/app/lib/posts/derive/excerpt";
 
 test("frontmatter의 description이 있으면 그것을 쓴다", () => {
   const result = excerptOf({

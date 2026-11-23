@@ -81,11 +81,13 @@ npx serve out       빌드 결과 확인
 content/posts/**/*.md    콘텐츠
 
 app/lib/posts/
-  parse.ts               md 문자열 -> Post (frontmatter 검증)
-  repository.ts          폴더 -> Post[]   · 유일한 파일 읽기 지점
-  queries.ts             조회 · 페이지네이션 · 검색 필터 (순수 함수)
-  render.ts              md -> HTML (markdown-it -> processHtml)
-  thumbnail.ts           대표 이미지 결정
+  load/parse.ts          md 문자열 -> Post (frontmatter 검증)
+  load/repository.ts     폴더 -> Post[]   · 유일한 파일 읽기 지점
+  derive/excerpt.ts      설명문 추출
+  derive/thumbnail.ts    대표 이미지 결정
+  query/queries.ts       조회 · 페이지네이션 · 검색 필터 (순수 함수)
+  render/render.ts       md -> HTML (markdown-it -> processHtml)
+  render/emphasis.ts     렌더 결과에 남은 ** 검사
 app/lib/processHtml.ts   heading id 부여 + TOC 삽입
 app/sitemap.ts           사이트맵
 app/robots.ts            robots.txt

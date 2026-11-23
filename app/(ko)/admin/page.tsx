@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import AdminDashboard from "@/components/Admin/AdminDashboard";
-import { allPosts } from "@/app/lib/posts/repository";
+import { allPosts } from "@/app/lib/posts/load/repository";
 import type { ArticleRef } from "@/app/lib/analytics/articles";
 
 // 혼자 보는 페이지다. 검색엔진에 올리지 않는다 (robots.ts에서도 막는다).

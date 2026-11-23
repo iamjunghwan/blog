@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { parsePost } from "@/app/lib/posts/parse";
+import { parsePost } from "@/app/lib/posts/load/parse";
 
 const VALID = `---
 slug: nextjs-16-upgrade

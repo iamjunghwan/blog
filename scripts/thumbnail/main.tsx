@@ -16,7 +16,7 @@
 import { ImageResponse } from "next/og";
 import fs from "node:fs";
 import path from "node:path";
-import { POSTS_DIR, allPosts } from "@/app/lib/posts/repository";
+import { POSTS_DIR, allPosts } from "@/app/lib/posts/load/repository";
 import type { Post } from "@/app/lib/posts/types";
 import { BASE_HEIGHT, BASE_WIDTH, s } from "./canvas";
 import { Thumbnail } from "./card";

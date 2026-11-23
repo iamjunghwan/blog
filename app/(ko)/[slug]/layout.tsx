@@ -1,8 +1,8 @@
 import { generateCommonMetadata } from "@/app/utils/metadata";
-import { allPosts } from "@/app/lib/posts/repository";
-import { counterpart, postBySlug, postsIn } from "@/app/lib/posts/queries";
-import { excerptOf } from "@/app/lib/posts/excerpt";
-import { thumbnailOf } from "@/app/lib/posts/thumbnail";
+import { allPosts } from "@/app/lib/posts/load/repository";
+import { counterpart, postBySlug, postsIn } from "@/app/lib/posts/query/queries";
+import { excerptOf } from "@/app/lib/posts/derive/excerpt";
+import { thumbnailOf } from "@/app/lib/posts/derive/thumbnail";
 import { absoluteUrl } from "@/app/lib/site";
 
 type Props = {

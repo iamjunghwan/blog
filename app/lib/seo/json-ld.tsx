@@ -17,8 +17,8 @@
 import { SITE_URL, absoluteUrl } from "@/app/lib/site";
 import { localePath } from "@/app/lib/i18n/paths";
 import { SITE_COPY, AUTHOR_NAME } from "@/app/lib/i18n/site-copy";
-import { excerptOf } from "@/app/lib/posts/excerpt";
-import { thumbnailOf } from "@/app/lib/posts/thumbnail";
+import { excerptOf } from "@/app/lib/posts/derive/excerpt";
+import { thumbnailOf } from "@/app/lib/posts/derive/thumbnail";
 import type { Lang, Post } from "@/app/lib/posts/types";
 
 const BCP47: Record<Lang, string> = {

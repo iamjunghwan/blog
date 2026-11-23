@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/app/lib/site";
-import { allPosts, LANGS } from "@/app/lib/posts/repository";
-import { bilingualSlugs, postListUrls, postsIn } from "@/app/lib/posts/queries";
+import { allPosts, LANGS } from "@/app/lib/posts/load/repository";
+import { bilingualSlugs, postListUrls, postsIn } from "@/app/lib/posts/query/queries";
 import { localePath } from "@/app/lib/i18n/paths";
 
 // 정적 export에서는 메타데이터 라우트도 빌드 타임에 고정된 정적 파일로

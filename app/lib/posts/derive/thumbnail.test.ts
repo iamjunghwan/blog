@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { DEFAULT_THUMBNAIL, thumbnailOf } from "@/app/lib/posts/thumbnail";
+import { DEFAULT_THUMBNAIL, thumbnailOf } from "@/app/lib/posts/derive/thumbnail";
 
 test("frontmatter의 thumbnail이 최우선이다", () => {
   const result = thumbnailOf({

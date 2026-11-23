@@ -111,7 +111,7 @@ const greeting = "안녕하세요";
 
 **그 밖의 언어**(`python`, `go`, `rust`, `yaml` 등)는 **에러 없이 색칠만 안 된다.** 배경 박스와 고정폭 글꼴은 그대로 적용된다.
 
-필요한 언어가 생기면 `app/lib/posts/render.ts` 상단에 한 줄 추가하면 된다:
+필요한 언어가 생기면 `app/lib/posts/render/render.ts` 상단에 한 줄 추가하면 된다:
 
 ```ts
 import "prismjs/components/prism-python";
@@ -181,5 +181,5 @@ pnpm build    # 정적 빌드. frontmatter가 잘못되면 여기서 멈춘다
 ## 참고
 
 - 마이그레이션 경위와 알려진 한계: [migration-cms-to-markdown.md](migration-cms-to-markdown.md)
-- 렌더 파이프라인: `app/lib/posts/render.ts` → `app/lib/processHtml.ts`
+- 렌더 파이프라인: `app/lib/posts/render/render.ts` → `app/lib/processHtml.ts`
 - 실제 글을 대상으로 하는 회귀 테스트: `app/lib/posts/content.test.ts`

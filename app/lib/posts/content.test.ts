@@ -7,10 +7,11 @@ import {
   POSTS_DIR,
   loadAllPosts,
   loadFeaturedSlugs,
-} from "@/app/lib/posts/repository";
-import { postsIn } from "@/app/lib/posts/queries";
-import { renderPostBody } from "@/app/lib/posts/render";
-import { thumbnailOf, DEFAULT_THUMBNAIL } from "@/app/lib/posts/thumbnail";
+} from "@/app/lib/posts/load/repository";
+import { postsIn } from "@/app/lib/posts/query/queries";
+import { renderPostBody } from "@/app/lib/posts/render/render";
+import { findBrokenEmphasis } from "@/app/lib/posts/render/emphasis";
+import { thumbnailOf, DEFAULT_THUMBNAIL } from "@/app/lib/posts/derive/thumbnail";
 import { MOTIF_BY_SLUG } from "@/scripts/thumbnail/registry";
 
 /**
@@ -50,6 +51,18 @@ test("모든 글이 TOC 헤딩을 하나 이상 만든다", () => {
     const html = renderPostBody(post.body);
 
     assert.match(html, /class="toc"/, `${post.slug}: TOC가 없다`);
+  }
+});
+
+test("모든 글에서 **강조**가 렌더된다", () => {
+  for (const post of posts) {
+    const broken = findBrokenEmphasis(renderPostBody(post.body));
+
+    assert.deepEqual(
+      broken,
+      [],
+      `${post.lang}/${post.slug}: **가 그대로 보인다. 닫는 ** 뒤에 공백을 두거나 <strong>을 쓴다`,
+    );
   }
 });
 

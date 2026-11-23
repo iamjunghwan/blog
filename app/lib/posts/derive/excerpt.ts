@@ -1,5 +1,5 @@
 import type { Post } from "@/app/lib/posts/types";
-import { stripFencedBlocks } from "@/app/lib/posts/markdown";
+import { stripFencedBlocks } from "@/app/lib/posts/derive/markdown";
 
 /** 검색 결과에서 잘리지 않는 대략적인 상한. 구글은 155자 안팎에서 자른다. */
 const MAX_LENGTH = 155;

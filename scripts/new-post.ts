@@ -20,7 +20,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
-import { POSTS_DIR, loadPosts, LANGS } from "@/app/lib/posts/repository";
+import { POSTS_DIR, loadPosts, LANGS } from "@/app/lib/posts/load/repository";
 import type { Lang } from "@/app/lib/posts/types";
 import { ALL_TAG } from "@/app/lib/posts/constants";
 import { localePath } from "@/app/lib/i18n/paths";

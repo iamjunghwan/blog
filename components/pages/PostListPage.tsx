@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import PostPageContent from "@/components/PostPageContent";
-import { allPosts } from "@/app/lib/posts/repository";
-import { paginate, postsByTag, postsIn } from "@/app/lib/posts/queries";
+import { allPosts } from "@/app/lib/posts/load/repository";
+import { paginate, postsByTag, postsIn } from "@/app/lib/posts/query/queries";
 import type { Lang } from "@/app/lib/posts/types";
 
 const PostListPage = ({

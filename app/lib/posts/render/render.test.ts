@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { renderPostBody } from "@/app/lib/posts/render";
+import { renderPostBody } from "@/app/lib/posts/render/render";
 
 test("markdown을 HTML로 렌더한다", () => {
   const html = renderPostBody("# 제목\n\n본문 **강조**");

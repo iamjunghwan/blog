@@ -1,5 +1,5 @@
 import type { Post } from "@/app/lib/posts/types";
-import { stripFencedBlocks } from "@/app/lib/posts/markdown";
+import { stripFencedBlocks } from "@/app/lib/posts/derive/markdown";
 
 export const DEFAULT_THUMBNAIL = "/default-thumbnail.png";
 

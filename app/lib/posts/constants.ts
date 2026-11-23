@@ -10,6 +10,6 @@
 /**
  * 목록 라우트에서 전체를 뜻하는 slug. 예약어다.
  * 글이 이 이름을 태그로 쓰면 그 태그로는 필터가 불가능해지고 라우트도 중복 생성되므로,
- * `parse.ts`가 frontmatter 단계에서 이 값을 태그로 쓰는 것을 거부한다.
+ * `load/parse.ts`가 frontmatter 단계에서 이 값을 태그로 쓰는 것을 거부한다.
  */
 export const ALL_TAG = "all";

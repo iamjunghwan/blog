@@ -19,10 +19,11 @@ out/                            정적 HTML → Cloudflare Pages
 
 - **완전 정적 사이트.** 서버·API·환경변수 없음. 런타임 데이터 요청도 없다
 - **콘텐츠 파이프라인** (`app/lib/posts/`)
-  - `repository.ts` 파일 읽기 (유일한 fs 접근 지점)
-  - `parse.ts` frontmatter 검증, 틀리면 빌드를 멈춘다
-  - `queries.ts` 조회·페이지네이션·검색 필터 (순수 함수)
-  - `render.ts` → `app/lib/processHtml.ts` markdown-it + Prism 렌더, heading id·TOC 삽입
+  - `load/` 파일 읽기(`repository.ts`, 유일한 fs 접근 지점)와 frontmatter 검증(`parse.ts`, 틀리면 빌드를 멈춘다)
+  - `derive/` 본문에서 설명문(`excerpt.ts`)·대표 이미지(`thumbnail.ts`)를 뽑는다
+  - `query/` 조회·페이지네이션·검색 필터 (`queries.ts`, 순수 함수)
+  - `render/` `render.ts` → `app/lib/processHtml.ts` markdown-it + Prism 렌더, heading id·TOC 삽입. `emphasis.ts`는 깨진 `**` 검사
+  - `types.ts` `constants.ts`는 공용, `content.test.ts`는 실제 글 전체 검사
 - **라우트** (ko는 루트, en은 `/en` 접두사)
   - `/` 홈, `/<slug>` 글, `/post/<tag>/<page>` 목록 (`all`은 전체), `/about`
 - **UI**: `components/pages/`가 페이지 단위, 나머지 `components/*`는 조각

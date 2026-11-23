@@ -1,6 +1,6 @@
 import TagList from "./TagList";
-import { allPosts } from "@/app/lib/posts/repository";
-import { allTags, postsIn } from "@/app/lib/posts/queries";
+import { allPosts } from "@/app/lib/posts/load/repository";
+import { allTags, postsIn } from "@/app/lib/posts/query/queries";
 import type { Lang } from "@/app/lib/posts/types";
 
 const Tags = ({ currTag, lang }: { currTag: string; lang: Lang }) => {
