@@ -5,7 +5,7 @@ description: "Array.prototype.sort가 지키는 스펙 규칙부터 V8이 쓴 Ti
 date: 2026-11-20
 tags: ["javascript"]
 thumbnail: "/uploads/2026/11/js-sort-timsort.png"
-draft: true
+draft: false
 ---
 
 # JavaScript sort는 어떻게 정렬할까

@@ -5,7 +5,7 @@ description: "How Array.prototype.sort works: the spec's rules, the runs, minrun
 date: 2026-11-20
 tags: ["javascript"]
 thumbnail: "/uploads/2026/11/js-sort-timsort.png"
-draft: true
+draft: false
 ---
 
 # How Does JavaScript sort() Actually Sort?
