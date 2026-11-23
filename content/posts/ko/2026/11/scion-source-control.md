@@ -91,7 +91,7 @@ ref 갱신은 changeset 생성과 분리돼 있다. Spanner의 행 하나에 대
 
 대신 대가가 있다. changeset이 변경분만 들고 있으면, `blame`이나 파일 히스토리처럼 과거 전체를 훑어야 하는 질의가 비싸진다.
 
-그래서 Scion은 그걸 **파생 데이터(derived data)**로 따로 만든다.
+그래서 Scion은 그걸 <strong>파생 데이터(derived data)</strong>로 따로 만든다.
 
 - blame 구조, 경로 히스토리 구조, 커밋 그래프용 skip list
 - 각 파생 타입은 부모의 값에서 재귀적으로 계산된다
@@ -101,7 +101,7 @@ ref 갱신은 changeset 생성과 분리돼 있다. Spanner의 행 하나에 대
 
 ## 5. 3계층, 그리고 전송 프로토콜
 
-`scn` 클라이언트가 git과 다른 지점은 **협상(negotiation)**이다.
+`scn` 클라이언트가 git과 다른 지점은 <strong>협상(negotiation)</strong>이다.
 
 git의 fetch는 "내가 뭘 가지고 있는지"를 서버와 주고받은 뒤, 서버가 그 차이를 packfile 하나로 말아서 보낸다. Scion은 그걸 하지 않는다.
 
