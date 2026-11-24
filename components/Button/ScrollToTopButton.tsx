@@ -42,9 +42,12 @@ export default function ScrollToTopButton({ lang }: { lang: Lang }) {
     return () => observer.disconnect();
   }, []);
 
-  const scrollToTop = () => {
+  const scrollToTop = (event: React.MouseEvent<HTMLButtonElement>) => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     window.scrollTo({ top: 0, behavior: scrollBehavior(reduce) });
+    // 맨 위에 닿으면 버튼이 숨는다(aria-hidden). 포커스가 숨은 버튼에 남지 않게
+    // 놓아 준다 — 다음 Tab은 문서 처음부터 시작한다.
+    event.currentTarget.blur();
   };
 
   return (
