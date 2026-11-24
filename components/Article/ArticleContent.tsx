@@ -1,5 +1,7 @@
 import ArticleInteractions from "./ArticleInteractions";
 import ArticleMeta from "./ArticleMeta";
+import ScrollToTopButton from "@/components/Button/ScrollToTopButton";
+import { SCROLL_TOP_SENTINEL_ID } from "@/app/lib/scroll/scroll-to-top";
 import { META_MARKER } from "@/app/lib/processHtml";
 import type { Lang } from "@/app/lib/posts/types";
 
@@ -23,6 +25,8 @@ export default function ArticleContent({
 
   return (
     <article>
+      {/* 맨 위로 버튼이 이 표식을 지켜본다. 높이가 없어 레이아웃에 영향이 없다. */}
+      <div id={SCROLL_TOP_SENTINEL_ID} aria-hidden="true"></div>
       {/* children으로 넘기므로 아래 조각들은 서버에서 그려진 채로 전달된다. */}
       <ArticleInteractions>
         <div dangerouslySetInnerHTML={{ __html: head }}></div>
@@ -34,6 +38,7 @@ export default function ArticleContent({
           ></div>
         )}
       </ArticleInteractions>
+      <ScrollToTopButton lang={lang} />
     </article>
   );
 }
