@@ -34,6 +34,8 @@ type Messages = {
   aboutAsks: string;
   /** "2025.03" 을 받는다. */
   aboutSince: (yearMonth: string) => string;
+  /** 아티클 페이지의 맨 위로 버튼. 화면에는 아이콘만 보이고 이 문구는 aria-label이다. */
+  scrollToTop: string;
 };
 
 export const MESSAGES: Record<Lang, Messages> = {
@@ -60,6 +62,7 @@ export const MESSAGES: Record<Lang, Messages> = {
     // 이 줄은 한국어 화면에서도 영어다. 패널 안이 코드라서, 주석도 코드처럼
     // 읽히는 편이 자연스럽다. allPosts / About 를 양쪽에서 영어로 두는 것과 같다.
     aboutSince: (yearMonth) => `writing since ${yearMonth}`,
+    scrollToTop: "맨 위로",
   },
   en: {
     allPosts: "All posts →",
@@ -82,6 +85,7 @@ export const MESSAGES: Record<Lang, Messages> = {
     aboutRole: "Frontend Engineer",
     aboutAsks: "why?",
     aboutSince: (yearMonth) => `writing since ${yearMonth}`,
+    scrollToTop: "Back to top",
   },
 };
 

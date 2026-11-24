@@ -26,3 +26,8 @@ test("점 버튼 문구는 번호를 받아 만든다", () => {
   assert.equal(messages("ko").goToSlide(3), "3번째 글로 이동");
   assert.equal(messages("en").goToSlide(3), "Go to article 3");
 });
+
+test("맨 위로 버튼 이름", () => {
+  assert.equal(messages("ko").scrollToTop, "맨 위로");
+  assert.equal(messages("en").scrollToTop, "Back to top");
+});
