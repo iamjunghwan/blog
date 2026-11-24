@@ -819,3 +819,57 @@ export function Merge({ accent }: Shape) {
     </>
   );
 }
+
+/**
+ * 쌓이는 요청 — 요청마다 전체 컨텍스트를 다시 보낸다 (Claude Code 토큰 절약).
+ *
+ * 한 줄이 요청 하나다. 왼쪽의 채운 막대는 시스템 프롬프트·CLAUDE.md처럼 매번 똑같이
+ * 실리는 앞부분이라 캐시에서 읽힌다. 오른쪽 테두리 칸은 대화 턴이고, 아래 줄로 갈수록
+ * 하나씩 늘어난다. 맨 끝의 새 턴만 진하게 두어 "새로 보낸 것은 조금인데 실리는 것은
+ * 전부"라는 글의 요점을 보이게 했다.
+ * Rows와 헷갈리지 않게 줄 길이가 위에서 아래로 계단처럼 자라기만 한다.
+ */
+export function Resend({ accent }: Shape) {
+  const TOPS = [60, 150, 240, 330];
+  const ROW_H = 44;
+  const PREFIX_LEFT = 15;
+  const PREFIX_W = 130;
+  const TURN_W = 40;
+  const TURN_GAP = 8;
+
+  return (
+    <>
+      {TOPS.map((top) => (
+        <Box
+          key={`prefix-${top}`}
+          left={PREFIX_LEFT}
+          top={top}
+          width={PREFIX_W}
+          height={ROW_H}
+          accent={accent}
+          radius={10}
+          filled
+          opacity={0.85}
+        />
+      ))}
+      {TOPS.map((top, row) =>
+        Array.from({ length: row + 1 }, (_, turn) => {
+          const isNew = turn === row;
+          return (
+            <Box
+              key={`turn-${row}-${turn}`}
+              left={PREFIX_LEFT + PREFIX_W + TURN_GAP + turn * (TURN_W + TURN_GAP)}
+              top={top}
+              width={TURN_W}
+              height={ROW_H}
+              accent={accent}
+              radius={10}
+              border={3}
+              opacity={isNew ? 1 : 0.4}
+            />
+          );
+        })
+      )}
+    </>
+  );
+}

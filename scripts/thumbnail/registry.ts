@@ -33,6 +33,7 @@ import {
   Brick,
   Tiers,
   Merge,
+  Resend,
 } from "./motifs";
 
 /* ------------------------------------------------------------------ *
@@ -43,7 +44,7 @@ export type MotifName =
   | "nodes" | "bars" | "package" | "lint" | "migrate" | "layers" | "clock"
   | "rows" | "keyValue" | "toggle" | "proxy" | "window" | "graph" | "cache"
   | "spinner" | "numberLine" | "focus" | "lazy" | "curve" | "markup" | "deps"
-  | "recheck" | "brick" | "tiers" | "merge";
+  | "recheck" | "brick" | "tiers" | "merge" | "resend";
 
 export const MOTIFS: Record<MotifName, (p: Shape) => React.ReactElement> = {
   nodes: Nodes,
@@ -71,6 +72,7 @@ export const MOTIFS: Record<MotifName, (p: Shape) => React.ReactElement> = {
   brick: Brick,
   tiers: Tiers,
   merge: Merge,
+  resend: Resend,
 };
 
 /** 모티프마다 다른 색. 같은 그림이 없으니 색도 겹치지 않게 둔다. */
@@ -100,6 +102,7 @@ export const ACCENT: Record<MotifName, string> = {
   brick: "#f97316",
   tiers: "#0ea5e9",
   merge: "#bef264",
+  resend: "#f59e0b",
 };
 
 /**
@@ -135,6 +138,7 @@ export const MOTIF_BY_SLUG: Record<string, MotifName> = {
   "next-og-satori": "brick",
   "scion-source-control": "tiers",
   "js-sort-timsort": "merge",
+  "claude-code-token-optimization": "resend",
 };
 
 /** 아직 배정하지 않은 글이 쓸 기본값. 위에 있는 태그가 이긴다. */
