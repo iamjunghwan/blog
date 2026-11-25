@@ -166,3 +166,29 @@ test("참고가 없는 글에는 표시가 붙지 않는다", () => {
   assert.ok(!html.includes("refs-title"));
   assert.ok(!html.includes("refs-body"));
 });
+
+test("[^1]은 본문 번호 링크와 글 끝 각주 목록이 된다", () => {
+  const html = renderPostBody("# 제목\n\n문장[^1]\n\n[^1]: 설명", "ko");
+
+  assert.match(html, /<sup class="footnote-ref"><a href="#fn1" id="fnref1">/);
+  assert.match(html, /<section class="footnotes">[\s\S]*<li id="fn1"/);
+});
+
+test("각주의 되돌아가기 링크에 언어별 이름이 붙는다", () => {
+  const ko = renderPostBody("# 제목\n\n문장[^1]\n\n[^1]: 설명", "ko");
+  const en = renderPostBody("# Title\n\nText[^1]\n\n[^1]: note", "en");
+
+  assert.match(ko, /<a href="#fnref1" class="footnote-backref" aria-label="본문으로">/);
+  assert.match(en, /<a href="#fnref1" class="footnote-backref" aria-label="Back to content">/);
+});
+
+test("참고 섹션 뒤의 각주 목록은 refs-body에 들어가지 않는다", () => {
+  const html = renderPostBody(
+    "# 제목\n\n문장[^1]\n\n## 참고\n\n- [링크](https://a.kr)\n\n[^1]: 설명",
+    "ko",
+  );
+  const refsEnd = html.indexOf("</div>", html.indexOf('class="refs-body"'));
+
+  assert.ok(html.indexOf('<hr class="footnotes-sep">') > refsEnd, "구분선은 refs-body 밖");
+  assert.ok(html.indexOf('<section class="footnotes">') > refsEnd, "각주 목록은 refs-body 밖");
+});

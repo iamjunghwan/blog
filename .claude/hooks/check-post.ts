@@ -49,7 +49,7 @@ async function main(): Promise<void> {
     fail(`${lang}/${fileName}: ${(error as Error).message}`);
   }
 
-  const broken = findBrokenEmphasis(renderPostBody(post.body));
+  const broken = findBrokenEmphasis(renderPostBody(post.body, lang));
 
   if (broken.length > 0) {
     fail(

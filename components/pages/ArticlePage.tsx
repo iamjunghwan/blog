@@ -19,7 +19,7 @@ const ArticlePage = ({ lang, slug }: { lang: Lang; slug: string }) => {
     <>
       <JsonLd data={blogPostingJsonLd(post, lang)} />
       <ArticleContent
-        content={renderPostBody(post.body)}
+        content={renderPostBody(post.body, lang)}
         date={post.date}
         tags={post.tags}
         lang={lang}

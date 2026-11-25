@@ -450,6 +450,90 @@ html.dark #article-content .refs-body a:hover {
 }
 
 /**
+ * 각주 (markdown-it-footnote).
+ *
+ * 본문 번호는 작게 띄우고, 글 끝 목록은 참고 섹션처럼 본문보다 한 단계 가볍게 둔다.
+ */
+#article-content .footnote-ref a {
+  font-size: 0.75em;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+#article-content .footnotes-sep {
+  margin: 2.5rem 0 1rem;
+  border-color: #e5e7eb;
+}
+
+#article-content .footnotes {
+  color: #4b5563;
+  font-size: 0.875rem;
+}
+
+#article-content .footnotes-list li::marker {
+  color: #9ca3af;
+}
+
+#article-content .footnote-backref {
+  margin-left: 0.25rem;
+  text-decoration: none;
+}
+
+html.dark #article-content .footnotes-sep {
+  border-color: #262b33;
+}
+
+html.dark #article-content .footnotes {
+  color: #b2b9c4;
+}
+
+html.dark #article-content .footnotes-list li::marker {
+  color: #6b7280;
+}
+
+/* 각주 말풍선. 본문 밖(body)에 붙어서 #article-content로 묶지 않는다.
+   위치는 footnoteTooltip.ts가 left/top으로 준다. */
+.footnote-tooltip {
+  position: absolute;
+  z-index: 50;
+  max-width: min(22rem, calc(100vw - 16px));
+  padding: 0.625rem 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  color: #374151;
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.12);
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+.footnote-tooltip[hidden] {
+  display: none;
+}
+
+.footnote-tooltip p {
+  margin: 0;
+}
+
+.footnote-tooltip a {
+  color: #2563eb;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+html.dark .footnote-tooltip {
+  border-color: #374151;
+  background: #111827;
+  color: #d1d5db;
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.5);
+}
+
+html.dark .footnote-tooltip a {
+  color: #60a5fa;
+}
+
+/**
  * 메인 최신 글 코버플로우 캐러셀.
  *
  * Tailwind 3에는 perspective·mask-image 유틸리티가 없어 여기에 직접 적는다.

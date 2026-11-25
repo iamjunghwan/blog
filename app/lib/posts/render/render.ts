@@ -8,7 +8,10 @@ import "prismjs/components/prism-jsx";
 import "prismjs/components/prism-tsx";
 import "prismjs/components/prism-json";
 import "prismjs/components/prism-bash";
+import footnote from "markdown-it-footnote";
 import { processHtml } from "@/app/lib/processHtml";
+import { messages } from "@/app/lib/i18n/messages";
+import type { Lang } from "@/app/lib/posts/types";
 
 const HTML_ESCAPES: Record<string, string> = {
   "&": "&amp;",
@@ -45,12 +48,30 @@ function highlight(code: string, language: string): string {
 }
 
 // html: true — 변환 불가한 블록을 raw HTML로 남기는 전략을 지원한다.
-const markdown = new MarkdownIt({ html: true, highlight });
+const markdown = new MarkdownIt({ html: true, highlight }).use(footnote);
+
+/** markdown.render에 넘기는 값. 렌더 규칙이 env로 받는다. */
+type RenderEnv = { lang: Lang };
+
+/**
+ * 각주의 되돌아가기 링크(화살표 기호)에 이름을 단다.
+ *
+ * 플러그인 기본값은 기호 하나뿐이라 화면 낭독기가 "화살표"로만 읽는다.
+ * 렌더 규칙은 모듈에 하나라 글의 언어는 render의 env로 받는다.
+ */
+const renderFootnoteAnchor = markdown.renderer.rules.footnote_anchor!;
+markdown.renderer.rules.footnote_anchor = (tokens, idx, options, env, self) =>
+  renderFootnoteAnchor(tokens, idx, options, env, self).replace(
+    'class="footnote-backref"',
+    `class="footnote-backref" aria-label="${escapeHtml(messages((env as RenderEnv).lang).footnoteBack)}"`,
+  );
 
 /**
  * md 본문을 아티클 HTML로 렌더한다.
  * heading id 부여와 TOC 삽입은 기존 processHtml을 그대로 재사용한다.
+ * lang은 각주 되돌아가기 링크의 이름에만 쓴다.
  */
-export function renderPostBody(body: string): string {
-  return processHtml(markdown.render(body)).html;
+export function renderPostBody(body: string, lang: Lang = "ko"): string {
+  const env: RenderEnv = { lang };
+  return processHtml(markdown.render(body, env)).html;
 }

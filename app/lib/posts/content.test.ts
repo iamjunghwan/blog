@@ -40,7 +40,7 @@ test("모든 글이 파싱되고 최소 1건 이상 존재한다", () => {
 
 test("모든 글에 h1이 정확히 하나 있다", () => {
   for (const post of posts) {
-    const count = (renderPostBody(post.body).match(/<h1[\s>]/g) ?? []).length;
+    const count = (renderPostBody(post.body, post.lang).match(/<h1[\s>]/g) ?? []).length;
 
     assert.equal(count, 1, `${post.slug}: h1이 ${count}개다`);
   }
@@ -48,7 +48,7 @@ test("모든 글에 h1이 정확히 하나 있다", () => {
 
 test("모든 글이 TOC 헤딩을 하나 이상 만든다", () => {
   for (const post of posts) {
-    const html = renderPostBody(post.body);
+    const html = renderPostBody(post.body, post.lang);
 
     assert.match(html, /class="toc"/, `${post.slug}: TOC가 없다`);
   }
@@ -56,7 +56,7 @@ test("모든 글이 TOC 헤딩을 하나 이상 만든다", () => {
 
 test("모든 글에서 **강조**가 렌더된다", () => {
   for (const post of posts) {
-    const broken = findBrokenEmphasis(renderPostBody(post.body));
+    const broken = findBrokenEmphasis(renderPostBody(post.body, post.lang));
 
     assert.deepEqual(
       broken,

@@ -36,6 +36,8 @@ type Messages = {
   aboutSince: (yearMonth: string) => string;
   /** 아티클 페이지의 맨 위로 버튼. 화면에는 아이콘만 보이고 이 문구는 aria-label이다. */
   scrollToTop: string;
+  /** 각주의 되돌아가기 링크(화살표 기호) 이름. aria-label로만 쓴다. */
+  footnoteBack: string;
 };
 
 export const MESSAGES: Record<Lang, Messages> = {
@@ -63,6 +65,7 @@ export const MESSAGES: Record<Lang, Messages> = {
     // 읽히는 편이 자연스럽다. allPosts / About 를 양쪽에서 영어로 두는 것과 같다.
     aboutSince: (yearMonth) => `writing since ${yearMonth}`,
     scrollToTop: "맨 위로",
+    footnoteBack: "본문으로",
   },
   en: {
     allPosts: "All posts →",
@@ -86,6 +89,7 @@ export const MESSAGES: Record<Lang, Messages> = {
     aboutAsks: "why?",
     aboutSince: (yearMonth) => `writing since ${yearMonth}`,
     scrollToTop: "Back to top",
+    footnoteBack: "Back to content",
   },
 };
 

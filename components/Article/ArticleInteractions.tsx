@@ -1,6 +1,6 @@
 /****************************************
  *
- * ArticleInteractions : 본문을 감싸고 제목 클릭을 받는다
+ * ArticleInteractions : 본문을 감싸고 제목 클릭과 각주 말풍선을 붙인다
  *
  * 전에는 형제 컴포넌트가 document.getElementById("article-content") 로 바깥에서
  * 본문을 찾아갔다. React 트리에 있는 요소를 전역 조회로 집는 것이라, 이름이
@@ -18,6 +18,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { attachFootnoteTooltips } from "./footnoteTooltip";
 
 export default function ArticleInteractions({
   children,
@@ -43,10 +44,13 @@ export default function ArticleInteractions({
       return { heading, handler };
     });
 
+    const detachFootnoteTooltips = attachFootnoteTooltips(container);
+
     return () => {
       handlers.forEach(({ heading, handler }) => {
         heading.removeEventListener("click", handler);
       });
+      detachFootnoteTooltips();
     };
   }, []);
 

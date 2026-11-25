@@ -81,7 +81,8 @@ export function processHtml(html: string) {
     .last()
   if (refsHeading.length) {
     refsHeading.addClass('refs-title')
-    const body = refsHeading.nextUntil('h1, h2')
+    // 각주 목록(markdown-it-footnote)은 글 맨 끝, 참고 뒤에 붙지만 참고가 아니다. 거기서 멈춘다.
+    const body = refsHeading.nextUntil('h1, h2, hr.footnotes-sep, section.footnotes')
     if (body.length) {
       body.wrapAll('<div class="refs-body"></div>')
     }
