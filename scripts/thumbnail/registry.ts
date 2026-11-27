@@ -34,6 +34,7 @@ import {
   Tiers,
   Merge,
   Resend,
+  Direct,
 } from "./motifs";
 
 /* ------------------------------------------------------------------ *
@@ -44,7 +45,8 @@ export type MotifName =
   | "nodes" | "bars" | "package" | "lint" | "migrate" | "layers" | "clock"
   | "rows" | "keyValue" | "toggle" | "proxy" | "window" | "graph" | "cache"
   | "spinner" | "numberLine" | "focus" | "lazy" | "curve" | "markup" | "deps"
-  | "recheck" | "brick" | "tiers" | "merge" | "resend";
+  | "recheck" | "brick" | "tiers" | "merge" | "resend"
+  | "direct";
 
 export const MOTIFS: Record<MotifName, (p: Shape) => React.ReactElement> = {
   nodes: Nodes,
@@ -73,6 +75,7 @@ export const MOTIFS: Record<MotifName, (p: Shape) => React.ReactElement> = {
   tiers: Tiers,
   merge: Merge,
   resend: Resend,
+  direct: Direct,
 };
 
 /** 모티프마다 다른 색. 같은 그림이 없으니 색도 겹치지 않게 둔다. */
@@ -103,6 +106,7 @@ export const ACCENT: Record<MotifName, string> = {
   tiers: "#0ea5e9",
   merge: "#bef264",
   resend: "#f59e0b",
+  direct: "#f0abfc",
 };
 
 /**
@@ -139,6 +143,7 @@ export const MOTIF_BY_SLUG: Record<string, MotifName> = {
   "scion-source-control": "tiers",
   "js-sort-timsort": "merge",
   "claude-code-token-optimization": "resend",
+  "after-using-claude": "direct",
 };
 
 /** 아직 배정하지 않은 글이 쓸 기본값. 위에 있는 태그가 이긴다. */

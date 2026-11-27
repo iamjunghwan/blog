@@ -873,3 +873,66 @@ export function Resend({ accent }: Shape) {
     </>
   );
 }
+
+/**
+ * 감독 — 방향을 정하고 결과를 고르는 사람 (클로드를 사용한 뒤 느낀 점).
+ *
+ * 위의 채운 상자가 나다. 선이 아래 다섯 상자로 한꺼번에 뻗는 것은 Claude가 결과물을
+ * 빠르게 여럿 내놓는 모습이다. 상자마다 체크나 가위표가 붙고, 체크된 것만 아래 막대로
+ * 모인다. 직접 다 짜는 대신 방향을 정하고 결과를 확인하는 것이 내 몫이라는 글의 결론을
+ * 그렸다. 가위표 상자는 점선으로 흐리게 두어 버려진 결과임을 보였다.
+ */
+export function Direct({ accent }: Shape) {
+  const ME = { left: 125, top: 28, width: 110, height: 64 };
+  const ORIGIN: Point = { x: 180, y: ME.top + ME.height };
+  const CENTERS = [36, 108, 180, 252, 324];
+  const KEEP = [true, false, true, true, false];
+  const CARD_W = 56;
+  const CARD_H = 76;
+  const CARD_TOP = 190;
+  const RESULT = { left: 60, top: 358, width: 240, height: 44 };
+  const SINK: Point = { x: 180, y: RESULT.top };
+
+  return (
+    <>
+      {CENTERS.map((x, i) => (
+        <Line key={`out-${i}`} from={ORIGIN} to={{ x, y: CARD_TOP }} accent={accent} opacity={0.3} thickness={2} />
+      ))}
+      {CENTERS.map((x, i) =>
+        KEEP[i] ? (
+          <Line
+            key={`in-${i}`}
+            from={{ x, y: CARD_TOP + CARD_H }}
+            to={SINK}
+            accent={accent}
+            opacity={0.45}
+            thickness={3}
+          />
+        ) : null
+      )}
+      <Box {...ME} accent={accent} radius={14} filled opacity={0.9} />
+      {CENTERS.map((x, i) => (
+        <Box
+          key={`card-${i}`}
+          left={x - CARD_W / 2}
+          top={CARD_TOP}
+          width={CARD_W}
+          height={CARD_H}
+          accent={accent}
+          radius={10}
+          border={3}
+          dashed={!KEEP[i]}
+          opacity={KEEP[i] ? 0.9 : 0.4}
+        />
+      ))}
+      {CENTERS.map((x, i) =>
+        KEEP[i] ? (
+          <Check key={`mark-${i}`} at={{ x, y: CARD_TOP + CARD_H / 2 }} accent={accent} size={30} />
+        ) : (
+          <Cross key={`mark-${i}`} at={{ x, y: CARD_TOP + CARD_H / 2 }} accent={accent} size={22} />
+        )
+      )}
+      <Box {...RESULT} accent={accent} radius={12} filled opacity={0.6} />
+    </>
+  );
+}
